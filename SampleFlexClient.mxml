@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" xmlns:modest="com.modestmaps.flex.*">
+	<modest:Map id="leftMap" top="0" left="0" bottom="0" width="50%" 
+	    provider="MICROSOFT_AERIAL" zoom="11" center="37.75, -122.46" />
+	<mx:Script>
+		<![CDATA[
+			import com.modestmaps.mapproviders.microsoft.MicrosoftRoadMapProvider;
+		]]>
+	</mx:Script>
+	<modest:Map id="rightMap" right="0" top="0" bottom="0" width="50%"
+		provider="{new MicrosoftRoadMapProvider()}" extent="40.764941, 40.693655, -73.938675, -74.039612"/>
+</mx:Application>
