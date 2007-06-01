@@ -1,6 +1,5 @@
 package {
 	
-	import com.bigspaceship.utils.Delegate;
 	import com.modestmaps.core.MapExtent;
 	import com.modestmaps.geo.Location;
 	import com.modestmaps.Map;
