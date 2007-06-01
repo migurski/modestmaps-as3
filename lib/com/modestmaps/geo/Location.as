@@ -1,3 +1,7 @@
+/*
+ * $Id$
+ */
+
 package com.modestmaps.geo
 {
 	public class Location

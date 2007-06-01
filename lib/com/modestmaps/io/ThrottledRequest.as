@@ -6,6 +6,7 @@ package com.modestmaps.io
 
 	/**
 	 * @author darren
+	 * $Id$
 	 */
 	public class ThrottledRequest 
 		extends EventDispatcher

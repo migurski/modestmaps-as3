@@ -10,6 +10,7 @@ package com.modestmaps.mapproviders.google
 	
 	/**
 	 * @author darren
+	 * $Id$
 	 */
 	public class AbstractGoogleMapProvider 
 		extends AbstractImageBasedMapProvider 

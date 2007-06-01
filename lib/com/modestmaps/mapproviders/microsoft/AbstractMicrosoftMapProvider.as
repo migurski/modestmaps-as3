@@ -8,6 +8,7 @@ package com.modestmaps.mapproviders.microsoft
 	
 	/**
 	 * @author darren
+	 * $Id$
 	 */
 	public class AbstractMicrosoftMapProvider 
 		extends AbstractImageBasedMapProvider 

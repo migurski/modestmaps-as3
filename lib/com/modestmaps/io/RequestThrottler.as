@@ -2,6 +2,7 @@
  * Used to limit the number of requests per frame.
  * 
  * @author darren
+ * $Id$
  */
 package com.modestmaps.io
 {

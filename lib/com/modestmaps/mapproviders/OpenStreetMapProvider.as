@@ -2,6 +2,7 @@
  * MapProvider for Open Street Map data.
  * 
  * @author migurski
+ * $Id$
  */
 package com.modestmaps.mapproviders
 { 

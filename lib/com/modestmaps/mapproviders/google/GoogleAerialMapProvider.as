@@ -7,6 +7,7 @@ package com.modestmaps.mapproviders.google
 	
 	/**
 	 * @author darren
+	 * $Id$
 	 */
 	public class GoogleAerialMapProvider 
 		extends AbstractGoogleMapProvider 

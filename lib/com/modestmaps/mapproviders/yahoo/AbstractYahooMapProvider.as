@@ -1,3 +1,7 @@
+/*
+ * $Id$
+ */
+
 package com.modestmaps.mapproviders.yahoo
 {
 	import com.modestmaps.core.Coordinate;
@@ -9,6 +13,7 @@ package com.modestmaps.mapproviders.yahoo
 	
 	/**
 	 * @author darren
+	 * $Id$
 	 */
 	public class AbstractYahooMapProvider
 		extends AbstractImageBasedMapProvider 

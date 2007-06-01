@@ -13,6 +13,7 @@ package com.modestmaps.io
 
 	/**
 	 * @author darren
+	 * $Id$
 	 */
 	public class MapProviderPaintThrottledRequest extends LoadMovieThrottledRequest 
 	{

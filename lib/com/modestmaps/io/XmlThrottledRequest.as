@@ -11,6 +11,7 @@ package com.modestmaps.io
 	
 	/**
 	 * @author darren
+	 * $Id$
 	 */
 	public class XmlThrottledRequest
 		extends ThrottledRequest 

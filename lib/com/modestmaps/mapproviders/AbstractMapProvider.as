@@ -4,6 +4,7 @@
  *
  * @author darren
  * @author migurski
+ * $Id$
  *
  * AbstractMapProvider is the base class for all MapProviders.
  * 

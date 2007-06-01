@@ -7,6 +7,7 @@ package com.modestmaps.mapproviders.microsoft
 	
 	/**
 	 * @author darren
+	 * $Id$
 	 */
 	
 	public class MicrosoftAerialMapProvider 

@@ -1,3 +1,7 @@
+/*
+ * $Id$
+ */
+
 package com.modestmaps.events
 {
 	import flash.net.URLRequest;

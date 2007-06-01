@@ -6,6 +6,7 @@ package com.modestmaps.mapproviders.yahoo
 	
 	/**
 	 * @author darren
+	 * $Id$
 	 */
 	public class YahooAerialMapProvider 
 		extends AbstractYahooMapProvider 

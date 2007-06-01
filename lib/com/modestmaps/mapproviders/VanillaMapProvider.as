@@ -2,6 +2,7 @@
  * Provides the simplest possible graphic for a Tile, useful for debugging purposes.
  * 
  * @author darren
+ * $Id$
  */
 
 package com.modestmaps.mapproviders

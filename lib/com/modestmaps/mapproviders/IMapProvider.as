@@ -1,3 +1,7 @@
+/*
+ * $Id$
+ */
+
 package com.modestmaps.mapproviders
 {
 	import com.modestmaps.core.Coordinate; 

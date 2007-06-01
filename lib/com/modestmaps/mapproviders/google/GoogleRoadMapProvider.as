@@ -6,6 +6,7 @@ package com.modestmaps.mapproviders.google
 	
 	/**
 	 * @author darren
+	 * $Id$
 	 */
 	public class GoogleRoadMapProvider 
 		extends AbstractGoogleMapProvider 

@@ -1,5 +1,6 @@
 /**
  * @author migurski
+ * $Id$
  */
 package com.modestmaps.mapproviders
 {

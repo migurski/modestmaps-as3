@@ -1,3 +1,7 @@
+/*
+ * $Id$
+ */
+
 package com.modestmaps.core
 {
 	import flash.geom.Point;

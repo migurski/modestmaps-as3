@@ -4,6 +4,7 @@
  *
  * @author darren
  * @author migurski
+ * $Id$
  *
  * AbstractImageBasedMapProvider is the base class for all MapProviders
  * that use externally loaded images to paint Tiles.

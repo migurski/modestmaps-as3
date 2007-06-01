@@ -1,5 +1,6 @@
 /**
  * @author darren
+ * $Id$
  */
 package com.modestmaps.util
 {

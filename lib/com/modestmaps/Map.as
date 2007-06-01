@@ -4,6 +4,7 @@
  *
  * @author migurski
  * @author darren
+ * $Id$
  *
  * com.modestmaps.Map is the base class and interface for Modest Maps.
  *
