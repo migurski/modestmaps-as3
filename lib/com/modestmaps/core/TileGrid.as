@@ -5,106 +5,106 @@
 
 package com.modestmaps.core
 {
-	import com.modestmaps.Map;
-	import com.modestmaps.mapproviders.IMapProvider;
-	import com.modestmaps.core.*;
-	import com.modestmaps.geo.Location;
-	import com.stamen.twisted.*;
+    import com.modestmaps.Map;
+    import com.modestmaps.mapproviders.IMapProvider;
+    import com.modestmaps.core.*;
+    import com.modestmaps.geo.Location;
+    import com.stamen.twisted.*;
 
-	import flash.geom.Point;
-	import flash.display.Sprite;
-	import flash.utils.Dictionary;
-	import flash.geom.Rectangle;
-	import flash.events.MouseEvent;
-	import flash.geom.Transform;
-	import flash.geom.Matrix;
-	import flash.events.Event;
-	import flash.display.Stage;
-	
-	public class TileGrid extends Sprite
-	{
-	    // Real maps use 256.
-	    public static const TILE_WIDTH:Number = 256;
-	    public static const TILE_HEIGHT:Number = 256;
-	
-	    protected var _map:Map;
-	
-	    protected var _width:Number;
-	    protected var _height:Number;
-		protected var _draggable:Boolean;	    
-	
-	    // Row and column counts are kept up-to-date.
-	    protected var _rows:int;
-	    protected var _columns:int;
-	    protected var _tiles:/*Tile*/Array;
-	    
-	    // overlay markers
-	    protected var markers:MarkerSet;
-	    
-	    // Markers overlapping the currently-included set of tiles, hash of booleans
-	    protected var _overlappingMarkers:Dictionary;
-	
-	    // Allow (true) or prevent (false) tiles to paint themselves.
-	    protected var _paintingAllowed:Boolean;
-	    
-	    // Starting point for the very first tile
-	    protected var _initTilePoint:Point;
-	    protected var _initTileCoord:Coordinate;
-	    
-	    // the currently-native zoom level
-	    public var zoomLevel:int;
-	    
-	    // some limits on scrolling distance, initially set to none
-	    protected var topLeftOutLimit:Coordinate;
-	    protected var bottomRightInLimit:Coordinate;
-	    
-	    protected var _startingWellPosition:Point;
-	
-	    // Tiles attach to the well.
-	    protected var _well:Sprite;
-	    
-	    // Mask clip to hide outside edges of tiles.
-	    protected var _mask:Sprite;
-	
-	    // Active when the well is being dragged on the stage.
-	    protected var _wellDragTask:DelayedCall;
-	    
-	    // Defines a ring of extra, masked-out tiles around
-	    // the edges of the well, acting as a pre-fetching cache.
-	    // High tileBuffer may hurt performance.
-	    protected var _tileBuffer:int = 0;
-	
-	    // Who do we get our Map graphics from?
-	    protected var _mapProvider:IMapProvider;
-	
-		protected var _drawWell:Boolean = true;
-		protected var _drawGridArea:Boolean = true;
-	
-	    public function init(width:Number, height:Number, draggable:Boolean, provider:IMapProvider, map:Map):void
-	    {
-	        if (!Reactor.running())
-	            throw new Error('com.modestmaps.core.TileGrid.init(): com.stamen.Twisted.Reactor really ought to be running at this point. Seriously.');
-	
-	        _map = map;
-	        _width = width;
-	        _height = height;
-	        _draggable = draggable;
-	        _mapProvider = provider;
-	    
-	        buildWell();
-	        buildMask();
-	        allowPainting(true);
-	        redraw();   
-	        
-	        _overlappingMarkers = new Dictionary(true);
-	        markers = new MarkerSet(this);
-	        
-	        setInitialTile(new Coordinate(0,0,1), new Point(-TILE_WIDTH, -TILE_HEIGHT));
-	       	initializeTiles();
-	    }
-	    
-	   /**
-	    * Set initTileCoord and initTilePoint for use by initializeTiles().
+    import flash.geom.Point;
+    import flash.display.Sprite;
+    import flash.utils.Dictionary;
+    import flash.geom.Rectangle;
+    import flash.events.MouseEvent;
+    import flash.geom.Transform;
+    import flash.geom.Matrix;
+    import flash.events.Event;
+    import flash.display.Stage;
+    
+    public class TileGrid extends Sprite
+    {
+        // Real maps use 256.
+        public static const TILE_WIDTH:Number = 256;
+        public static const TILE_HEIGHT:Number = 256;
+    
+        protected var _map:Map;
+    
+        protected var _width:Number;
+        protected var _height:Number;
+        protected var _draggable:Boolean;	    
+    
+        // Row and column counts are kept up-to-date.
+        protected var _rows:int;
+        protected var _columns:int;
+        protected var _tiles:/*Tile*/Array;
+        
+        // overlay markers
+        protected var markers:MarkerSet;
+        
+        // Markers overlapping the currently-included set of tiles, hash of booleans
+        protected var _overlappingMarkers:Dictionary;
+    
+        // Allow (true) or prevent (false) tiles to paint themselves.
+        protected var _paintingAllowed:Boolean;
+        
+        // Starting point for the very first tile
+        protected var _initTilePoint:Point;
+        protected var _initTileCoord:Coordinate;
+        
+        // the currently-native zoom level
+        public var zoomLevel:int;
+        
+        // some limits on scrolling distance, initially set to none
+        protected var topLeftOutLimit:Coordinate;
+        protected var bottomRightInLimit:Coordinate;
+        
+        protected var _startingWellPosition:Point;
+    
+        // Tiles attach to the well.
+        protected var _well:Sprite;
+        
+        // Mask clip to hide outside edges of tiles.
+        protected var _mask:Sprite;
+    
+        // Active when the well is being dragged on the stage.
+        protected var _wellDragTask:DelayedCall;
+        
+        // Defines a ring of extra, masked-out tiles around
+        // the edges of the well, acting as a pre-fetching cache.
+        // High tileBuffer may hurt performance.
+        protected var _tileBuffer:int = 0;
+    
+        // Who do we get our Map graphics from?
+        protected var _mapProvider:IMapProvider;
+    
+        protected var _wellColor:uint = 0x000000;
+        protected var _gridAreaColor:uint = 0x000000;
+    
+        public function init(width:Number, height:Number, draggable:Boolean, provider:IMapProvider, map:Map):void
+        {
+            if (!Reactor.running())
+                throw new Error('com.modestmaps.core.TileGrid.init(): com.stamen.Twisted.Reactor really ought to be running at this point. Seriously.');
+    
+            _map = map;
+            _width = width;
+            _height = height;
+            _draggable = draggable;
+            _mapProvider = provider;
+        
+            buildWell();
+            buildMask();
+            allowPainting(true);
+            redraw();   
+            
+            _overlappingMarkers = new Dictionary(true);
+            markers = new MarkerSet(this);
+            
+            setInitialTile(new Coordinate(0,0,1), new Point(-TILE_WIDTH, -TILE_HEIGHT));
+            initializeTiles();
+        }
+        
+       /**
+        * Set initTileCoord and initTilePoint for use by initializeTiles().
 	    */
 	    public function setInitialTile(coord:Coordinate, point:Point):void
 	    {
@@ -118,40 +118,40 @@ package com.modestmaps.core
 	    */
 	    public function resetTiles(coord:Coordinate, point:Point):void
 	    {
-//	    	trace('resetting tiles...');
+                //trace('resetting tiles...');
 	        if (!_tiles)
-			{
-//				trace("no _tiles for resetTiles() yet");
+                {
+                    //trace("no _tiles for resetTiles() yet");
 	            setInitialTile(coord, point);
 	            return;
 	        }
 	    
-//	    	trace('REALLY resetting tiles...');
+                //trace('REALLY resetting tiles...');
 
-			try {
-		        var initTile:Tile;
-		        var condemnedTiles:/*Tile*/Array = activeTiles();
+                try {
+                    var initTile:Tile;
+                    var condemnedTiles:/*Tile*/Array = activeTiles();
 		
-		        for (var i:int = 0; i < condemnedTiles.length; i++)
-		        {
-		            condemnedTiles[i].expire();
-		        }
+                    for (var i:int = 0; i < condemnedTiles.length; i++)
+                    {
+                        condemnedTiles[i].expire();
+                    }
 		
-		        Reactor.callLater(condemnationDelay(), destroyTiles, condemnedTiles);
+                    Reactor.callLater(condemnationDelay(), destroyTiles, condemnedTiles);
 
-				zoomLevel = coord.zoom;				
-		        initTile = createTile(this, coord, point.x, point.y);
+                    zoomLevel = coord.zoom;				
+                    initTile = createTile(this, coord, point.x, point.y);
 		                                                                  
-		        centerWell(true);
+                    centerWell(true);
 		
-		        _rows = 1;
-		        _columns = 1;
+                    _rows = 1;
+                    _columns = 1;
 		
-		        allocateTiles();
-		 	}
-		    catch(e:Error) {
-		    	trace(e.getStackTrace());
-		    }
+                    allocateTiles();
+                }
+                catch(e:Error) {
+                    trace(e.getStackTrace());
+                }
 	        
 	    }
 	    
@@ -164,19 +164,19 @@ package com.modestmaps.core
 	        
 //	        trace('initializing...');
 
-            if (!_initTileCoord) {
-                trace("no _initTileCoord");
-                return;			
-            }	       
+                if (!_initTileCoord) {
+                    trace("no _initTileCoord");
+                    return;			
+                }	       
 			 	        
 	        // impose some limits
 	        zoomLevel = _initTileCoord.zoom;
 	        topLeftOutLimit = _mapProvider.outerLimits()[0];
 	        bottomRightInLimit = _mapProvider.outerLimits()[1];
 	        
-//	        trace('REALLY initializing, like _tiles and shit...');
+                //trace('REALLY initializing, like _tiles and shit...');
 	        
-            _tiles = [];
+                _tiles = [];
 	        initTile = createTile(this, _initTileCoord, _initTilePoint.x, _initTilePoint.y);
 	                                                                  
 	        centerWell(false);
@@ -220,11 +220,12 @@ package com.modestmaps.core
 	        _well = new Sprite();
 	        _well.name = 'well';
 	        
-			if (_draggable) {
-				_well.mouseChildren = false;
-				_well.addEventListener(MouseEvent.MOUSE_DOWN, startWellDrag);
-				_well.addEventListener(MouseEvent.MOUSE_UP, stopWellDrag);
-			}
+                if (_draggable) 
+                {
+                    _well.mouseChildren = false;
+                    _well.addEventListener(MouseEvent.MOUSE_DOWN, startWellDrag);
+                    _well.addEventListener(MouseEvent.MOUSE_UP, stopWellDrag);
+                }
 	        
 	        addChild(_well);	        
 	        centerWell(false);
@@ -258,7 +259,7 @@ package com.modestmaps.core
 	        bottomRightInLimit = _mapProvider.outerLimits()[1];
 	
 	        if (_mapProvider.geometry() != previousGeometry)
-			{
+                {
 	            markers.initializeIndex();
 	            markers.indexAtZoom(zoomLevel);
 	            updateMarkers();
@@ -286,7 +287,7 @@ package com.modestmaps.core
 	    */
 	    protected function destroyTile(tile:Tile):void
 	    {
-//	        trace('Destroying tile: '+tile.toString());
+                //trace('Destroying tile: '+tile.toString());
 	        _tiles.splice(tileIndex(tile), 1);
 	        tile.cancelDraw();
 	        _well.removeChild(tile);
@@ -298,7 +299,7 @@ package com.modestmaps.core
 	    protected function destroyTiles(tiles:/*Tile*/Array):void
 	    {
 	        if (tiles.length)
-			{
+                {
 	            destroyTile(Tile(tiles.shift()));
 	            Reactor.callLater(0, destroyTiles, tiles);
 	        }
@@ -447,7 +448,7 @@ package com.modestmaps.core
 	        max.x = _well.x - max.x;
 	        max.y = _well.y - max.y;
 	        
-///	        trace('min/max for drag: '+min+', '+max+' ('+topLeftOutLimit+', '+bottomRightInLimit+')');
+                //trace('min/max for drag: '+min+', '+max+' ('+topLeftOutLimit+', '+bottomRightInLimit+')');
 	        
 	        // weird negative edge conditions, limit all movement on an axis
 	        if(min.x > max.x)
@@ -465,7 +466,7 @@ package com.modestmaps.core
 	    */
 	    public function startWellDrag(event:MouseEvent):void
 	    {
-			stage.addEventListener(MouseEvent.MOUSE_UP, stopWellDrag);	    	
+                stage.addEventListener(MouseEvent.MOUSE_UP, stopWellDrag);	    	
 	    	stage.addEventListener(MouseEvent.MOUSE_OUT, stopWellDrag);
 
 	        var bounds:Bounds = getWellBounds(true);
@@ -497,10 +498,10 @@ package com.modestmaps.core
 	                                ? -100000
 	                                : bounds.max.y);
 	                                
-//	        trace('Drag bounds would be: '+xMin+', '+yMin+', '+xMax+', '+yMax);
-	        
-	        _startingWellPosition = new Point(_well.x, _well.y);
-//	        trace('Starting well position: '+_startingWellPosition.toString());
+                //trace('Drag bounds would be: '+xMin+', '+yMin+', '+xMax+', '+yMax);
+                                
+                _startingWellPosition = new Point(_well.x, _well.y);
+                //trace('Starting well position: '+_startingWellPosition.toString());
 	        
 	        _map.onStartPan();
 	        var rect:Rectangle = new Rectangle(xMin, yMin, xMax - xMin, yMax - yMin);
@@ -518,7 +519,7 @@ package com.modestmaps.core
 
 	        _map.onStopPan();
 	        if (_wellDragTask) {
-                    _wellDragTask.call(); // issue final onPan, notify markers, etc.
+                    _wellDragTask.call();   // issue final onPan, notify markers, etc.
                     _wellDragTask.cancel(); // but cancel the follow-on call
                 }
 	        _well.stopDrag();
@@ -549,7 +550,7 @@ package com.modestmaps.core
 	        if(redraw) {
 	            normalizeWell();
 	            allocateTiles();
-//	            trace('New well scale: '+_well.scaleX.toString());
+                    //trace('New well scale: '+_well.scaleX.toString());
 	        }
 	    }
 	    
@@ -626,11 +627,11 @@ package com.modestmaps.core
 	    {
 	    	var matches:Array = new Array();
 	    	if (_tiles) {
-		        matches = _tiles.filter(function(item:Tile, index:int, list:Array):Boolean { return item.isActive();} );
-				if (matches.length == 0) {
-					trace("no matches for active tiles... DOOM!");
-				}
-		    }
+                    matches = _tiles.filter(function(item:Tile, index:int, list:Array):Boolean { return item.isActive();} );
+                    if (matches.length == 0) {
+                        trace("no matches for active tiles... DOOM!");
+                    }
+                }
 	        return matches;
 	    }
 	
@@ -741,7 +742,7 @@ package com.modestmaps.core
 	        // just in case?
 	        centerWell(true);
 	
-			trace("well scale: " + _well.scaleX + " " + _well.scaleY);
+                trace("well scale: " + _well.scaleX + " " + _well.scaleY);
 	        if(Math.abs(_well.scaleX - 1.0) < 0.01) {
 	            active = activeTiles();
 	        
@@ -772,15 +773,15 @@ package com.modestmaps.core
 	        
 	            //trace('This is where we scale the whole well by '+zoomAdjust+' zoom levels: '+(100 / scaleAdjust)+'%');
 
-				var n:int;
+                    var n:int;
 	            for (n  = 0; n < zoomAdjust; n += 1)
-				{
+                    {
 	                splitTiles();
 	                zoomLevel += 1;
 	            }
 	                
 	            for (n = 0; n > zoomAdjust; n -= 1)
-				{
+                    {
 	                mergeTiles();
 	                zoomLevel -= 1;
 	            }
@@ -837,13 +838,13 @@ package com.modestmaps.core
 
 	        // this should never happen
 	        if(!referenceTile) {
-	        	trace("TileGrid problem - no reference tile");
+                    trace("TileGrid problem - no reference tile");
 	            return;
 	        }
 	    
 	        // this should never happen either
 	        if(!referenceTile.coord) {
-	        	trace("TileGrid problem - no coord in reference tile");
+                    trace("TileGrid problem - no coord in reference tile");
 	            return;
 	        }
 	
@@ -905,12 +906,12 @@ package com.modestmaps.core
 	    
 	        // this should never happen
 	        if(!referenceTile) {
-	        	throw new Error("no reference tile in mergeTiles()");
+                    throw new Error("no reference tile in mergeTiles()");
 	        }
 
 	        // this should never happen either
 	        if(!referenceTile.coord) {
-	        	throw new Error("no reference tile coord in mergeTiles()");
+                    throw new Error("no reference tile coord in mergeTiles()");
 	        }
 	
 	        // we are only interested in tiles that are edges for this zoom
@@ -1008,7 +1009,7 @@ package com.modestmaps.core
 	        for(var i:int = 0; i < visible.length; i += 1)
 	            newOverlappingMarkers[visible[i].id] = visible[i];
 	
-			var id:String;
+                var id:String;
 	        // check for newly-visible markers
 	        for (id in newOverlappingMarkers) {
 	            if(newOverlappingMarkers[id] && !_overlappingMarkers[id]) {
@@ -1101,8 +1102,8 @@ package com.modestmaps.core
 	    {
 	        return function(a:Tile, b:Tile):Number
 	        {
-	        	// TODO: can probably nix the sqrt if we're just sorting by distance
-	        	// FYI: this whole method isn't really ever used, it can probably just go away entirely
+                    // TODO: can probably nix the sqrt if we're just sorting by distance
+                    // FYI: this whole method isn't really ever used, it can probably just go away entirely
 	            var aDist:Number = Math.sqrt(Math.pow(a.center().x - p.x, 2) + Math.pow(a.center().y - p.y, 2));
 	            var bDist:Number = Math.sqrt(Math.pow(b.center().x - p.x, 2) + Math.pow(b.center().y - p.y, 2));
 	            return aDist - bDist;
@@ -1116,10 +1117,8 @@ package com.modestmaps.core
 	    {
 	        if(a.coord.row == b.coord.row) {
 	            return a.coord.column - b.coord.column;
-	            
 	        } else {
 	            return a.coord.row - b.coord.row;
-	            
 	        }
 	    }
 	    
@@ -1130,10 +1129,8 @@ package com.modestmaps.core
 	    {
 	        if(a.coord.column == b.coord.column) {
 	            return a.coord.row - b.coord.row;
-	            
 	        } else {
 	            return a.coord.column - b.coord.column;
-	            
 	        }
 	    }
 	    
@@ -1162,16 +1159,16 @@ package com.modestmaps.core
 	        return _paintingAllowed;
 	    }
 
-		// set to false, and set drawGridArea to false, if you want the background swf color to show through
-		public function set drawWell(draw:Boolean):void {
-			_drawWell = draw;
-			redrawWell();
-		}
-		// set to false, and set drawWell to false, if you want the background swf color to show through
-		public function set drawGridArea(draw:Boolean):void {
-			_drawGridArea = draw;
-			redrawGridArea();
-		}
+            /** you can probably set to a color with no alpha if you want the grid area color to show through */
+            public function set wellColor(color:uint):void {
+                    _wellColor = color;
+                    redrawWell();
+            }
+            /** you can probably set to a color with no alpha if you want the background swf color to show through */
+            public function set drawGridArea(color:uint):void {
+                    _gridAreaColor = color;
+                    redrawGridArea();
+            }
 	    
 	    protected function redraw():void {
    		    redrawGridArea();
@@ -1183,53 +1180,48 @@ package com.modestmaps.core
 	    {
 	    	with (graphics)
 	    	{
-		        clear();
-		    	if (_drawGridArea) {
-			        moveTo(0, 0);
-			        // lineStyle(2, 0x990099, 100);
-			        beginFill(0x666666, 0.2);
-			        lineTo(0, _height);
-			        lineTo(_width, _height);
-			        lineTo(_width, 0);
-			        lineTo(0, 0);
-			        endFill();
-			    }
-	    	}
-	    }
-	    
+                    clear();
+                    moveTo(0, 0);
+                    // lineStyle(2, 0x990099, 100);
+                    beginFill(_gridAreaColor);
+                    lineTo(0, _height);
+                    lineTo(_width, _height);
+                    lineTo(_width, 0);
+                    lineTo(0, 0);
+                    endFill();
+                }
+            }
+        
 	    protected function redrawMask():void
-		{
+            {
  	        with (_mask.graphics)
 	        {
-		        clear();
-		        moveTo(0, 0);
-//		        lineStyle(2, 0x990099, 100);
-		        lineStyle();
-		        beginFill(0x000000, 0);
-		        lineTo(0, _height);
-		        lineTo(_width, _height);
-		        lineTo(_width, 0);
-		        lineTo(0, 0);
-		        endFill();
-		    }
+                    clear();
+                    moveTo(0, 0);
+                    lineStyle();
+                    beginFill(0x000000, 0);
+                    lineTo(0, _height);
+                    lineTo(_width, _height);
+                    lineTo(_width, 0);
+                    lineTo(0, 0);
+                    endFill();
+                }
 	    }
 
 	    protected function redrawWell():void
-		{
+            {
 	        // note that _well (0, 0) is grid center.
 	        with (_well.graphics)
 	        {
-	        	clear();
-		        if (_drawWell) {
-		            moveTo(_width/-2, _height/-2);
-		            lineStyle();
-		            beginFill(0x666666, 0.2);
-		            lineTo(_width/-2, _height/2);
-		            lineTo(_width/2, _height/2);
-		            lineTo(_width/2, _height/-2);
-		            lineTo(_width/-2, _height/-2);
-		            endFill();
-		        }
+                    clear();
+	            moveTo(_width/-2, _height/-2);
+	            lineStyle();
+	            beginFill(_wellColor);
+	            lineTo(_width/-2, _height/2);
+	            lineTo(_width/2, _height/2);
+	            lineTo(_width/2, _height/-2);
+	            lineTo(_width/-2, _height/-2);
+	            endFill();
 	        }
 	    }
 	}
