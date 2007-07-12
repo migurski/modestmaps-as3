@@ -19,8 +19,8 @@ package com.modestmaps.mapproviders.google
 	
 	    // Google often updates its tiles and expires old sets.
 	    // The version numbers here are recent, but may change.
-		protected static var __roadVersion:String = "w2.52";
-		protected static var __hybridVersion:String = "w2t.53";
+		protected static var __roadVersion:String = "w2.56";
+		protected static var __hybridVersion:String = "w2t.57";
 		protected static var __aerialVersion:String = "18";
 	
 	    // An XML file is checked for up-to-date version numbers.
