@@ -38,6 +38,7 @@ package com.modestmaps
 	import flash.events.MouseEvent;
 	import flash.external.ExternalInterface;
 	import flash.events.Event;
+	import flash.display.DisplayObject;
 	
 	public class Map extends Sprite
 	{
@@ -116,6 +117,8 @@ package com.modestmaps
 	        grid.init(__width, __height, draggable, provider, this);
 
 			markers = new MarkerClip(this);
+			markers.x = __width/2;
+			markers.y = __height/2;
 			addChild(markers);
 
 	        setMapProvider(provider);
@@ -629,30 +632,28 @@ package com.modestmaps
 	    }
 	
 	   /**
-	    * Add a marker with the given id and location (lat, lon)
-	    * optionally return a Sprite.
+	    * Add a marker at the given location (lat, lon)
 	    *
 	    * @param    ID of marker, opaque string.
 	    * @param    Location of marker.
-	    * @param	optionally return a sprite that will always be in the right place
+	    * @param	optionally, a sprite (where sprite.name=id) that will always be in the right place
 	    */
-	    public function putMarker(id:String, location:Location, makeASprite:Boolean):Sprite
+	    public function putMarker(id:String, location:Location, marker:DisplayObject=null):void
 	    {
 	        //trace('Marker '+id+': '+location.toString());
 	        grid.putMarker(id, __mapProvider.locationCoordinate(location), location);
-	        
-	        if (makeASprite) {
-	        	return markers.attachMarker(id, location);
+	        if (marker) {
+	        	//if (marker.name != id) throw new Error("marker name must match id");
+	        	markers.attachMarker(marker, location);
 	        }
-	        return undefined;
 	    }
 
 		/**
-		 * Get a marker clip with the given id if one was created.
+		 * Get a marker with the given id if one was created.
 		 *
 		 * @param    ID of marker, opaque string.
 		 */
-		public function getMarker(id:String):Sprite
+		public function getMarker(id:String):DisplayObject
 		{
 			return markers.getMarker(id);
 		}
