@@ -92,16 +92,16 @@ package com.modestmaps.core {
 	    	    
 	    public function onMapMarkerEnters(event:MarkerEvent):void
 	    {
-/* 	    	if (!getChildByName(event.marker)) {
+ 	    	if (!getChildByName(event.marker)) {
 	    		addChild(getMarker(event.marker));
-	    	} */
+	    	} 
 	    }
 	    
 	    public function onMapMarkerLeaves(event:MarkerEvent):void
 	    {
-/* 	    	if (getChildByName(event.marker)) {
+ 	    	if (getChildByName(event.marker)) {
 	    		removeChild(getMarker(event.marker));
-	    	} */
+	    	} 
 	    }
 	    	    
 	    public function onMapStartPanning(event:MapEvent):void
