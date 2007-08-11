@@ -117,8 +117,10 @@ package com.modestmaps.core {
 	    
 	    public function onMapStopPanning(event:MapEvent):void
 	    {
-	        x = starting.x;
-	        y = starting.y;
+	    	if (starting) {
+		        x = starting.x;
+		        y = starting.y;
+		    }
 	        updateClips();
 	    }
 	    
