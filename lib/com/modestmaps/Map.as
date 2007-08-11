@@ -70,7 +70,7 @@ package com.modestmaps
 	    public var grid:TileGrid;
 	
 		// markers are attached here
-		private var markers:MarkerClip;
+		public var markerClip:MarkerClip;
 		
 	    // Who do we get our Map graphics from?
 	    protected var __mapProvider:IMapProvider;
@@ -116,10 +116,10 @@ package com.modestmaps
 	        addChild(grid); // before init, so init can add mouse handlers to stage
 	        grid.init(__width, __height, draggable, provider, this);
 
-			markers = new MarkerClip(this);
-			markers.x = __width/2;
-			markers.y = __height/2;
-			addChild(markers);
+			markerClip = new MarkerClip(this);
+			markerClip.x = __width/2;
+			markerClip.y = __height/2;
+			addChild(markerClip);
 
 	        setMapProvider(provider);
 
@@ -644,7 +644,7 @@ package com.modestmaps
 	        grid.putMarker(id, __mapProvider.locationCoordinate(location), location);
 	        if (marker) {
 	        	//if (marker.name != id) throw new Error("marker name must match id");
-	        	markers.attachMarker(marker, location);
+	        	markerClip.attachMarker(marker, location);
 	        }
 	    }
 
@@ -655,7 +655,7 @@ package com.modestmaps
 		 */
 		public function getMarker(id:String):DisplayObject
 		{
-			return markers.getMarker(id);
+			return markerClip.getMarker(id);
 		}
 
 	   /**
@@ -666,7 +666,7 @@ package com.modestmaps
 	    public function removeMarker(id:String):void
 	    {
 	        grid.removeMarker(id);
-	        markers.removeMarker(id);
+	        markerClip.removeMarker(id);
 	    }
 	    
 	   /**
