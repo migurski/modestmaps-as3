@@ -80,7 +80,7 @@ package com.modestmaps.core
         protected var _drawWell:Boolean = true;
         protected var _drawGridArea:Boolean = true;
     
-        public function init(width:Number, height:Number, draggable:Boolean, provider:IMapProvider, map:Map):void
+        public function TileGrid(width:Number, height:Number, draggable:Boolean, provider:IMapProvider, map:Map)
         {
             if (!Reactor.running())
                 throw new Error('com.modestmaps.core.TileGrid.init(): com.stamen.Twisted.Reactor really ought to be running at this point. Seriously.');

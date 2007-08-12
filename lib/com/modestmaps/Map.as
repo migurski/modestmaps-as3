@@ -16,11 +16,9 @@
  *          import com.modestmaps.Map;
  *          import com.modestmaps.geo.Location;
  *          import com.modestmaps.mapproviders.BlueMarbleMapProvider;
- *          import com.stamen.twisted.Reactor;
  *          ...
- *          Reactor.run(clip, null, 50);
- *          var map:Map = Map(clip.attachMovie(Map.symbolName, 'map', clip.getNextHighestDepth()));
- *          map.init(640, 480, true, new BlueMarbleMapProvider());
+ *          var map:Map = new Map(640, 480, true, new BlueMarbleMapProvider());
+ *          addChild(map);
  *        </code>
  */
 package com.modestmaps
@@ -50,7 +48,7 @@ package com.modestmaps
 	    protected var __draggable:Boolean = true;
 	    
 	    // pending animation steps, array of {type:'pan'/'zoom', amount:Point/Number, redraw:Boolean}
-	    protected var __animSteps:Array;
+	    protected var __animSteps:Array = [];
 	
 	    // associated animation call
 	    protected var __animTask:DelayedCall;
@@ -80,7 +78,6 @@ package com.modestmaps
 	
 	   /*
 	    * Initialize the map: set properties, add a tile grid, draw it.
-	    * This method must be called before the map can be used!
 	    * Default extent covers the entire globe, (+/-85, +/-180).
 	    *
 	    * @param    Width of map, in pixels.
@@ -90,7 +87,7 @@ package com.modestmaps
 	    *
 	    * @see com.modestmaps.core.TileGrid
 	    */
-	    public function init(width:Number, height:Number, draggable:Boolean, provider:IMapProvider):void
+	    public function Map(width:Number, height:Number, draggable:Boolean, provider:IMapProvider)
 	    {
 	    	if (!Reactor.running())
 	    	{
@@ -107,14 +104,10 @@ package com.modestmaps
 		 		trace(error.getStackTrace());
 		 	}
 		 
-
-	        __animSteps = new Array();
-
 	        setSize(width, height);
 
-			grid = new TileGrid();
-	        addChild(grid); // before init, so init can add mouse handlers to stage
-	        grid.init(__width, __height, draggable, provider, this);
+			grid = new TileGrid(__width, __height, draggable, provider, this);
+	        addChild(grid);
 
 			markerClip = new MarkerClip(this);
 			markerClip.x = __width/2;
