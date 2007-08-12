@@ -77,8 +77,8 @@ package com.modestmaps.core
         // Who do we get our Map graphics from?
         protected var _mapProvider:IMapProvider;
     
-         protected var _drawWell:Boolean = true;
-         protected var _drawGridArea:Boolean = true;
+        protected var _drawWell:Boolean = true;
+        protected var _drawGridArea:Boolean = true;
     
         public function init(width:Number, height:Number, draggable:Boolean, provider:IMapProvider, map:Map):void
         {
@@ -110,7 +110,6 @@ package com.modestmaps.core
         {
             _initTileCoord = coord;
             _initTilePoint = point;
-//            Reactor.callNextFrame(initializeTiles);
         }
         
        /**
@@ -118,40 +117,36 @@ package com.modestmaps.core
         */
         public function resetTiles(coord:Coordinate, point:Point):void
         {
-                //trace('resetting tiles...');
             if (!_tiles)
                 {
-                    //trace("no _tiles for resetTiles() yet");
                 setInitialTile(coord, point);
                 return;
             }
         
-                //trace('REALLY resetting tiles...');
-
-                try {
-                    var initTile:Tile;
-                    var condemnedTiles:/*Tile*/Array = activeTiles();
-        
-                    for (var i:int = 0; i < condemnedTiles.length; i++)
-                    {
-                        condemnedTiles[i].expire();
-                    }
-        
-                    Reactor.callLater(condemnationDelay(), destroyTiles, condemnedTiles);
-
-                    zoomLevel = coord.zoom;                
-                    initTile = createTile(this, coord, point.x, point.y);
-                                                                          
-                    centerWell(true);
-        
-                    _rows = 1;
-                    _columns = 1;
-        
-                    allocateTiles();
+            try {
+                var initTile:Tile;
+                var condemnedTiles:/*Tile*/Array = activeTiles();
+    
+                for (var i:int = 0; i < condemnedTiles.length; i++)
+                {
+                    condemnedTiles[i].expire();
                 }
-                catch(e:Error) {
-                    trace(e.getStackTrace());
-                }
+    
+                Reactor.callLater(condemnationDelay(), destroyTiles, condemnedTiles);
+
+                zoomLevel = coord.zoom;                
+                initTile = createTile(this, coord, point.x, point.y);
+                                                                      
+                centerWell(true);
+    
+                _rows = 1;
+                _columns = 1;
+    
+                allocateTiles();
+            }
+            catch(e:Error) {
+                trace(e.getStackTrace());
+            }
             
         }
         
@@ -162,21 +157,17 @@ package com.modestmaps.core
         {
             var initTile:Tile;
             
-//            trace('initializing...');
-
-                if (!_initTileCoord) {
-                    trace("no _initTileCoord");
-                    return;            
-                }           
+            if (!_initTileCoord) {
+                trace("no _initTileCoord");
+                return;            
+            }           
                          
             // impose some limits
             zoomLevel = _initTileCoord.zoom;
             topLeftOutLimit = _mapProvider.outerLimits()[0];
             bottomRightInLimit = _mapProvider.outerLimits()[1];
             
-                //trace('REALLY initializing, like _tiles and shit...');
-            
-                _tiles = [];
+            _tiles = [];
             initTile = createTile(this, _initTileCoord, _initTilePoint.x, _initTilePoint.y);
                                                                       
             centerWell(false);
@@ -198,7 +189,6 @@ package com.modestmaps.core
         public function putMarker(id:String, coord:Coordinate, location:Location):Marker
         {
             var marker:Marker = new Marker(id, coord, location);
-            //trace('Marker '+id+': '+coord.toString());
             markers.put(marker);
     
             updateMarkers();
@@ -220,12 +210,12 @@ package com.modestmaps.core
             _well = new Sprite();
             _well.name = 'well';
             
-                if (_draggable) 
-                {
-                    _well.mouseChildren = false;
-                    _well.addEventListener(MouseEvent.MOUSE_DOWN, startWellDrag);
-                    _well.addEventListener(MouseEvent.MOUSE_UP, stopWellDrag);
-                }
+            if (_draggable) 
+            {
+                _well.mouseChildren = false;
+                _well.addEventListener(MouseEvent.MOUSE_DOWN, startWellDrag);
+                _well.addEventListener(MouseEvent.MOUSE_UP, stopWellDrag);
+            }
             
             addChild(_well);            
             centerWell(false);
@@ -239,8 +229,8 @@ package com.modestmaps.core
             _mask = new Sprite();
             _mask.name = 'mask';
             // as3 masks need to be child, so add the mask to the grid not the well
-                // because well children are all tiles
-                addChild(_mask);
+            // because well children are all tiles
+            addChild(_mask);
             this.mask = _mask;
         }
         
@@ -259,7 +249,7 @@ package com.modestmaps.core
             bottomRightInLimit = _mapProvider.outerLimits()[1];
     
             if (_mapProvider.geometry() != previousGeometry)
-                {
+            {
                 markers.initializeIndex();
                 markers.indexAtZoom(zoomLevel);
                 updateMarkers();
@@ -287,7 +277,6 @@ package com.modestmaps.core
         */
         protected function destroyTile(tile:Tile):void
         {
-                //trace('Destroying tile: '+tile.toString());
             _tiles.splice(tileIndex(tile), 1);
             tile.cancelDraw();
             _well.removeChild(tile);
@@ -299,7 +288,7 @@ package com.modestmaps.core
         protected function destroyTiles(tiles:/*Tile*/Array):void
         {
             if (tiles.length)
-                {
+            {
                 destroyTile(Tile(tiles.shift()));
                 Reactor.callLater(0, destroyTiles, tiles);
             }
@@ -447,9 +436,7 @@ package com.modestmaps.core
             max = coordinatePoint(topLeftOutLimit, this, fearBigNumbers);
             max.x = _well.x - max.x;
             max.y = _well.y - max.y;
-            
-                //trace('min/max for drag: '+min+', '+max+' ('+topLeftOutLimit+', '+bottomRightInLimit+')');
-            
+                        
             // weird negative edge conditions, limit all movement on an axis
             if(min.x > max.x)
                 min.x = max.x = _well.x;
@@ -466,8 +453,8 @@ package com.modestmaps.core
         */
         public function startWellDrag(event:MouseEvent):void
         {
-                stage.addEventListener(MouseEvent.MOUSE_UP, stopWellDrag);            
-            stage.addEventListener(MouseEvent.MOUSE_OUT, stopWellDrag);
+            stage.addEventListener(MouseEvent.MOUSE_UP, stopWellDrag);            
+            stage.addEventListener(Event.MOUSE_LEAVE, stopWellDrag);
 
             var bounds:Bounds = getWellBounds(true);
             
@@ -498,10 +485,7 @@ package com.modestmaps.core
                                     ? -100000
                                     : bounds.max.y);
                                     
-                //trace('Drag bounds would be: '+xMin+', '+yMin+', '+xMax+', '+yMax);
-                                
-                _startingWellPosition = new Point(_well.x, _well.y);
-                //trace('Starting well position: '+_startingWellPosition.toString());
+            _startingWellPosition = new Point(_well.x, _well.y);
             
             _map.onStartPan();
             var rect:Rectangle = new Rectangle(xMin, yMin, xMax - xMin, yMax - yMin);
@@ -513,15 +497,16 @@ package com.modestmaps.core
         * Stop dragging the well with the mouse.
         * Halts _wellDragTask.
         */
-        public function stopWellDrag(event:MouseEvent):void
+        public function stopWellDrag(event:Event):void
         {
-            stage.removeEventListener(MouseEvent.MOUSE_OUT, stopWellDrag);
+            stage.removeEventListener(MouseEvent.MOUSE_UP, stopWellDrag);            
+            stage.removeEventListener(Event.MOUSE_LEAVE, stopWellDrag);
 
-            _map.onStopPan();
             if (_wellDragTask) {
-                    _wellDragTask.call();   // issue final onPan, notify markers, etc.
-                    _wellDragTask.cancel(); // but cancel the follow-on call
-                }
+                _wellDragTask.call();   // issue final onPan, notify markers, etc.
+                _wellDragTask.cancel(); // but cancel the follow-on call
+            }
+            _map.onStopPan();
             _well.stopDrag();
     
             if(positionTiles())
@@ -627,11 +612,11 @@ package com.modestmaps.core
         {
             var matches:Array = new Array();
             if (_tiles) {
-                    matches = _tiles.filter(function(item:Tile, index:int, list:Array):Boolean { return item.isActive();} );
-                    if (matches.length == 0) {
-                        trace("no matches for active tiles... DOOM!");
-                    }
+                matches = _tiles.filter(function(item:Tile, index:int, list:Array):Boolean { return item.isActive();} );
+                if (matches.length == 0) {
+                    trace("no matches for active tiles... DOOM!");
                 }
+            }
             return matches;
         }
     
@@ -773,15 +758,15 @@ package com.modestmaps.core
             
                 //trace('This is where we scale the whole well by '+zoomAdjust+' zoom levels: '+(100 / scaleAdjust)+'%');
 
-                    var n:int;
+                var n:int;
                 for (n  = 0; n < zoomAdjust; n += 1)
-                    {
+                {
                     splitTiles();
                     zoomLevel += 1;
                 }
                     
                 for (n = 0; n > zoomAdjust; n -= 1)
-                    {
+                {
                     mergeTiles();
                     zoomLevel -= 1;
                 }
@@ -838,13 +823,13 @@ package com.modestmaps.core
 
             // this should never happen
             if(!referenceTile) {
-                    trace("TileGrid problem - no reference tile");
+                trace("TileGrid problem - no reference tile");
                 return;
             }
         
             // this should never happen either
             if(!referenceTile.coord) {
-                    trace("TileGrid problem - no coord in reference tile");
+                trace("TileGrid problem - no coord in reference tile");
                 return;
             }
     
@@ -906,12 +891,12 @@ package com.modestmaps.core
         
             // this should never happen
             if(!referenceTile) {
-                    throw new Error("no reference tile in mergeTiles()");
+                throw new Error("no reference tile in mergeTiles()");
             }
 
             // this should never happen either
             if(!referenceTile.coord) {
-                    throw new Error("no reference tile coord in mergeTiles()");
+                throw new Error("no reference tile coord in mergeTiles()");
             }
     
             // we are only interested in tiles that are edges for this zoom
@@ -1102,8 +1087,8 @@ package com.modestmaps.core
         {
             return function(a:Tile, b:Tile):Number
             {
-                    // TODO: can probably nix the sqrt if we're just sorting by distance
-                    // FYI: this whole method isn't really ever used, it can probably just go away entirely
+                // TODO: can probably nix the sqrt if we're just sorting by distance
+                // FYI: this whole method isn't really ever used, it can probably just go away entirely
                 var aDist:Number = Math.sqrt(Math.pow(a.center().x - p.x, 2) + Math.pow(a.center().y - p.y, 2));
                 var bDist:Number = Math.sqrt(Math.pow(b.center().x - p.x, 2) + Math.pow(b.center().y - p.y, 2));
                 return aDist - bDist;
@@ -1159,13 +1144,20 @@ package com.modestmaps.core
             return _paintingAllowed;
         }
 
-         // set to false, and set drawGridArea to false, if you want the background swf color to show through
-         public function set drawWell(draw:Boolean):void {
-             _drawWell = draw;
+        /**
+         * Set to false if you want the background swf color to show through
+         * See TileGrid.drawGridArea too.
+         */
+        public function set drawWell(draw:Boolean):void {
+            _drawWell = draw;
             redrawWell();
         }
-         // set to false, and set drawWell to false, if you want the background swf color to show through
-         public function set drawGridArea(draw:Boolean):void {
+        
+        /** 
+         * Set to false if you want the background swf color to show through
+         * See TileGrid.drawWell too.
+         */
+        public function set drawGridArea(draw:Boolean):void {
             _drawGridArea = draw;
             redrawGridArea();
         }

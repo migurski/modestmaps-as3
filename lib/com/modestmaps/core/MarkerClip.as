@@ -15,6 +15,7 @@ package com.modestmaps.core {
 	import flash.events.Event;
 	import flash.utils.Dictionary;
 	import flash.display.DisplayObject;
+	import flash.utils.getTimer;
 	
 	/** This is different from the as2 version for now, because
 	 *  it makes more sense to me if you give it a Sprite 
@@ -23,11 +24,11 @@ package com.modestmaps.core {
 	 */
 	public class MarkerClip extends Sprite
 	{
-		// TODO: mask me!
+		// TODO: mask me?
 	    private var map:Map;
 	    private var starting:Point;
 	    private var locations:Dictionary = new Dictionary();
-	    private var markers:Array = [];
+	    private var markers:Array = []; // all markers
 	    private var markersByName:Object = {};
 	
 	    public function MarkerClip(map:Map)
@@ -73,19 +74,22 @@ package com.modestmaps.core {
 	    		markers.splice(index,1);
 	    	}
 	    	delete locations[marker];
+	    	delete markersByName[marker.name];
 	    }
 	        
 	    private function updateClips(event:Event=null):void
 	    {
+	    	var t:int = flash.utils.getTimer();
 	    	for each (var marker:DisplayObject in markers) {
 	    		updateClip(marker);
 	    	}
+	    	trace("reprojected all markers in " + (flash.utils.getTimer() - t) + "ms");
 	    }
 	    
 	    private function updateClip(marker:DisplayObject):void
 	    {
 	        var location:Location = locations[marker];
-	        var point:Point = map.locationPoint(location,this);
+	        var point:Point = map.locationPoint(location, this);
 	        marker.x = point.x;
 	        marker.y = point.y;
 	    }
@@ -93,14 +97,16 @@ package com.modestmaps.core {
 	    public function onMapMarkerEnters(event:MarkerEvent):void
 	    {
  	    	if (!getChildByName(event.marker)) {
-	    		addChild(getMarker(event.marker));
+ 	    		var marker:DisplayObject = getMarker(event.marker);
+	    		addChild(marker);
 	    	} 
 	    }
 	    
 	    public function onMapMarkerLeaves(event:MarkerEvent):void
 	    {
  	    	if (getChildByName(event.marker)) {
-	    		removeChild(getMarker(event.marker));
+ 	    		var marker:DisplayObject = getMarker(event.marker);
+	    		removeChild(marker);
 	    	} 
 	    }
 	    	    
