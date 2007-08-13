@@ -30,10 +30,10 @@ package com.modestmaps.events
 	    public static const RESIZED:String = 'resized';
 	    public var newSize:Array;
 	    	    
-	    public static const COPYRIGHT_CHANGED:String = 'copyright changed';
+	    public static const COPYRIGHT_CHANGED:String = 'copyrightChanged';
 	    public var newCopyright:String;
 	    
-	    public static const EXTENT_CHANGED:String = 'extent changed';
+	    public static const EXTENT_CHANGED:String = 'extentChanged';
 		public var newExtent:MapExtent;
 
 		public function MapEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)

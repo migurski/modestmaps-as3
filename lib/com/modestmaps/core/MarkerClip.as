@@ -30,15 +30,22 @@ package com.modestmaps.core {
 	    private var locations:Dictionary = new Dictionary();
 	    private var markers:Array = []; // all markers
 	    private var markersByName:Object = {};
+
+        // enable this if you want intermediate zooming steps to
+        // stretch your graphics instead of reprojecting the points
+        // it looks worse and probably isn't faster, but there it is :)
+        public var scaleZoom:Boolean = false;
 	
 	    public function MarkerClip(map:Map)
 	    {
 	    	this.map = map;
+	    	this.x = map.getWidth() / 2;
+	    	this.y = map.getHeight() / 2;
 	        map.addEventListener(MarkerEvent.ENTER, onMapMarkerEnters);
 	        map.addEventListener(MarkerEvent.LEAVE, onMapMarkerLeaves);
-	        map.addEventListener(MapEvent.START_ZOOMING, updateClips);
-	        map.addEventListener(MapEvent.STOP_ZOOMING, updateClips);
-	        map.addEventListener(MapEvent.ZOOMED_BY, updateClips);
+	        map.addEventListener(MapEvent.START_ZOOMING, onMapStartZooming);
+	        map.addEventListener(MapEvent.STOP_ZOOMING, onMapStopZooming);
+	        map.addEventListener(MapEvent.ZOOMED_BY, onMapZoomedBy);
 	        map.addEventListener(MapEvent.START_PANNING, onMapStartPanning);
 	        map.addEventListener(MapEvent.STOP_PANNING, onMapStopPanning);
 	        map.addEventListener(MapEvent.PANNED, onMapPanned);
@@ -48,6 +55,8 @@ package com.modestmaps.core {
 	    
 	    public function attachMarker(marker:DisplayObject, location:Location):void
 	    {
+	        map.grid.putMarker(marker.name, map.getMapProvider().locationCoordinate(location), location);
+	        
 	        locations[marker] = location;
 	        markersByName[marker.name] = marker;
 	        markers.push(marker);
@@ -67,23 +76,26 @@ package com.modestmaps.core {
 	    
 	    public function removeMarker(id:String):void
 	    {
+	        map.grid.removeMarker(id);
 	    	var marker:DisplayObject = getMarker(id);
-	    	if (this.getChildByName(id)) removeChild(marker);
-	    	var index:int = markers.indexOf(marker);
-	    	if (index >= 0) {
-	    		markers.splice(index,1);
-	    	}
-	    	delete locations[marker];
-	    	delete markersByName[marker.name];
+	    	if (marker) {
+    	    	if (this.getChildByName(id)) removeChild(marker);
+    	    	var index:int = markers.indexOf(marker);
+    	    	if (index >= 0) {
+    	    		markers.splice(index,1);
+    	    	}
+    	    	delete locations[marker];
+    	    	delete markersByName[marker.name];
+    	    }
 	    }
 	        
 	    private function updateClips(event:Event=null):void
 	    {
-	    	var t:int = flash.utils.getTimer();
+	    	//var t:int = flash.utils.getTimer();
 	    	for each (var marker:DisplayObject in markers) {
 	    		updateClip(marker);
 	    	}
-	    	trace("reprojected all markers in " + (flash.utils.getTimer() - t) + "ms");
+	    	//trace("reprojected all markers in " + (flash.utils.getTimer() - t) + "ms");
 	    }
 	    
 	    private function updateClip(marker:DisplayObject):void
@@ -94,15 +106,25 @@ package com.modestmaps.core {
 	        marker.y = point.y;
 	    }
 	    	    
-	    public function onMapMarkerEnters(event:MarkerEvent):void
+	    /** This uses addChild, and onMapMarkerLeaves uses removeChild, 
+	     *  so that you're free to mess with .visible=true/false
+	     *  yourself if you want to filter markers 
+	     */
+	    private function onMapMarkerEnters(event:MarkerEvent):void
 	    {
  	    	if (!getChildByName(event.marker)) {
  	    		var marker:DisplayObject = getMarker(event.marker);
-	    		addChild(marker);
+ 	    		if (marker) {
+	    		    addChild(marker);
+	    		}
 	    	} 
 	    }
-	    
-	    public function onMapMarkerLeaves(event:MarkerEvent):void
+
+	    /** This uses removeChild, and onMapMarkerEnters uses removeChild, 
+	     *  so that you're free to mess with .visible=true/false
+	     *  yourself if you want to filter markers 
+	     */
+	    private function onMapMarkerLeaves(event:MarkerEvent):void
 	    {
  	    	if (getChildByName(event.marker)) {
  	    		var marker:DisplayObject = getMarker(event.marker);
@@ -135,6 +157,29 @@ package com.modestmaps.core {
 	        x = event.newSize[0]/2;
 	        y = event.newSize[1]/2;
 	        updateClips();
+	    }
+	    
+	    public function onMapStartZooming(event:MapEvent):void
+	    {
+	        // updateClips(); 
+	    }
+	    
+	    public function onMapStopZooming(event:MapEvent):void
+	    {
+	        if (scaleZoom) {
+	            scaleX = scaleY = 1.0;
+	        }
+            updateClips();
+	    }
+	    
+	    public function onMapZoomedBy(event:MapEvent):void
+	    {
+	        if (scaleZoom) {
+    	        scaleX = scaleY = Math.pow(2, event.zoomDelta);
+	        }
+	        else {
+                updateClips();
+	        }
 	    }
 	    
 	}

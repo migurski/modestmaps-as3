@@ -37,7 +37,19 @@ package com.modestmaps
 	import flash.external.ExternalInterface;
 	import flash.events.Event;
 	import flash.display.DisplayObject;
-	
+
+    [Event(name="startZooming",     type="com.modestmaps.events.MapEvent")]
+    [Event(name="stopZooming",      type="com.modestmaps.events.MapEvent")]
+    [Event(name="zoomedBy",         type="com.modestmaps.events.MapEvent")]
+    [Event(name="startPanning",     type="com.modestmaps.events.MapEvent")]
+    [Event(name="stopPanning",      type="com.modestmaps.events.MapEvent")]
+    [Event(name="pannedBy",         type="com.modestmaps.events.MapEvent")]
+    [Event(name="resized",          type="com.modestmaps.events.MapEvent")]
+    [Event(name="copyrightChanged", type="com.modestmaps.events.MapEvent")]
+    [Event(name="extentChanged",    type="com.modestmaps.events.MapEvent")]
+    [Event(name="markerEnter",      type="com.modestmaps.events.MarkerEvent")]
+    [Event(name="markerLeave",      type="com.modestmaps.events.MarkerEvent")]
+
 	public class Map extends Sprite
 	{
 		public static const PAN:String = 'pan';
@@ -110,8 +122,6 @@ package com.modestmaps
 	        addChild(grid);
 
 			markerClip = new MarkerClip(this);
-			markerClip.x = __width/2;
-			markerClip.y = __height/2;
 			addChild(markerClip);
 
 	        setMapProvider(provider);
@@ -553,6 +563,7 @@ package com.modestmaps
 	        {
 	            __animSteps.push(new ZoomAnimationStep(ZOOM, dir/zoomFrames, i == zoomFrames));
 	        }
+	        
 	        if(!__animTask) {
 	            __startingZoom = grid.zoomLevel;
 	            __currentZoom = grid.zoomLevel;
@@ -574,7 +585,7 @@ package com.modestmaps
 	        if (__animSteps.length)
 			{
 	            var step:AnimationStep = __animSteps.shift();
-	            if (step.type == PAN)
+ 	            if (step.type == PAN)
 				{
 	                //grid.allowPainting(__animSteps.length <= 1);
 	                var pan:PanAnimationStep = step as PanAnimationStep;
@@ -633,11 +644,12 @@ package com.modestmaps
 	    */
 	    public function putMarker(id:String, location:Location, marker:DisplayObject=null):void
 	    {
-	        //trace('Marker '+id+': '+location.toString());
-	        grid.putMarker(id, __mapProvider.locationCoordinate(location), location);
 	        if (marker) {
 	        	//if (marker.name != id) throw new Error("marker name must match id");
-	        	markerClip.attachMarker(marker, location);
+	        	markerClip.attachMarker(marker, location); // calls grid.putMarker as well
+	        }
+	        else {
+    	        grid.putMarker(id, __mapProvider.locationCoordinate(location), location);            
 	        }
 	    }
 
@@ -658,8 +670,7 @@ package com.modestmaps
 	    */
 	    public function removeMarker(id:String):void
 	    {
-	        grid.removeMarker(id);
-	        markerClip.removeMarker(id);
+	        markerClip.removeMarker(id); // also calls grid.removeMarker
 	    }
 	    
 	   /**
@@ -860,9 +871,8 @@ package com.modestmaps
 	}
 }
 
-
 import flash.geom.Point;
-	
+
 
 class AnimationStep extends Object
 {
@@ -885,6 +895,7 @@ class PanAnimationStep extends AnimationStep
 		super(type, redraw);
 		this.amount = amount;
 	}
+	
 }
 
 class ZoomAnimationStep extends AnimationStep
