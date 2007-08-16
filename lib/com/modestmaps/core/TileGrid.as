@@ -215,6 +215,8 @@ package com.modestmaps.core
                 _well.mouseChildren = false;
                 _well.addEventListener(MouseEvent.MOUSE_DOWN, startWellDrag);
                 _well.addEventListener(MouseEvent.MOUSE_UP, stopWellDrag);
+                _well.addEventListener(MouseEvent.DOUBLE_CLICK, onWellDoubleClick);
+                _well.doubleClickEnabled = true;
             }
             
             addChild(_well);            
@@ -445,6 +447,13 @@ package com.modestmaps.core
                 min.y = max.y = _well.y;
                 
             return new Bounds(min, max);
+        }
+
+        private function onWellDoubleClick(event:MouseEvent):void
+        {
+            var p:Point = new Point(event.localX, event.localY);
+            var l:Location = _map.pointLocation(p,_well);
+            _map.setCenter(l);
         }
         
        /*
