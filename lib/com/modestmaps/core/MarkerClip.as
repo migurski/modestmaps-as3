@@ -16,6 +16,7 @@ package com.modestmaps.core {
 	import flash.utils.Dictionary;
 	import flash.display.DisplayObject;
 	import flash.utils.getTimer;
+	import flash.geom.Rectangle;
 	
 	/** This is different from the as2 version for now, because
 	 *  it makes more sense to me if you give it a Sprite 
@@ -55,18 +56,21 @@ package com.modestmaps.core {
 	    
 	    public function attachMarker(marker:DisplayObject, location:Location):void
 	    {
-	        map.grid.putMarker(marker.name, map.getMapProvider().locationCoordinate(location), location);
+	        //map.grid.putMarker(marker.name, map.getMapProvider().locationCoordinate(location), location);
 	        
 	        locations[marker] = location;
 	        markersByName[marker.name] = marker;
 	        markers.push(marker);
 	        
 	        var point:Point = map.locationPoint(location, this);
-	        marker.x = point.x;
-	        marker.y = point.y;
+	        marker.x = Math.round(point.x);
+	        marker.y = Math.round(point.y);
 	        
-	        // TODO: check if it should be added now?
-	        addChild(marker);
+	        var w:Number = map.getWidth() * 2;
+	        var h:Number = map.getHeight() * 2;
+	        if (marker.x > -w/2 && marker.x < w/2 && marker.y > -h/2 && marker.y < h/2) {
+                addChild(marker);
+            }
 	    }
 	    
 	    public function getMarker(id:String):DisplayObject
@@ -76,7 +80,7 @@ package com.modestmaps.core {
 	    
 	    public function removeMarker(id:String):void
 	    {
-	        map.grid.removeMarker(id);
+	        //map.grid.removeMarker(id);
 	    	var marker:DisplayObject = getMarker(id);
 	    	if (marker) {
     	    	if (this.getChildByName(id)) removeChild(marker);
@@ -92,13 +96,25 @@ package com.modestmaps.core {
 	    private function updateClips(event:Event=null):void
 	    {
 	    	//var t:int = flash.utils.getTimer();
+	        var w:Number = map.getWidth() * 2;
+	        var h:Number = map.getHeight() * 2;
 	    	for each (var marker:DisplayObject in markers) {
-	    		updateClip(marker);
+	    	    if (marker.visible) {
+	                updateClip(marker);
+        	        if (marker.x > -w/2 && marker.x < w/2 && marker.y > -h/2 && marker.y < h/2) {
+        	            if (!contains(marker)) {
+        	                addChild(marker);
+        	            }
+        	        }
+        	        else if (contains(marker)) {
+        	            removeChild(marker);
+        	        }
+	            }
 	    	}
 	    	//trace("reprojected all markers in " + (flash.utils.getTimer() - t) + "ms");
 	    }
 	    
-	    private function updateClip(marker:DisplayObject):void
+	    public function updateClip(marker:DisplayObject):void
 	    {
 	        var location:Location = locations[marker];
 	        var point:Point = map.locationPoint(location, this);
@@ -139,8 +155,14 @@ package com.modestmaps.core {
 	    
 	    public function onMapPanned(event:MapEvent):void
 	    {
-	        x = starting.x + event.panDelta.x;
-	        y = starting.y + event.panDelta.y;
+	        if (starting) {
+	            x = starting.x + event.panDelta.x;
+	            y = starting.y + event.panDelta.y;
+	        }
+	        else {
+	            x = event.panDelta.x;
+	            y = event.panDelta.y;	            
+	        }
 	    }
 	    
 	    public function onMapStopPanning(event:MapEvent):void
