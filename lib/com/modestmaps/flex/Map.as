@@ -78,7 +78,7 @@ package com.modestmaps.flex
 		{
 			super.createChildren();
 
-			if (_map == null)
+/* 			if (_map == null)
 			{
 				_map = new com.modestmaps.Map();
 				_map.addEventListener(MapEvent.PANNED, onMapPanned);
@@ -89,7 +89,7 @@ package com.modestmaps.flex
 				_map.addEventListener(MapEvent.STOP_ZOOMING, onMapStopZooming);
 				_map.addEventListener(MapEvent.ZOOMED_BY, onMapZoomedBy);
 				addChild(_map);
-			}
+			} */
 		}
 
 		/**
@@ -103,11 +103,20 @@ package com.modestmaps.flex
 		{
 			trace("Map.updateDisplayList()");
 
-			if (mapInitDirty && _map)
+			if (mapInitDirty && _map == null)
 			{
 				// TODO: implement draggable switch?
 				trace(' * initializing map: ' + w + 'x' + h + ', ' + _draggable + ', provider: ' + _mapProvider.toString());
-				_map.init(w, h, _draggable, _mapProvider || DEFAULT_MAP_PROVIDER);
+				//_map.init(w, h, _draggable, _mapProvider || DEFAULT_MAP_PROVIDER);
+				_map = new com.modestmaps.Map(w, h, _draggable, _mapProvider || DEFAULT_MAP_PROVIDER);
+				_map.addEventListener(MapEvent.PANNED, onMapPanned);
+				_map.addEventListener(MapEvent.RESIZED, onMapResized);
+				_map.addEventListener(MapEvent.START_PANNING, onMapStartPanning);
+				_map.addEventListener(MapEvent.STOP_PANNING, onMapStopPanning);
+				_map.addEventListener(MapEvent.START_ZOOMING, onMapStartZooming);
+				_map.addEventListener(MapEvent.STOP_ZOOMING, onMapStopZooming);
+				_map.addEventListener(MapEvent.ZOOMED_BY, onMapZoomedBy);
+				addChild(_map);
 				mapInitDirty = false;
 			}
 			else if (mapProviderDirty && _map)
@@ -149,7 +158,7 @@ package com.modestmaps.flex
 				mapZoomDirty = false;
 			}
 
-			if (_map.width != w || _map.height != h)
+			if (_map.getWidth() != w || _map.getHeight() != h)
 			{
 				_map.setSize(w, h);
 			}
