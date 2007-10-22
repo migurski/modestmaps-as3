@@ -4,7 +4,6 @@ package com.modestmaps.mapproviders.microsoft
 	import com.modestmaps.mapproviders.IMapProvider;
 	import com.modestmaps.mapproviders.microsoft.AbstractMicrosoftMapProvider;
 	
-	
 	/**
 	 * @author darren
 	 * $Id$
@@ -14,6 +13,13 @@ package com.modestmaps.mapproviders.microsoft
 		extends AbstractMicrosoftMapProvider
 		implements IMapProvider
 	{
+	    public var hillShading:Boolean;
+	    
+	    public function MicrosoftRoadMapProvider(hillShading:Boolean=false)
+	    {
+	        this.hillShading = hillShading;
+	    }
+	    
 		override public function toString():String
 		{
 			return "MICROSOFT_ROAD";
@@ -21,7 +27,7 @@ package com.modestmaps.mapproviders.microsoft
 		
 		override public function getTileUrl(coord:Coordinate):String
 		{		
-	        return "http://r" + Math.floor(Math.random() * 4) + ".ortho.tiles.virtualearth.net/tiles/r" + getZoomString( coord ) + ".png?g=90&shading=hill";
+	        return "http://r" + Math.floor(Math.random() * 4) + ".ortho.tiles.virtualearth.net/tiles/r" + getZoomString( coord ) + ".png?g=90" + (hillShading ? "&shading=hill" : "");
 		}
 	}
 }
