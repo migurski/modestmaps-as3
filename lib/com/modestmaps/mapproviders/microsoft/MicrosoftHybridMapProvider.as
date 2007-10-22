@@ -20,7 +20,7 @@ package com.modestmaps.mapproviders.microsoft
 		
 		override public function getTileUrl(coord:Coordinate):String
 		{		
-	        return "http://h" + Math.floor(Math.random() * 4) + ".ortho.tiles.virtualearth.net/tiles/h" + getZoomString( coord ) + ".jpeg?g=90&shading=hill";
+	        return "http://h" + Math.floor(Math.random() * 4) + ".ortho.tiles.virtualearth.net/tiles/h" + getZoomString( coord ) + ".jpeg?g=90";
 		}
 	}
 }
