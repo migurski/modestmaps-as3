@@ -15,7 +15,7 @@ package com.modestmaps.mapproviders.microsoft
 	{
 	    public var hillShading:Boolean;
 	    
-	    public function MicrosoftRoadMapProvider(hillShading:Boolean=false)
+	    public function MicrosoftRoadMapProvider(hillShading:Boolean=true)
 	    {
 	        this.hillShading = hillShading;
 	    }
