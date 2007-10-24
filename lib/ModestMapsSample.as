@@ -22,6 +22,7 @@ package {
 	import flash.text.TextFormatAlign;
 	import flash.filters.GlowFilter;
 	import flash.filters.BlurFilter;
+	import flash.text.AntiAliasType;
 	
 	[SWF(backgroundColor="#ffffff", frameRate="24")]
 	
@@ -33,13 +34,13 @@ package {
 		private var status:TextField;
 		private var copyright:TextField;
 		
+		[Embed(systemFont="Times New Roman", fontName="_Times", mimeType='application/x-font')]
+		private var uselessString:String;
+		
 	    public function ModestMapsSample()
 	    {
-	        Reactor.run(this, 50);
-
-	        map = new Map();
+	        map = new Map(stage.stageWidth-256, stage.stageHeight-256, true, new MicrosoftRoadMapProvider());
 	        addChild(map);
-	        map.init(stage.stageWidth-256, stage.stageHeight-256, true, new MicrosoftRoadMapProvider());
 	        map.addEventListener(MapEvent.ZOOMED_BY, onZoomed);
 	        map.addEventListener(MapEvent.STOP_ZOOMING, onStopZoom);
 	        map.addEventListener(MapEvent.PANNED, onPanned);
@@ -58,16 +59,16 @@ package {
 	        copyright = new TextField();
 	        copyright.selectable = false;
 	        copyright.textColor = 0x000000;
-	        var tf:TextFormat = new TextFormat();
+	        copyright.embedFonts = true;
+	        copyright.antiAliasType = AntiAliasType.ADVANCED;
+	        var tf:TextFormat = new TextFormat("_Times", 10, 0x000000);
 	        tf.align = TextFormatAlign.RIGHT;
 	        copyright.defaultTextFormat = tf;
 	        copyright.text = '...';
 	        copyright.height = copyright.textHeight + 2;
-	        addChild(copyright);
-/* 	        var filts:Array = copyright.filters;
-	        filts.push(new GlowFilter(0xff0000));
-	        copyright.filters = filts;
- */	
+	        map.addChild(copyright);
+	        copyright.filters = [ new GlowFilter(0xffffff) ];
+
 	        map.setExtent(new MapExtent(37.829853, 37.700121, -122.212601, -122.514725));
 	
 	        //Reactor.callLater(2000, Delegate.create(map, map.setNewCenter), new Location(37.811411, -122.360916), 14);
@@ -131,16 +132,17 @@ package {
 	
 	        buttons.push(makeButton(mapButtons, 'BLUE_MARBLE', 'blue marble', switchMapProvider));
 	        buttons.push(makeButton(mapButtons, 'OPEN_STREET_MAP', 'open street map', switchMapProvider));
+
+	        buttons.push(makeButton(mapButtons, 'VANILLA', 'vanilla', switchMapProvider));
 	
 			var nextY : Number = 0;
 			
-			for(var i:Number = 0; i < buttons.length; i++) {
-				buttons[i].y = nextY;
-				nextY += Sprite(buttons[i]).getChildByName('label').height + 5;
-				buttons[i].alpha = 0.60;
+			for each(var button:Sprite in buttons) {
+				button.y = nextY;
+				nextY += Sprite(button).getChildByName('label').height + 5;
+				button.alpha = 0.60;
 			}
 	
-	        //_root.createEmptyMovieClip('marks', _root.getNextHighestDepth());
 	    }
 	    
 	    
@@ -244,13 +246,13 @@ package {
 			mapButtons.x = map.x + (stage.stageWidth - 2*map.x) - mapButtons.width - 10;
 			mapButtons.y = map.y + 10;
 	
-			status.width = map.getSize()[0];
+			status.width = map.getWidth();
 			status.x = map.x + 2;
-			status.y = map.y + map.getSize()[1];
+			status.y = map.y + map.getHeight();
 
-			copyright.width = map.getSize()[0];
-			copyright.x = map.x + map.getSize()[0] - copyright.width;
-			copyright.y = map.y + map.getSize()[1] - copyright.height;
+			copyright.width = map.getWidth();
+			copyright.x = map.x + map.getWidth() - copyright.width;
+			copyright.y = map.y + map.getHeight() - copyright.height;
 			trace(copyright.x + " " + copyright.y + " " + copyright.width);
 		}
 	    
