@@ -5,18 +5,16 @@
 
 package com.modestmaps.core {
 
-	import flash.display.Sprite;
 	import com.modestmaps.Map;
-	import com.modestmaps.geo.Location;
-	import com.modestmaps.core.MapExtent;
 	import com.modestmaps.events.MapEvent;
-	import flash.geom.Point;
 	import com.modestmaps.events.MarkerEvent;
-	import flash.events.Event;
-	import flash.utils.Dictionary;
+	import com.modestmaps.geo.Location;
+	
 	import flash.display.DisplayObject;
-	import flash.utils.getTimer;
-	import flash.geom.Rectangle;
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.geom.Point;
+	import flash.utils.Dictionary;
 	
 	/** This is different from the as2 version for now, because
 	 *  it makes more sense to me if you give it a Sprite 
@@ -26,10 +24,10 @@ package com.modestmaps.core {
 	public class MarkerClip extends Sprite
 	{
 		// TODO: mask me?
-	    private var map:Map;
+	    protected var map:Map;
 	    private var starting:Point;
 	    private var locations:Dictionary = new Dictionary();
-	    private var markers:Array = []; // all markers
+	    protected var markers:Array = []; // all markers
 	    private var markersByName:Object = {};
 
         // enable this if you want intermediate zooming steps to
@@ -56,6 +54,7 @@ package com.modestmaps.core {
 	    
 	    public function attachMarker(marker:DisplayObject, location:Location):void
 	    {
+	        // TODO: optionally index markers and throw marker events?
 	        //map.grid.putMarker(marker.name, map.getMapProvider().locationCoordinate(location), location);
 	        
 	        locations[marker] = location;
@@ -93,7 +92,7 @@ package com.modestmaps.core {
     	    }
 	    }
 	        
-	    private function updateClips(event:Event=null):void
+	    public function updateClips(event:Event=null):void
 	    {
 	    	//var t:int = flash.utils.getTimer();
 	        var w:Number = map.getWidth() * 2;
@@ -148,12 +147,12 @@ package com.modestmaps.core {
 	    	} 
 	    }
 	    	    
-	    public function onMapStartPanning(event:MapEvent):void
+	    private function onMapStartPanning(event:MapEvent):void
 	    {
 	        starting = new Point(x, y);
 	    }
 	    
-	    public function onMapPanned(event:MapEvent):void
+	    private function onMapPanned(event:MapEvent):void
 	    {
 	        if (starting) {
 	            x = starting.x + event.panDelta.x;
@@ -165,7 +164,7 @@ package com.modestmaps.core {
 	        }
 	    }
 	    
-	    public function onMapStopPanning(event:MapEvent):void
+	    private function onMapStopPanning(event:MapEvent):void
 	    {
 	    	if (starting) {
 		        x = starting.x;
@@ -174,19 +173,19 @@ package com.modestmaps.core {
 	        updateClips();
 	    }
 	    
-	    public function onMapResized(event:MapEvent):void
+	    private function onMapResized(event:MapEvent):void
 	    {
 	        x = event.newSize[0]/2;
 	        y = event.newSize[1]/2;
 	        updateClips();
 	    }
 	    
-	    public function onMapStartZooming(event:MapEvent):void
+	    private function onMapStartZooming(event:MapEvent):void
 	    {
 	        // updateClips(); 
 	    }
 	    
-	    public function onMapStopZooming(event:MapEvent):void
+	    private function onMapStopZooming(event:MapEvent):void
 	    {
 	        if (scaleZoom) {
 	            scaleX = scaleY = 1.0;
@@ -194,7 +193,7 @@ package com.modestmaps.core {
             updateClips();
 	    }
 	    
-	    public function onMapZoomedBy(event:MapEvent):void
+	    private function onMapZoomedBy(event:MapEvent):void
 	    {
 	        if (scaleZoom) {
     	        scaleX = scaleY = Math.pow(2, event.zoomDelta);

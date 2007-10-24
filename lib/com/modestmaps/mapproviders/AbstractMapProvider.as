@@ -24,11 +24,9 @@ package com.modestmaps.mapproviders
 	import com.modestmaps.geo.Transformation;
 	import com.modestmaps.io.RequestThrottler;
 	
-	import flash.display.DisplayObject;
-	import flash.events.EventDispatcher;
-	import flash.text.TextColorType;
-	import flash.text.TextField;
 	import flash.display.Sprite;
+	import flash.events.EventDispatcher;
+	import flash.text.TextField;
 	
 	internal class AbstractMapProvider  
 		extends EventDispatcher

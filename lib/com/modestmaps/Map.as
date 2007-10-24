@@ -126,8 +126,8 @@ package com.modestmaps
 
 	        setMapProvider(provider);
 
-			var extent:MapExtent = new MapExtent(85, -85, 180, -180);
-	        setExtent(extent);
+			//var extent:MapExtent = new MapExtent(85, -85, 180, -180);
+	        //setExtent(extent);
 	        
 	    }
 	
@@ -165,11 +165,16 @@ package com.modestmaps
 	    */
 	    public function setCenterZoom(location:Location, zoom:Number):void
 	    {
-	        var center:MapPosition = coordinatePosition(__mapProvider.locationCoordinate(location).zoomTo(zoom));
-	        // tell grid what the rock is cooking
-	        grid.resetTiles(center.coord, center.point);
-	        onExtentChanged(this.getExtent());
-	        Reactor.callNextFrame(callCopyright);
+	        if (zoom == grid.zoomLevel) {
+	            setCenter(location);
+	        }
+	        else {
+    	        var center:MapPosition = coordinatePosition(__mapProvider.locationCoordinate(location).zoomTo(zoom));
+    	        // tell grid what the rock is cooking
+    	        grid.resetTiles(center.coord, center.point);
+    	        onExtentChanged(this.getExtent());
+    	        Reactor.callNextFrame(callCopyright);
+    	    }
 	    }
 	   
             /*
@@ -526,14 +531,18 @@ package com.modestmaps
 	    {
 	    	var p:Point = locationPoint(location,this);
 	    	if (p.x >= 0 && p.x <= getWidth() && p.y >= 0 && p.y <= getHeight()) {
-	    		var center:Point = new Point(getWidth()/2, getHeight()/2);
-	    		var perFrame:Point = p.subtract(center);
+	    		var centerPoint:Point = new Point(getWidth()/2, getHeight()/2);
+	    		var perFrame:Point = p.subtract(centerPoint);
 	    		perFrame.x /= panFrames;
 	    		perFrame.y /= panFrames;
 	    		panMap(perFrame);
 	    	}
 	    	else {
-	    		setCenterZoom(location, getZoom());
+    	        var center:MapPosition = coordinatePosition(__mapProvider.locationCoordinate(location).zoomTo(grid.zoomLevel));
+    	        // tell grid what the rock is cooking
+    	        grid.resetTiles(center.coord, center.point);
+    	        onExtentChanged(this.getExtent());
+    	        Reactor.callNextFrame(callCopyright);
 	    	}
 	    }
 	    

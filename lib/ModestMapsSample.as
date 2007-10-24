@@ -1,27 +1,24 @@
 package {
 	
-	import com.modestmaps.core.MapExtent;
-	import com.modestmaps.geo.Location;
 	import com.modestmaps.Map;
-	import com.modestmaps.mapproviders.*;
-	import com.modestmaps.mapproviders.google.*;
-	import com.modestmaps.mapproviders.yahoo.*;
-	import com.modestmaps.mapproviders.microsoft.*;
-	import com.stamen.twisted.Reactor;
-	import flash.geom.Point;
-	import flash.display.Sprite;
-	import flash.text.TextField;
-	import flash.events.MouseEvent;
-	import flash.display.Stage;
-	import flash.events.Event;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
+	import com.modestmaps.core.MapExtent;
 	import com.modestmaps.events.MapEvent;
 	import com.modestmaps.events.MarkerEvent;
+	import com.modestmaps.geo.Location;
+	import com.modestmaps.mapproviders.*;
+	import com.modestmaps.mapproviders.google.*;
+	import com.modestmaps.mapproviders.microsoft.*;
+	import com.modestmaps.mapproviders.yahoo.*;
+	import com.stamen.twisted.Reactor;
+	
+	import flash.display.Sprite;
+	import flash.display.StageAlign;
+	import flash.display.StageScaleMode;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
-	import flash.filters.GlowFilter;
-	import flash.filters.BlurFilter;
 	import flash.text.AntiAliasType;
 	
 	[SWF(backgroundColor="#ffffff", frameRate="24")]

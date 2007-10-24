@@ -5,20 +5,14 @@
 
 package com.modestmaps.core
 {
-    import com.modestmaps.core.Coordinate;
-    import com.modestmaps.core.TileGrid;
-    import com.modestmaps.core.TilePaintCall;
     import com.modestmaps.events.MapProviderEvent;
-    import com.modestmaps.mapproviders.AbstractMapProvider;
     import com.modestmaps.mapproviders.IMapProvider;
     import com.stamen.twisted.Reactor;
-
-    import flash.events.EventDispatcher;
-    import flash.geom.Point;
+    
     import flash.display.Sprite;
-    import flash.text.TextField;
-    import flash.utils.Timer;
     import flash.events.TimerEvent;
+    import flash.geom.Point;
+    import flash.utils.Timer;
     
     public class Tile extends Sprite
     {

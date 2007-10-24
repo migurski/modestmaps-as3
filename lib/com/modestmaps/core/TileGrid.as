@@ -132,7 +132,7 @@ package com.modestmaps.core
                     condemnedTiles[i].expire();
                 }
     
-                Reactor.callLater(condemnationDelay(), destroyTiles, condemnedTiles);
+	            Reactor.callLater(condemnationDelay(), destroyTiles, condemnedTiles);
 
                 zoomLevel = coord.zoom;                
                 initTile = createTile(this, coord, point.x, point.y);
