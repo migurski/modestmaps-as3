@@ -20,7 +20,7 @@ package com.modestmaps.extras
         public function GreatCircleOverlay(map:Map)
         {
             super(map);
-            this.filters = [ new DropShadowFilter(2,90,0x000000,0.35,8,8,2,1,false,false,false) ];
+            //this.filters = [ new DropShadowFilter(2,90,0x000000,0.35,8,8,2,1,false,false,false) ];
         }
         
         override public function redraw(sprite:Sprite):void
@@ -34,12 +34,13 @@ package com.modestmaps.extras
                 var prev:Location;
                 for each (var location:Location in line.slice(1)) {
                     var thickness:Number = Math.min(1,1-Math.abs(i-(line.length/2))/(line.length/3))
-                    if (i % 4 == 0 && i != line.length-1) {
+/*                     if (i % 4 == 0 && i != line.length-1) {
                         sprite.graphics.lineStyle();
                     }
                     else {
                         lineStyle.apply(sprite.graphics, 1+thickness);
-                    }           
+                    }            */
+                    lineStyle.apply(sprite.graphics, 1+thickness);
                     p = map.locationPoint(location, sprite);
                     if (prev && (Math.abs(prev.lat-location.lat) > 10 || Math.abs(prev.lon-location.lon) > 10)) {
                         sprite.graphics.moveTo(p.x,p.y);
@@ -70,7 +71,7 @@ package com.modestmaps.extras
     			var bearing:Number = atan2(sin(lon1-lon2)*cos(lat2), cos(lat1)*sin(lat2)-sin(lat1)*cos(lat2)*cos(lon1-lon2))  / -(PI/180);
     			bearing = bearing < 0 ? 360 + bearing : bearing;
     
-                var numSegments:int = int(10 + (200 * Distance.approxDistance(start,end) / (Math.PI * 2 * 6378000)));
+                var numSegments:int = int(40 + (400 * Distance.approxDistance(start,end) / (Math.PI * 2 * 6378000)));
     			for (var n:int = 0 ; n < numSegments; n++ ) {
     				var f:Number = (1/(numSegments-1)) * n;
     				var A:Number = sin((1-f)*d)/sin(d)
