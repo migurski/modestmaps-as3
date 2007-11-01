@@ -29,6 +29,10 @@ package com.modestmaps.core
         protected var _active:Boolean;
     
         private var timer:Timer;
+
+		/** keep exact x and y for tile calculations, but use setter to round the sprite position for the screen 
+		 * @see http://getsatisfaction.com/modestmaps/topics/as3_tile_discontinuity_after_panning */
+		protected var __x:Number, __y:Number;
     
         public function Tile(grid:TileGrid, coord:Coordinate, x:Number, y:Number)
         {
@@ -40,6 +44,32 @@ package com.modestmaps.core
             _active = true;
             _displayClips = new Array();  	
         }
+
+		/** @see http://getsatisfaction.com/modestmaps/topics/as3_tile_discontinuity_after_panning */      
+		public override function get x():Number
+		{
+			return this.__x;
+		}
+
+		/** @see http://getsatisfaction.com/modestmaps/topics/as3_tile_discontinuity_after_panning */      
+		public override function set x(_lx:Number):void
+		{
+			this.__x = _lx;
+			super.x = Math.floor(_lx);
+		}
+
+		/** @see http://getsatisfaction.com/modestmaps/topics/as3_tile_discontinuity_after_panning */      
+		public override function get y():Number
+		{
+			return this.__y;
+		}
+
+		/** @see http://getsatisfaction.com/modestmaps/topics/as3_tile_discontinuity_after_panning */      
+		public override function set y(_ly:Number):void
+		{
+			this.__y = _ly;
+			super.y = Math.floor(_ly);
+		}
 
         public function get coord():Coordinate
         {
