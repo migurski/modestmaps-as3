@@ -16,10 +16,11 @@ package {
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.filters.GlowFilter;
+	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
-	import flash.text.AntiAliasType;
 	
 	[SWF(backgroundColor="#ffffff", frameRate="24")]
 	
