@@ -6,18 +6,16 @@
 package com.modestmaps.core
 {
     import com.modestmaps.Map;
-    import com.modestmaps.mapproviders.IMapProvider;
-    import com.modestmaps.core.*;
     import com.modestmaps.geo.Location;
+    import com.modestmaps.mapproviders.IMapProvider;
     import com.stamen.twisted.*;
-
-    import flash.geom.Point;
+    
     import flash.display.Sprite;
-    import flash.utils.Dictionary;
-    import flash.geom.Rectangle;
-    import flash.events.MouseEvent;
     import flash.events.Event;
-    import flash.display.Stage;
+    import flash.events.MouseEvent;
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
+    import flash.utils.Dictionary;
     
     public class TileGrid extends Sprite
     {
@@ -215,7 +213,6 @@ package com.modestmaps.core
                 _well.mouseChildren = false;
                 _well.addEventListener(MouseEvent.MOUSE_DOWN, startWellDrag);
                 _well.addEventListener(MouseEvent.MOUSE_UP, stopWellDrag);
-                _well.addEventListener(MouseEvent.DOUBLE_CLICK, onWellDoubleClick);
                 _well.doubleClickEnabled = true;
             }
             
@@ -235,7 +232,16 @@ package com.modestmaps.core
             addChild(_mask);
             this.mask = _mask;
         }
-        
+
+		public function setDoubleClickEnabled(enabled:Boolean):void
+		{
+			if (enabled) {
+            	_well.addEventListener(MouseEvent.DOUBLE_CLICK, onWellDoubleClick);
+   			}
+   			else if (_well.hasEventListener(MouseEvent.DOUBLE_CLICK)) {
+   				_well.removeEventListener(MouseEvent.DOUBLE_CLICK, onWellDoubleClick);
+   			}
+		}        
         
         public function getMapProvider():IMapProvider
         {
@@ -453,7 +459,7 @@ package com.modestmaps.core
         {
             var p:Point = new Point(event.localX, event.localY);
             var l:Location = _map.pointLocation(p,_well);
-            _map.setCenter(l);
+            _map.panTo(l);
         }
         
        /*
