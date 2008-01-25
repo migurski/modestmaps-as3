@@ -31,12 +31,12 @@ package com.modestmaps
 	import com.stamen.twisted.DelayedCall;
 	import com.stamen.twisted.Reactor;
 	
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
-	import flash.geom.Point;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.external.ExternalInterface;
-	import flash.events.Event;
-	import flash.display.DisplayObject;
+	import flash.geom.Point;
 
 	[Event(name="startZooming",	 type="com.modestmaps.events.MapEvent")]
 	[Event(name="stopZooming",	  type="com.modestmaps.events.MapEvent")]
@@ -184,35 +184,26 @@ package com.modestmaps
 			}
 		}
 	   
-			/*
-			 * Based on a zoom level, determine appropriate initial
-			 * tile coordinate and point using calculateMapCenter(), and inform
-			 * the grid of tile coordinate and point by calling grid.resetTiles().
-			 *
-			 * @param	Desired zoom level.
-			 *
-			 * @see com.modestmaps.Map#calculateMapExtent
-			 * @see com.modestmaps.core.TileGrid#resetTiles
-			 */
-			public function setZoom(zoom:Number):void
-			{
-			   if (zoom == grid.zoomLevel) { // do nothing!
-				  return;
-			   }
-			   else if (zoom - grid.zoomLevel == 1) { // if 1 step in, delegate to zoomIn animation
-				  zoomIn();
-			   }
-			   else if (zoom - grid.zoomLevel == -1) {  // if 1 step out, delegate to zoomOut animation
-				  zoomOut();
-			   }
-			   else { // else hard reset
-				  var center:MapPosition = coordinatePosition(grid.centerCoordinate().zoomTo(zoom));
-				  // tell grid what the rock is cooking
-				  grid.resetTiles(center.coord, center.point);
-				  onExtentChanged(this.getExtent());
-				  Reactor.callNextFrame(callCopyright);
-			   }
-			}
+		/*
+		 * Based on a zoom level, determine appropriate initial
+		 * tile coordinate and point using calculateMapCenter(), and inform
+		 * the grid of tile coordinate and point by calling grid.resetTiles().
+		 *
+		 * @param	Desired zoom level.
+		 *
+		 * @see com.modestmaps.Map#calculateMapExtent
+		 * @see com.modestmaps.core.TileGrid#resetTiles
+		 */
+		public function setZoom(zoom:Number):void
+		{
+			if (zoom == grid.zoomLevel) return;
+			// else hard reset
+			var center:MapPosition = coordinatePosition(grid.centerCoordinate().zoomTo(zoom));
+			// tell grid what the rock is cooking
+			grid.resetTiles(center.coord, center.point);
+			onExtentChanged(this.getExtent());
+			Reactor.callNextFrame(callCopyright);
+		}
 				
 	   /*
 		* Based on a coordinate, determine appropriate starting tile and position,
@@ -533,14 +524,30 @@ package com.modestmaps
 
 	   /**
 		* put the given location in the middle of the map
-		* uses setCenterZoom if location is offscreen
-		* or animated in panFrames if the location is visible
+		* (use panBy to animate if that's what you want)
 		* @see com.modestmaps.Map#panFrames
 		*/
 		public function setCenter(location:Location):void
 		{
+			var center:MapPosition = coordinatePosition(__mapProvider.locationCoordinate(location).zoomTo(grid.zoomLevel));
+			// tell grid what the rock is cooking
+			grid.resetTiles(center.coord, center.point);
+			onExtentChanged(this.getExtent());
+			Reactor.callNextFrame(callCopyright);
+		}
+
+	   /**
+		 * Put the given location in the middle of the map, animated in panFrames.
+		 * Use setCenter or setCenterZoom for big jumps, set forceAnimate to true
+		 * if you really want to animate to a location that's currently off screen.
+		 * But no promises! 
+		 * 
+		 * @see com.modestmaps.Map#panFrames
+		 */
+		public function panTo(location:Location, forceAnimate:Boolean=false):void
+		{
 			var p:Point = locationPoint(location,this);
-			if (p.x >= 0 && p.x <= getWidth() && p.y >= 0 && p.y <= getHeight()) {
+			if (forceAnimate || (p.x >= 0 && p.x <= __width && p.y >= 0 && p.y <= __height)) {
 				var centerPoint:Point = new Point(getWidth()/2, getHeight()/2);
 				var perFrame:Point = p.subtract(centerPoint);
 				perFrame.x /= panFrames;
@@ -548,11 +555,7 @@ package com.modestmaps
 				panMap(perFrame);
 			}
 			else {
-				var center:MapPosition = coordinatePosition(__mapProvider.locationCoordinate(location).zoomTo(grid.zoomLevel));
-				// tell grid what the rock is cooking
-				grid.resetTiles(center.coord, center.point);
-				onExtentChanged(this.getExtent());
-				Reactor.callNextFrame(callCopyright);
+				setCenter(location);
 			}
 		}
 		
@@ -562,7 +565,7 @@ package com.modestmaps
 		*/
 		public function zoomIn(event:Event=null):void
 		{
-			zoom(1);
+			zoomBy(1);
 		}
 
 	   /**
@@ -571,16 +574,29 @@ package com.modestmaps
 		*/
 		public function zoomOut(event:Event=null):void
 		{
-			zoom(-1);
+			zoomBy(-1);
 		}
-			
-		// keeping it DRY, as they say	
-	  	// dir should be 1, for in, or -1, for out
-		private function zoom(dir:int):void
+
+	   /**
+		* Zoom to the given level over the course of several frames.
+		* @see com.modestmaps.Map#zoomFrames
+		*/		
+		public function zoomTo(level:Number):void
 		{
+			zoomBy(level-grid.zoomLevel);
+		}
+		
+	   /**
+		* Zoom in or out over the course of several frames.
+		* @see com.modestmaps.Map#zoomFrames
+		*/		
+		private function zoomBy(amount:int):void
+		{
+			if (amount == 0) return;
+			
 			for(var i:uint = 1; i <= zoomFrames; i += 1)
 			{
-				__animSteps.push(new ZoomAnimationStep(ZOOM, dir/zoomFrames, i == zoomFrames));
+				__animSteps.push(new ZoomAnimationStep(ZOOM, amount/zoomFrames, i == zoomFrames));
 			}
 			
 			if(!__animTask) {
