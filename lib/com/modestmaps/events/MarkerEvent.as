@@ -6,25 +6,25 @@ package com.modestmaps.events
 {
 	import flash.events.Event;
 	import com.modestmaps.geo.Location;
-
-	public class MarkerEvent extends Event
+    import flash.display.DisplayObject;	        public class MarkerEvent extends Event
 	{
-	    public static const ENTER:String = 'markerEnter';
-	    public static const LEAVE:String = 'markerLeave';
+	    public static const ROLL_OVER:String = 'marerRollOver';
+	    public static const ROLL_OUT:String = 'markerRollOut';
+	    public static const CLICK:String = 'markerClick';
 
-		protected var _markerID:String;
+		protected var _marker:DisplayObject;
 		protected var _location:Location;
 		
-		public function MarkerEvent(type:String, markerID:String, location:Location, bubbles:Boolean=false, cancelable:Boolean=false)
+		public function MarkerEvent(type:String, marker:DisplayObject, location:Location, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);
-			_markerID = markerID;
+			_marker = marker;
 			_location = location;
 		}
 
-		public function get marker():String
+		public function get marker():DisplayObject
 		{
-			return _markerID;
+			return _marker;
 		}
 
 		public function get location():Location

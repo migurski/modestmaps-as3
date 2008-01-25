@@ -17,13 +17,11 @@ package com.modestmaps.mapproviders
 	import com.modestmaps.core.Coordinate;
 	import com.modestmaps.io.MapProviderPaintThrottledRequest;
 	import com.modestmaps.events.ThrottledRequestEvent;
-	import com.modestmaps.mapproviders.AbstractMapProvider;
 	import flash.display.Sprite;
 	import com.modestmaps.events.ThrottledRequestErrorEvent;
 	import flash.events.ErrorEvent;
 	
-	public class AbstractImageBasedMapProvider
-		extends AbstractMapProvider 
+	public class AbstractImageBasedMapProvider extends AbstractMapProvider 
 	{
 		/**
 		 * Abstract constructor, should not be instantiated directly.

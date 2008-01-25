@@ -35,12 +35,14 @@ package com.modestmaps.mapproviders.google
 		    // see: http://modestmaps.mapstraction.com/trac/wiki/TileCoordinateComparisons#TileGeolocations
 		    var t:Transformation = new Transformation(1.068070779e7, 0, 3.355443185e7,
 			                                          0, -1.068070890e7, 3.355443057e7);
-			                                          
+						                                          
 	        __projection = new MercatorProjection(26, t);
-	
+			
+			__paintQueue = new Array();
+			
 	        __topLeftOutLimit = new Coordinate(0, Number.NEGATIVE_INFINITY, 0);
 	        __bottomRightInLimit = (new Coordinate(1, Number.POSITIVE_INFINITY, 0)).zoomTo(Coordinate.MAX_ZOOM);
-		}
+	   	}
 	
 	    override public function sourceCoordinate(coord:Coordinate):Coordinate
 	    {
@@ -65,15 +67,13 @@ package com.modestmaps.mapproviders.google
 		// Private Methods
 		
 		protected function checkVersionRequested():void
-		{
+		{			
 			if ( !AbstractGoogleMapProvider.__versionRequested )
 			{
-				trace ("  checkVersionRequested(): " + AbstractGoogleMapProvider.__versionRequested );
+				//trace ("  checkVersionRequested(): " + AbstractGoogleMapProvider.__versionRequested );
 				// we need to create a blocking request to load our version number
 				AbstractGoogleMapProvider.__versionRequested = true;
 			
-				__paintQueue = new Array();
-	
 				var request:XmlThrottledRequest = new XmlThrottledRequest(__versionSource, true);
 				request.addEventListener(ThrottledRequestEvent.RESPONSE_COMPLETE, onVersionResponseComplete);
 				request.addEventListener(ThrottledRequestEvent.RESPONSE_ERROR, onVersionResponseError);
@@ -99,15 +99,21 @@ package com.modestmaps.mapproviders.google
 		// Event Handlers
 		
 		protected function onVersionResponseComplete(event:ThrottledRequestEvent):void
-		{
-	        __roadVersion = event.xml.firstChild.attributes.road;
-	        __hybridVersion = event.xml.firstChild.attributes.hybrid;
-	        __aerialVersion = event.xml.firstChild.attributes.aerial;
+		{			
+			var attrib:Object = event.xml.firstChild.attributes;			
+			
+			trace(__versionSource+' loaded (road='+attrib.road+' hybrid='+attrib.hybrid+' aerial='+attrib.aerial+')');			
+			
+			if(attrib.road!=null) __roadVersion = attrib.road;
+	        if(attrib.hybrid!=null)__hybridVersion = attrib.hybrid;
+	        if(attrib.aerial!=null) __aerialVersion = attrib.aerial;
+	        
 			processQueue();
 		}
 		
 		protected function onVersionResponseError(event:ThrottledRequestEvent):void
 		{
+			//trace('Failed to load Google Version XML. Using defaults');			
 		    // just use the defaults, I guess.
 			processQueue();
 		}		

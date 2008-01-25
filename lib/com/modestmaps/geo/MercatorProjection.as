@@ -5,7 +5,6 @@
 package com.modestmaps.geo
 {
 	import flash.geom.Point;
-	import com.modestmaps.core.Coordinate;
 	import com.modestmaps.geo.Transformation;
 	import com.modestmaps.geo.AbstractProjection; 
 	 

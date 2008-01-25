@@ -7,9 +7,7 @@
 package com.modestmaps.io
 {
 	import com.modestmaps.io.IRequest;
-	import com.modestmaps.io.ThrottledRequest;
 	import com.modestmaps.events.ThrottledRequestEvent;
-	import flash.display.Loader;
 	import flash.utils.Timer;
 	import flash.events.TimerEvent;
 	

@@ -16,8 +16,6 @@ package com.modestmaps.core
     import flash.utils.Dictionary;
     import flash.geom.Rectangle;
     import flash.events.MouseEvent;
-    import flash.geom.Transform;
-    import flash.geom.Matrix;
     import flash.events.Event;
     import flash.display.Stage;
     
@@ -91,6 +89,8 @@ package com.modestmaps.core
             _draggable = draggable;
             _mapProvider = provider;
         
+            cacheAsBitmap = true;
+        	
             buildWell();
             buildMask();
             allowPainting(true);
@@ -678,7 +678,7 @@ package com.modestmaps.core
             if(positionTiles())
                 updateMarkers();
                 
-            trace("allocateTiles(): " + _tiles.length);
+            //trace("allocateTiles(): " + _tiles.length);
         }
         
        /**
@@ -725,7 +725,7 @@ package com.modestmaps.core
         */
         protected function normalizeWell():void
         {
-            trace("normalizing well");
+            //trace("normalizing well");
             if(!_tiles) {
                 return;
             }
@@ -736,12 +736,12 @@ package com.modestmaps.core
             // just in case?
             centerWell(true);
     
-                trace("well scale: " + _well.scaleX + " " + _well.scaleY);
+                //trace("well scale: " + _well.scaleX + " " + _well.scaleY);
             if(Math.abs(_well.scaleX - 1.0) < 0.01) {
                 active = activeTiles();
             
                 // set to 100% if within 99% - 101%
-                trace("scaling well to 100% from " + _well.scaleX*100 + "%");
+                //trace("scaling well to 100% from " + _well.scaleX*100 + "%");
                 _well.scaleX = _well.scaleY = 1.0;
                 
                 active.sort(compareTileRowColumn);
@@ -790,7 +790,7 @@ package com.modestmaps.core
                     _tiles[j].scaleY = _tiles[j].scaleY * scaleAdjust;
                 }
             
-                trace('Scaled to '+zoomLevel+', '+(_well.scaleX*100.0)+'%');
+                //trace('Scaled to '+zoomLevel+', '+(_well.scaleX*100.0)+'%');
                 markers.indexAtZoom(zoomLevel);
             }
         }
@@ -812,7 +812,7 @@ package com.modestmaps.core
         */
         protected function splitTiles():void
         {
-            trace("splitting tiles");
+            //trace("splitting tiles");
             var condemnedTiles:/*Tile*/Array = [];
             var referenceTile:Tile, newTile:Tile;
             var xOffset:Number, yOffset:Number;
@@ -877,7 +877,7 @@ package com.modestmaps.core
         */
         protected function mergeTiles():void
         {
-            trace("merging tiles");
+            //trace("merging tiles");
             var condemnedTiles:/*Tile*/Array = [];
             var referenceTile:Tile, newTile:Tile;
         
@@ -1007,14 +1007,14 @@ package com.modestmaps.core
             // check for newly-visible markers
             for (id in newOverlappingMarkers) {
                 if(newOverlappingMarkers[id] && !_overlappingMarkers[id]) {
-                    _map.onMarkerEnters(id, markers.getMarker(id).location);
+                    //_map.onMarkerEnters(id, markers.getMarker(id).location);
                     _overlappingMarkers[id] = true;
                 }
             }
             
             for (id in _overlappingMarkers) {
                 if(!newOverlappingMarkers[id] && _overlappingMarkers[id]) {
-                    _map.onMarkerLeaves(id, markers.getMarker(id).location);
+                    //_map.onMarkerLeaves(id, markers.getMarker(id).location);
                     delete _overlappingMarkers[id];
                 }
             }

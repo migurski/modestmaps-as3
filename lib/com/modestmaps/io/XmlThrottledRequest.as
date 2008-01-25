@@ -53,7 +53,10 @@ package com.modestmaps.io
 		private function onXMLComplete(event:Event):void
 		{
 			var dispatch:ThrottledRequestEvent = new ThrottledRequestEvent(ThrottledRequestEvent.RESPONSE_COMPLETE);
-			dispatch.xml = new XMLDocument(_loader.data);
+			var xml:XMLDocument = new XMLDocument();
+			xml.ignoreWhite = true;
+			xml.parseXML( _loader.data );
+			dispatch.xml = xml;
 			dispatchEvent(dispatch);
 		}
 		

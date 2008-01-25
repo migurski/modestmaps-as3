@@ -8,7 +8,6 @@
 package com.modestmaps.mapproviders
 {
 	import com.modestmaps.core.Coordinate;
-	import com.modestmaps.mapproviders.AbstractMapProvider;
 	import com.modestmaps.mapproviders.IMapProvider;
 	import flash.display.Sprite;
 	

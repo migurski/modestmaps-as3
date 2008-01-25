@@ -2,11 +2,9 @@ package com.modestmaps.io
 {
 	import com.modestmaps.core.Coordinate;
 	import com.modestmaps.io.LoadMovieThrottledRequest;
-	import com.modestmaps.io.ThrottledRequest;
 	import com.modestmaps.events.ThrottledRequestEvent;
 	import com.modestmaps.events.ThrottledRequestErrorEvent;
 
-	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.display.Sprite;
@@ -27,16 +25,17 @@ package com.modestmaps.io
 			_coord = coord;
 		}
 
-		private function onClipAdded(event:Event):void
-		{
-			var e:ThrottledRequestEvent = new ThrottledRequestEvent(ThrottledRequestEvent.RESPONSE_COMPLETE);
-			e.sprite = _sprite;
-			e.request = _request;
-			e.status = _httpStatus;
-			e.coord = _coord;
-			dispatchEvent(e);
-			cleanup();
-		}
+//		// no longer being used
+//		private function onClipAdded(event:Event):void
+//		{
+//			var e:ThrottledRequestEvent = new ThrottledRequestEvent(ThrottledRequestEvent.RESPONSE_COMPLETE);
+//			e.sprite = _sprite;
+//			e.request = _request;
+//			e.status = _httpStatus;
+//			e.coord = _coord;
+//			dispatchEvent(e);
+//			cleanup();
+//		}
 		
 		// needs to be overridden so that we have access to coord
 		override protected function onSpriteLoaded(event:Event):void

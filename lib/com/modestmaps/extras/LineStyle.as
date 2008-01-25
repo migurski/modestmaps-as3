@@ -27,7 +27,7 @@ package com.modestmaps.extras
         
         public function apply(graphics:Graphics, mod:Number=1):void
         {
-            graphics.lineStyle(thickness*mod, color, alpha, pixelHinting, scaleMode, caps, joints, miterLimit)
+            graphics.lineStyle(thickness*mod, color, alpha, pixelHinting, scaleMode, caps, joints, miterLimit);
         }
     }    
 }

@@ -7,7 +7,6 @@ package com.modestmaps.io
 	import com.modestmaps.events.ThrottledRequestErrorEvent;
 
 	import flash.display.Loader;
-	import flash.system.LoaderContext;
 	import flash.display.Sprite;
 	import flash.events.*;
 	import flash.net.URLRequest;

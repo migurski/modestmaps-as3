@@ -7,8 +7,8 @@ package com.modestmaps.events
 	import flash.events.Event;
 	import flash.geom.Point;
 	import com.modestmaps.core.MapExtent;
-	import com.modestmaps.geo.Location;
-	import com.modestmaps.core.Coordinate;
+	//import com.modestmaps.geo.Location;
+	//import com.modestmaps.core.Coordinate;
 
 	public class MapEvent extends Event
 	{

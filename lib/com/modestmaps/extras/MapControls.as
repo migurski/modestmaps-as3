@@ -1,17 +1,7 @@
-package com.modestmaps.extras
-{
-    import com.modestmaps.Map;
-    
-    import flash.display.CapsStyle;
-    import flash.display.JointStyle;
-    import flash.display.Sprite;
-    import flash.events.Event;
-    import flash.events.KeyboardEvent;
-    import flash.events.MouseEvent;
-    import flash.geom.ColorTransform;
-    import flash.ui.Keyboard;
-
-    public class MapControls extends Sprite
+package com.modestmaps.extras {
+	
+    import flash.display.Sprite;    import flash.events.Event;    import flash.events.KeyboardEvent;    import flash.events.MouseEvent;    import flash.filters.DropShadowFilter;    import flash.geom.ColorTransform;    import flash.ui.Keyboard;        import com.modestmaps.Map;    import com.modestmaps.events.MapEvent;    
+    public class MapControls extends Sprite
     {
         public var leftButton:Sprite = new Sprite();
         public var rightButton:Sprite = new Sprite();
@@ -28,7 +18,7 @@ package com.modestmaps.extras
         private var fullScreen:Boolean;
         
         private var overTransform:ColorTransform = new ColorTransform(1,1,1);
-        private var outTransform:ColorTransform = new ColorTransform(1,1,0);
+        private var outTransform:ColorTransform = new ColorTransform(1,.9,.6);
 
         private var buttons:Array;
 
@@ -37,6 +27,8 @@ package com.modestmaps.extras
             this.map = map;
             this.keyboard = keyboard;
             this.fullScreen = fullScreen;
+            
+            filters = [ new DropShadowFilter(1,45,0,1,3,3,.7,2) ];
             
             var buttonSprite:Sprite = new Sprite();
             addChild(buttonSprite);
@@ -109,7 +101,7 @@ package com.modestmaps.extras
             outButton.graphics.lineTo(3,0);
             outButton.graphics.lineTo(-3,0);
             
-            addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+            addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);           
 
         }
         
@@ -127,7 +119,12 @@ package com.modestmaps.extras
         {
             if (keyboard) stage.addEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
             if (fullScreen) stage.addEventListener(FullScreenButton.FULL_SCREEN, onFullScreenEvent);
-            stage.addEventListener(Event.RESIZE, onStageResize);    
+            
+            // since our size is based on map size, wait for map to be resized, so we don't 
+            // accidentally get sized before the map on stage resize events            
+//			stage.addEventListener(Event.RESIZE, onStageResize);  
+            map.addEventListener( MapEvent.RESIZED, onStageResize );  
+            
             onStageResize(null);
         }
 
@@ -135,7 +132,7 @@ package com.modestmaps.extras
         {
             var b:Sprite = (event.target as Sprite);
             b.transform.colorTransform = overTransform;
-            b.scaleX = b.scaleY = 1.1;
+            //b.scaleX = b.scaleY = 1.1;
         }
         private function onButtonMouseOut(event:MouseEvent):void
         {
@@ -199,22 +196,10 @@ package com.modestmaps.extras
     	{
             onStageResize(null);
     	}
-
-        
     }
 }
-
-
-import flash.display.Sprite;
-import flash.events.ContextMenuEvent;
-import flash.events.Event;
-import flash.ui.ContextMenu;
-import flash.ui.ContextMenuItem;
-import flash.display.CapsStyle;
-import flash.display.JointStyle;
-import flash.display.Shape;
-
-class FullScreenButton extends Sprite
+import flash.display.CapsStyle;import flash.display.JointStyle;import flash.display.Shape;import flash.display.Sprite;import flash.events.ContextMenuEvent;import flash.events.Event;import flash.ui.ContextMenu;import flash.ui.ContextMenuItem;
+class FullScreenButton extends Sprite
 {
 	// because StageDisplayState and FullScreenEvent seem to be missing from my
 	// build of Flex Builder:

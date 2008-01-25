@@ -7,7 +7,7 @@ package com.modestmaps.core {
 
 	import com.modestmaps.Map;
 	import com.modestmaps.events.MapEvent;
-	import com.modestmaps.events.MarkerEvent;
+	//import com.modestmaps.events.MarkerEvent;
 	import com.modestmaps.geo.Location;
 	
 	import flash.display.DisplayObject;
@@ -15,8 +15,9 @@ package com.modestmaps.core {
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
-	
-	/** This is different from the as2 version for now, because
+	//import flash.events.MouseEvent;	
+
+    /** This is different from the as2 version for now, because
 	 *  it makes more sense to me if you give it a Sprite 
 	 *  (or DisplayObject) to take care of rather than ask it to
 	 *  make one for you.
@@ -37,11 +38,17 @@ package com.modestmaps.core {
 	
 	    public function MarkerClip(map:Map)
 	    {
+	    	// client code can listen to mouse events on this clip
+	    	// to get all events bubbled up from the markers
+	    	buttonMode = false;
+	    	mouseEnabled = false;
+	    	mouseChildren = true;
+	    		    	
 	    	this.map = map;
 	    	this.x = map.getWidth() / 2;
 	    	this.y = map.getHeight() / 2;
-	        map.addEventListener(MarkerEvent.ENTER, onMapMarkerEnters);
-	        map.addEventListener(MarkerEvent.LEAVE, onMapMarkerLeaves);
+	        //map.addEventListener(MarkerEvent.ENTER, onMapMarkerEnters);
+	        //map.addEventListener(MarkerEvent.LEAVE, onMapMarkerLeaves);
 	        map.addEventListener(MapEvent.START_ZOOMING, onMapStartZooming);
 	        map.addEventListener(MapEvent.STOP_ZOOMING, onMapStopZooming);
 	        map.addEventListener(MapEvent.ZOOMED_BY, onMapZoomedBy);
@@ -50,9 +57,9 @@ package com.modestmaps.core {
 	        map.addEventListener(MapEvent.PANNED, onMapPanned);
 	        map.addEventListener(MapEvent.RESIZED, onMapResized);
 	        map.addEventListener(MapEvent.EXTENT_CHANGED, updateClips);
-	    }
-	    
-	    public function attachMarker(marker:DisplayObject, location:Location):void
+        }
+
+        public function attachMarker(marker:DisplayObject, location:Location):void
 	    {
 	        // TODO: optionally index markers and throw marker events?
 	        //map.grid.putMarker(marker.name, map.getMapProvider().locationCoordinate(location), location);
@@ -77,6 +84,10 @@ package com.modestmaps.core {
 	        return markersByName[id] as DisplayObject;
 	    }
 	    
+	    public function getMarkerLocation( marker:DisplayObject ) : Location {
+	    	return locations[marker];
+	    }
+	    
 	    public function removeMarker(id:String):void
 	    {
 	        //map.grid.removeMarker(id);
@@ -98,6 +109,9 @@ package com.modestmaps.core {
 	        var w:Number = map.getWidth() * 2;
 	        var h:Number = map.getHeight() * 2;
 	    	for each (var marker:DisplayObject in markers) {
+	    	    
+	    	    // TODO: note, hidden markers are not updated, so when 
+	    	    // revealing markers using visible=true, they may end up in the wrong spot ?
 	    	    if (marker.visible) {
 	                updateClip(marker);
         	        if (marker.x > -w/2 && marker.x < w/2 && marker.y > -h/2 && marker.y < h/2) {
@@ -121,31 +135,31 @@ package com.modestmaps.core {
 	        marker.y = point.y;
 	    }
 	    	    
-	    /** This uses addChild, and onMapMarkerLeaves uses removeChild, 
-	     *  so that you're free to mess with .visible=true/false
-	     *  yourself if you want to filter markers 
-	     */
-	    private function onMapMarkerEnters(event:MarkerEvent):void
-	    {
- 	    	if (!getChildByName(event.marker)) {
- 	    		var marker:DisplayObject = getMarker(event.marker);
- 	    		if (marker) {
-	    		    addChild(marker);
-	    		}
-	    	} 
-	    }
-
-	    /** This uses removeChild, and onMapMarkerEnters uses removeChild, 
-	     *  so that you're free to mess with .visible=true/false
-	     *  yourself if you want to filter markers 
-	     */
-	    private function onMapMarkerLeaves(event:MarkerEvent):void
-	    {
- 	    	if (getChildByName(event.marker)) {
- 	    		var marker:DisplayObject = getMarker(event.marker);
-	    		removeChild(marker);
-	    	} 
-	    }
+//	    /** This uses addChild, and onMapMarkerLeaves uses removeChild, 
+//	     *  so that you're free to mess with .visible=true/false
+//	     *  yourself if you want to filter markers 
+//	     */
+//	    private function onMapMarkerEnters(event:MarkerEvent):void
+//	    {
+// 	    	if (!getChildByName(event.marker)) {
+// 	    		var marker:DisplayObject = getMarker(event.marker);
+// 	    		if (marker) {
+//	    		    addChild(marker);
+//	    		}
+//	    	} 
+//	    }
+//
+//	    /** This uses removeChild, and onMapMarkerEnters uses removeChild, 
+//	     *  so that you're free to mess with .visible=true/false
+//	     *  yourself if you want to filter markers 
+//	     */
+//	    private function onMapMarkerLeaves(event:MarkerEvent):void
+//	    {
+// 	    	if (getChildByName(event.marker)) {
+// 	    		var marker:DisplayObject = getMarker(event.marker);
+//	    		removeChild(marker);
+//	    	} 
+//	    }
 	    	    
 	    private function onMapStartPanning(event:MapEvent):void
 	    {

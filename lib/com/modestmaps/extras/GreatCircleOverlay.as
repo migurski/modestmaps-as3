@@ -5,7 +5,7 @@ package com.modestmaps.extras
     import com.modestmaps.geo.Location;
     
     import flash.display.Sprite;
-    import flash.filters.DropShadowFilter;
+    //import flash.filters.DropShadowFilter;
     import flash.geom.Point;
     import flash.utils.Dictionary;
     
@@ -33,7 +33,7 @@ package com.modestmaps.extras
                 var i:int = 0;
                 var prev:Location;
                 for each (var location:Location in line.slice(1)) {
-                    var thickness:Number = Math.min(1,1-Math.abs(i-(line.length/2))/(line.length/3))
+                    var thickness:Number = Math.min(1,1-Math.abs(i-(line.length/2))/(line.length/3));
 /*                     if (i % 4 == 0 && i != line.length-1) {
                         sprite.graphics.lineStyle();
                     }
@@ -74,14 +74,14 @@ package com.modestmaps.extras
                 var numSegments:int = int(40 + (400 * Distance.approxDistance(start,end) / (Math.PI * 2 * 6378000)));
     			for (var n:int = 0 ; n < numSegments; n++ ) {
     				var f:Number = (1/(numSegments-1)) * n;
-    				var A:Number = sin((1-f)*d)/sin(d)
-    				var B:Number = sin(f*d)/sin(d)
-    				var x:Number = A*cos(lat1)*cos(lon1) +  B*cos(lat2)*cos(lon2)
-    				var y:Number = A*cos(lat1)*sin(lon1) +  B*cos(lat2)*sin(lon2)
-    				var z:Number = A*sin(lat1)           +  B*sin(lat2)
+    				var A:Number = sin((1-f)*d)/sin(d);
+    				var B:Number = sin(f*d)/sin(d);
+    				var x:Number = A*cos(lat1)*cos(lon1) +  B*cos(lat2)*cos(lon2);
+    				var y:Number = A*cos(lat1)*sin(lon1) +  B*cos(lat2)*sin(lon2);
+    				var z:Number = A*sin(lat1)           +  B*sin(lat2);
     
-    				var latN:Number = atan2(z,sqrt(pow(x,2)+pow(y,2)))
-    				var lonN:Number = atan2(y,x)
+    				var latN:Number = atan2(z,sqrt(pow(x,2)+pow(y,2)));
+    				var lonN:Number = atan2(y,x);
     				var l:Location = new Location(latN/(PI/180), lonN/(PI/180));
     				latlngs.push(l);
     				extent.enclose(l);

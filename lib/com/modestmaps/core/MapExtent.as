@@ -4,9 +4,7 @@
 
 package com.modestmaps.core
 {
-	import flash.geom.Point;
 	import com.modestmaps.geo.Location;
-	import flash.net.LocalConnection;
 	
 	public class MapExtent extends Object
 	{

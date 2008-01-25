@@ -7,7 +7,7 @@ package com.modestmaps.core
 {
 	import com.modestmaps.core.Coordinate;
 	import com.modestmaps.core.Marker;
-	import com.modestmaps.core.Tile;
+	//import com.modestmaps.core.Tile;
 	import com.modestmaps.core.TileGrid;
 
 	import flash.utils.Dictionary;

@@ -6,8 +6,7 @@ package com.modestmaps.mapproviders.yahoo
 	import com.modestmaps.mapproviders.IMapProvider;
 	import com.modestmaps.mapproviders.yahoo.AbstractYahooMapProvider;
 	import flash.display.Sprite;
-	import flash.system.LoaderContext;
-	import flash.display.LoaderInfo;
+	//import flash.display.LoaderInfo;
 	
 	/**
 	 * @author darren
@@ -60,11 +59,11 @@ package com.modestmaps.mapproviders.yahoo
 			return zoomString; 
 		}	
 	
-		private function isClipLoaded( sprite:Sprite ):Boolean
-		{
-			var info:LoaderInfo = sprite.loaderInfo;
-			return info.bytesTotal > 0 && info.bytesLoaded == info.bytesTotal;
-		}
+//		private function isClipLoaded( sprite:Sprite ):Boolean
+//		{
+//			var info:LoaderInfo = sprite.loaderInfo;
+//			return info.bytesTotal > 0 && info.bytesLoaded == info.bytesTotal;
+//		}
 	
 		// Event Handlers
 		

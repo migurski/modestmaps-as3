@@ -1,13 +1,11 @@
-package com.modestmaps.extras
-{
-    import com.modestmaps.Map;
-    import com.modestmaps.events.MapEvent;
-    import com.modestmaps.geo.Location;
-    
-    import flash.display.BlendMode;
+package com.modestmaps.extras 
+{	
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.geom.Point;
+    
+    import com.modestmaps.Map;
+    import com.modestmaps.events.MapEvent;    
 
     /** Overlay simplifies adding vector graphics to your map.  
      * Subclass Overlay and override the redraw(sprite:Sprite) method to use it.
