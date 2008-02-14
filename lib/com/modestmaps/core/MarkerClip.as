@@ -26,10 +26,10 @@ package com.modestmaps.core {
 	{
 		// TODO: mask me?
 	    protected var map:Map;
-	    private var starting:Point;
-	    private var locations:Dictionary = new Dictionary();
+	    protected var starting:Point;
+	    protected var locations:Dictionary = new Dictionary();
 	    protected var markers:Array = []; // all markers
-	    private var markersByName:Object = {};
+	    protected var markersByName:Object = {};
 
         // enable this if you want intermediate zooming steps to
         // stretch your graphics instead of reprojecting the points
@@ -47,6 +47,12 @@ package com.modestmaps.core {
 	    	this.map = map;
 	    	this.x = map.getWidth() / 2;
 	    	this.y = map.getHeight() / 2;
+	    	
+	    	addListeners();
+	    }
+	    
+	    public function addListeners():void
+	    {
 	        //map.addEventListener(MarkerEvent.ENTER, onMapMarkerEnters);
 	        //map.addEventListener(MarkerEvent.LEAVE, onMapMarkerLeaves);
 	        map.addEventListener(MapEvent.START_ZOOMING, onMapStartZooming);
@@ -57,6 +63,18 @@ package com.modestmaps.core {
 	        map.addEventListener(MapEvent.PANNED, onMapPanned);
 	        map.addEventListener(MapEvent.RESIZED, onMapResized);
 	        map.addEventListener(MapEvent.EXTENT_CHANGED, updateClips);
+        }
+        
+        public function removeListeners():void
+        {
+	        map.removeEventListener(MapEvent.START_ZOOMING, onMapStartZooming);
+	        map.removeEventListener(MapEvent.STOP_ZOOMING, onMapStopZooming);
+	        map.removeEventListener(MapEvent.ZOOMED_BY, onMapZoomedBy);
+	        map.removeEventListener(MapEvent.START_PANNING, onMapStartPanning);
+	        map.removeEventListener(MapEvent.STOP_PANNING, onMapStopPanning);
+	        map.removeEventListener(MapEvent.PANNED, onMapPanned);
+	        map.removeEventListener(MapEvent.RESIZED, onMapResized);
+	        map.removeEventListener(MapEvent.EXTENT_CHANGED, updateClips);        	
         }
 
         public function attachMarker(marker:DisplayObject, location:Location):void
@@ -139,7 +157,7 @@ package com.modestmaps.core {
 //	     *  so that you're free to mess with .visible=true/false
 //	     *  yourself if you want to filter markers 
 //	     */
-//	    private function onMapMarkerEnters(event:MarkerEvent):void
+//	    protected function onMapMarkerEnters(event:MarkerEvent):void
 //	    {
 // 	    	if (!getChildByName(event.marker)) {
 // 	    		var marker:DisplayObject = getMarker(event.marker);
@@ -153,7 +171,7 @@ package com.modestmaps.core {
 //	     *  so that you're free to mess with .visible=true/false
 //	     *  yourself if you want to filter markers 
 //	     */
-//	    private function onMapMarkerLeaves(event:MarkerEvent):void
+//	    protected function onMapMarkerLeaves(event:MarkerEvent):void
 //	    {
 // 	    	if (getChildByName(event.marker)) {
 // 	    		var marker:DisplayObject = getMarker(event.marker);
@@ -161,12 +179,12 @@ package com.modestmaps.core {
 //	    	} 
 //	    }
 	    	    
-	    private function onMapStartPanning(event:MapEvent):void
+	    protected function onMapStartPanning(event:MapEvent):void
 	    {
 	        starting = new Point(x, y);
 	    }
 	    
-	    private function onMapPanned(event:MapEvent):void
+	    protected function onMapPanned(event:MapEvent):void
 	    {
 	        if (starting) {
 	            x = starting.x + event.panDelta.x;
@@ -178,7 +196,7 @@ package com.modestmaps.core {
 	        }
 	    }
 	    
-	    private function onMapStopPanning(event:MapEvent):void
+	    protected function onMapStopPanning(event:MapEvent):void
 	    {
 	    	if (starting) {
 		        x = starting.x;
@@ -187,19 +205,19 @@ package com.modestmaps.core {
 	        updateClips();
 	    }
 	    
-	    private function onMapResized(event:MapEvent):void
+	    protected function onMapResized(event:MapEvent):void
 	    {
 	        x = event.newSize[0]/2;
 	        y = event.newSize[1]/2;
 	        updateClips();
 	    }
 	    
-	    private function onMapStartZooming(event:MapEvent):void
+	    protected function onMapStartZooming(event:MapEvent):void
 	    {
 	        // updateClips(); 
 	    }
 	    
-	    private function onMapStopZooming(event:MapEvent):void
+	    protected function onMapStopZooming(event:MapEvent):void
 	    {
 	        if (scaleZoom) {
 	            scaleX = scaleY = 1.0;
@@ -207,7 +225,7 @@ package com.modestmaps.core {
             updateClips();
 	    }
 	    
-	    private function onMapZoomedBy(event:MapEvent):void
+	    protected function onMapZoomedBy(event:MapEvent):void
 	    {
 	        if (scaleZoom) {
     	        scaleX = scaleY = Math.pow(2, event.zoomDelta);

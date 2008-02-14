@@ -10,9 +10,10 @@ package com.modestmaps.geo
 	    public var lat:Number;
 	    public var lon:Number;
 	
-		public static function fromString(str:String):Location
+		public static function fromString(str:String, lonLat:Boolean=false):Location
 		{
 			var parts:Array = str.split(/\s*,\s*/, 2);
+			if (lonLat) parts = parts.reverse();
 			return new Location(parseFloat(parts[0]), parseFloat(parts[1]));
 		}
 
