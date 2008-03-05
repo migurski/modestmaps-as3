@@ -100,6 +100,21 @@ package com.modestmaps.core
 			east = se.lon;
 		}
 		
+		public function get center():Location
+		{
+		    return new Location(south + (north - south) / 2, east + (west - east) / 2);
+		}
+
+        public function set center(value:Location):void
+        {
+            var w:Number = east - west;
+            var h:Number = north - south;
+            north = value.lat - h / 2;
+            south = value.lat + h / 2;
+            east = value.lon + w / 2;
+            west = value.lon - w / 2;
+        }
+
 		/** @return "north, south, east, west" */
 		public function toString():String
 		{
