@@ -7,7 +7,6 @@ package com.modestmaps.core {
 
 	import com.modestmaps.Map;
 	import com.modestmaps.events.MapEvent;
-	//import com.modestmaps.events.MarkerEvent;
 	import com.modestmaps.geo.Location;
 	
 	import flash.display.DisplayObject;
@@ -104,6 +103,11 @@ package com.modestmaps.core {
 	    
 	    public function getMarkerLocation( marker:DisplayObject ) : Location {
 	    	return locations[marker];
+	    }
+	    
+	    public function setMarkerLocation(marker:DisplayObject, location:Location):void
+	    {
+	        locations[marker] = location;
 	    }
 	    
 	    public function removeMarker(id:String):void

@@ -85,7 +85,12 @@ package com.modestmaps.io
 		{
 			if (_loader)
 			{
-				/*
+                _loader.contentLoaderInfo.removeEventListener(Event.INIT, onSpriteLoaded);
+                // _loader.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS, onLoaderProgress);
+                _loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onLoadError);
+                _loader.contentLoaderInfo.removeEventListener(HTTPStatusEvent.HTTP_STATUS, onHTTPStatus);
+
+                /*
 				 * FIXME: there must be a better way to know if the Loader has an open connection.
 				 * For now, we'll just try to close it and catch the exception if it hasn't been
 				 * opened yet.

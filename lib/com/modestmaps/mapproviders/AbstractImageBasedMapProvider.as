@@ -15,10 +15,11 @@
 package com.modestmaps.mapproviders
 { 
 	import com.modestmaps.core.Coordinate;
-	import com.modestmaps.io.MapProviderPaintThrottledRequest;
-	import com.modestmaps.events.ThrottledRequestEvent;
-	import flash.display.Sprite;
 	import com.modestmaps.events.ThrottledRequestErrorEvent;
+	import com.modestmaps.events.ThrottledRequestEvent;
+	import com.modestmaps.io.MapProviderPaintThrottledRequest;
+	
+	import flash.display.Sprite;
 	import flash.events.ErrorEvent;
 	
 	public class AbstractImageBasedMapProvider extends AbstractMapProvider 
@@ -52,7 +53,17 @@ package com.modestmaps.mapproviders
 			
 			// createLabel(sprite, coord.toString());
 		}
-	
+
+        protected function removeRequestListeners(request:MapProviderPaintThrottledRequest):void
+        {
+            if (request)
+            {	
+                request.removeEventListener(ThrottledRequestEvent.REQUEST_ERROR, onRequestError);
+                request.removeEventListener(ThrottledRequestEvent.RESPONSE_COMPLETE, onResponseComplete);
+                request.removeEventListener(ThrottledRequestEvent.RESPONSE_ERROR, onResponseError);
+            }
+        }
+        
 		/*
 		 * Returns the url needed to get the tile image. 
 		 */
@@ -69,6 +80,7 @@ package com.modestmaps.mapproviders
 		 */
 		protected function onRequestError(event:ThrottledRequestEvent):void
 		{
+		    removeRequestListeners(event.target as MapProviderPaintThrottledRequest);
 		    paintFailure(event.sprite);
 		}
 		
@@ -77,6 +89,7 @@ package com.modestmaps.mapproviders
 		 */
 		protected function onResponseComplete(event:ThrottledRequestEvent):void
 		{
+            removeRequestListeners(event.target as MapProviderPaintThrottledRequest);
 			raisePaintComplete(event.sprite, event.coord);
 		}
 		
@@ -85,6 +98,7 @@ package com.modestmaps.mapproviders
 		 */
 		protected function onResponseError(event:ThrottledRequestErrorEvent):void
 		{
+            removeRequestListeners(event.target as MapProviderPaintThrottledRequest);
 			if (event.sprite)
 			{
 		    	paintFailure(event.sprite);
