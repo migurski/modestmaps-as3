@@ -435,6 +435,7 @@ package com.modestmaps
 				setExtent(extent);
 			}
 			
+			dispatchEvent(new MapEvent(MapEvent.PROVIDER_CHANGED, true));
 			Reactor.callLater(1000,callCopyright);
 		}
 		

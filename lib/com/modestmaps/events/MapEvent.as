@@ -4,9 +4,11 @@
 
 package com.modestmaps.events
 {
+	import com.modestmaps.core.MapExtent;
+	import com.modestmaps.mapproviders.IMapProvider;
+	
 	import flash.events.Event;
 	import flash.geom.Point;
-	import com.modestmaps.core.MapExtent;
 	//import com.modestmaps.geo.Location;
 	//import com.modestmaps.core.Coordinate;
 
@@ -35,6 +37,9 @@ package com.modestmaps.events
 	    
 	    public static const EXTENT_CHANGED:String = 'extentChanged';
 		public var newExtent:MapExtent;
+		
+		public static const PROVIDER_CHANGED:String = 'providerChanged';
+		public var newMapProvider:IMapProvider;
 
 		public function MapEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
