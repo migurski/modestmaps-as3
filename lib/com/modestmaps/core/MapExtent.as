@@ -6,6 +6,8 @@ package com.modestmaps.core
 {
 	import com.modestmaps.geo.Location;
 	
+	import flash.geom.Rectangle;
+	
 	public class MapExtent extends Object
 	{
 		// TODO: OK for rectangular projections, but we need a better way for other projections
@@ -115,10 +117,23 @@ package com.modestmaps.core
             west = value.lon - w / 2;
         }
 
+        public function getRect():Rectangle
+        {
+            var rect:Rectangle = new Rectangle(Math.min(east, west), Math.min(north, south));
+            rect.right = Math.max(east, west);
+            rect.bottom = Math.max(north, south);
+            return rect;
+        }
+        
+        public function contains(location:Location):Boolean
+        {
+            return getRect().contains(location.lon, location.lat);
+        }
+
 		/** @return "north, south, east, west" */
 		public function toString():String
 		{
-			return [north, west, south, east].toString();
+			return [north, south, east, west].join(', ');
 		}
 	}
 }
