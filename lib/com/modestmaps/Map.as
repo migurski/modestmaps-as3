@@ -447,7 +447,7 @@ package com.modestmaps
 		*
 		* @return   Matching point.
 		*/
-		public function locationPoint(location:Location, context:Sprite):Point
+		public function locationPoint(location:Location, context:DisplayObject):Point
 		{
 			var coord:Coordinate = __mapProvider.locationCoordinate(location);
 			return grid.coordinatePoint(coord, context);
@@ -461,7 +461,7 @@ package com.modestmaps
 		*
 		* @return   Matching location.
 		*/
-		public function pointLocation(point:Point, context:Sprite):Location
+		public function pointLocation(point:Point, context:DisplayObject):Location
 		{
 			var coord:Coordinate = grid.pointCoordinate(point, context);
 			return __mapProvider.coordinateLocation(coord);

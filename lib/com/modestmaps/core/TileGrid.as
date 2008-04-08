@@ -10,6 +10,7 @@ package com.modestmaps.core
     import com.modestmaps.mapproviders.IMapProvider;
     import com.stamen.twisted.*;
     
+    import flash.display.DisplayObject;
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.MouseEvent;
@@ -322,7 +323,7 @@ package com.modestmaps.core
         *
         * Respect infinite rows or columns, to bind movement on one (or no) axis.
         */
-        public function coordinatePoint(coord:Coordinate, context:Sprite, fearBigNumbers:Boolean=false):Point
+        public function coordinatePoint(coord:Coordinate, context:DisplayObject, fearBigNumbers:Boolean=false):Point
         {
             // pick a reference tile, an arbitrary choice
             // but known to exist regardless of grid size.
@@ -376,7 +377,7 @@ package com.modestmaps.core
             return point;
         }
         
-        public function pointCoordinate(point:Point, context:Sprite=null):Coordinate
+        public function pointCoordinate(point:Point, context:DisplayObject=null):Coordinate
         {
             var tile:Tile;
             var tileCoord:Coordinate;
