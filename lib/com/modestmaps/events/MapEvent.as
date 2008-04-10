@@ -41,7 +41,7 @@ package com.modestmaps.events
 		public static const PROVIDER_CHANGED:String = 'providerChanged';
 		public var newMapProvider:IMapProvider;
 
-		public function MapEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
+		public function MapEvent(type:String, bubbles:Boolean=true, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);
 		}

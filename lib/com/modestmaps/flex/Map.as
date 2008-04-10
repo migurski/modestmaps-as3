@@ -25,11 +25,10 @@ package com.modestmaps.flex
 	import com.modestmaps.events.MapEvent;
 	import com.modestmaps.geo.*;
 	import com.modestmaps.mapproviders.*;
-	import com.modestmaps.mapproviders.microsoft.*;
 	import com.modestmaps.mapproviders.google.*;
+	import com.modestmaps.mapproviders.microsoft.*;
 	import com.modestmaps.mapproviders.yahoo.*;
 	
-	import flash.events.Event;
 	import mx.core.UIComponent;
 
 	/**
@@ -64,6 +63,36 @@ package com.modestmaps.flex
 		{
 			super();
 		}
+
+
+
+		override protected function commitProperties():void
+		{
+			super.commitProperties();
+			
+			if (_map!=null)
+			{
+				if (mapZoomDirty)
+				{
+					_map.setZoom(_zoom);
+					mapZoomDirty = false;
+				}
+				
+				if (mapCenterDirty)
+				{
+					_map.setCenter(_centerLocation);
+					mapCenterDirty = false;
+				}
+				
+				if (mapExtentDirty)
+				{
+					_map.setExtent(_extent);
+					mapExtentDirty = false;
+				}
+			
+			}
+		}
+
 
 		/**
 		 * Since we're not yet supporting the full Map interface,
@@ -244,6 +273,10 @@ package com.modestmaps.flex
 			mapExtentDirty = false;
 			invalidateProperties();
 		}
+		
+		public function get zoom():int {
+			return _zoom;
+		}
 
 		protected var mapProviderDirty:Boolean = true;
 		protected var _mapProvider:IMapProvider = DEFAULT_MAP_PROVIDER;
@@ -342,6 +375,10 @@ package com.modestmaps.flex
 		public function get draggable():Boolean
 		{
 			return _draggable;
+		}
+
+		public function removeAllMarkers():void {
+			map.removeAllMakers();
 		}
 
 		/**

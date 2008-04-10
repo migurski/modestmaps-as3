@@ -15,7 +15,7 @@ package com.modestmaps.events
 		protected var _marker:DisplayObject;
 		protected var _location:Location;
 		
-		public function MarkerEvent(type:String, marker:DisplayObject, location:Location, bubbles:Boolean=false, cancelable:Boolean=false)
+		public function MarkerEvent(type:String, marker:DisplayObject, location:Location, bubbles:Boolean=true, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);
 			_marker = marker;

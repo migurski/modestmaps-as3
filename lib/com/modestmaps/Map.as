@@ -701,6 +701,14 @@ package com.modestmaps
 		{
 			markerClip.removeMarker(id); // also calls grid.removeMarker
 		}
+
+		/** 
+		 * Remove all markers 
+		 */
+		
+		public function removeAllMakers():void {
+			markerClip.removeAllMarkers()
+		}
 		
 	   /**
  		* Call javascript:modestMaps.copyright() with details about current view.

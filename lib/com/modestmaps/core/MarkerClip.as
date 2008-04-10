@@ -124,6 +124,22 @@ package com.modestmaps.core {
     	    	delete markersByName[marker.name];
     	    }
 	    }
+	    
+	    public function removeAllMarkers():void {
+	    	
+	    	/* Loop over all markers and remove displayObjects */
+	    	for each(var marker:DisplayObject in markers)
+	    	{
+	    		if(contains(marker))
+	    			removeChild(marker);
+	    	}
+	    	markers = new Array();
+	    	markersByName = new Array();
+	    	
+	    	locations = new Dictionary();
+	    	
+	    	
+	    }
 	        
 	    public function updateClips(event:Event=null):void
 	    {
