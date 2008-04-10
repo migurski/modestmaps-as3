@@ -29,6 +29,8 @@ package com.modestmaps.flex
 	import com.modestmaps.mapproviders.microsoft.*;
 	import com.modestmaps.mapproviders.yahoo.*;
 	
+	import flash.display.DisplayObject;
+	
 	import mx.core.UIComponent;
 
 	/**
@@ -336,6 +338,23 @@ package com.modestmaps.flex
 			}
 			mapProviderDirty = true;
 			invalidateProperties();
+			invalidateDisplayList();
+		}
+
+
+		/**
+		* Adds a marker (displayObject) to the map. The marker should be a custom DisplayObject that also references any dataObjects you desire, for quick reference on MarkerEvent.CLICK
+		* 
+		* @param Location Object that defines lat/long for marker
+		 * @param marker (DisplayObject) that is used for display.
+		*/		
+		
+		public function addMarker(location:Location, marker:DisplayObject):void {
+			map.putMarker(location,marker);
+		}
+		
+		public function removeMarker(marker:DisplayObject):void {
+			map.removeMarker(marker.name);
 		}
 
 		public function get provider():IMapProvider
