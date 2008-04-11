@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="creationComplete(event);" layout="absolute" xmlns:flex="com.modestmaps.flex.*" viewSourceURL="srcview/index.html">
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.DragEvent;
+			import mx.utils.ObjectUtil;
+			import mx.utils.StringUtil;
+			import com.modestmaps.events.MapProviderEvent;
+			import flash.desktop.NativeDragManager;
+
+			
+			
+			/* ENUMS */
+			[Bindable] private var mapTileProviders:Array = ["GOOGLE_ROAD","GOOGLE_AERIAL","GOOGLE_HYBRID","MICROSOFT_AERIAL","MICROSOFT_ROAD","MICROSOFT_HYBRID","YAHOO_ROAD","YAHOO_AERIAL","YAHOO_HYBRID","ZOOMIFY","OPEN_STREET_MAP","BLUE_MARBLE",];
+	
+			/* Local Reference */
+			private var mouseWheelTimer:Timer = new Timer(150,1);
+			private var mapZoom:Number = 2;
+			
+	
+			private function mapLabelFunction(target:String):String {
+				var tmpStr:String = ObjectUtil.copy(target) as String;
+				
+				while(tmpStr.indexOf("_") != -1) 
+					tmpStr = tmpStr.replace("_"," ");
+				
+				return tmpStr;
+				
+			}
+			
+			private function creationComplete(event:Event):void {
+				mouseWheelTimer.addEventListener(TimerEvent.TIMER_COMPLETE, onMouseWheelTimer);
+				
+				
+				modestMap.map
+			}
+			
+		
+			
+			private function onKeyDown(e:KeyboardEvent):void  {
+				 switch (e.keyCode) {
+				 	 case Keyboard.V:
+				 	  if (e.ctrlKey) {
+				 	  	this.onPaste(); 							
+				 	  	e.preventDefault(); 							
+				 	  	e.stopPropagation(); 						
+				 	  } 						
+				 	 	break; 
+				 }
+			} 
+			
+			private function onPaste():void 			
+			{ 				
+				var data:Object = Clipboard.generalClipboard.getData(ClipboardFormats.TEXT_FORMAT); 				if (data != null) 				
+				{ 					
+					//this.addMarker(data as String);				
+				} 			
+			}  		
+			
+			private function onMapMouseWheel(event:MouseEvent):void {
+				
+				if(mouseWheelTimer.running) {
+					mouseWheelTimer.stop();
+					mouseWheelTimer.reset();
+				}
+				
+				if(event.delta < 0) 
+	        		mapZoom--;
+	        	else
+	        		mapZoom++;
+	        	
+	        	mapZoom = (mapZoom < 0) ? 0 : mapZoom;
+	        	mapZoom = (mapZoom > 15) ? 15 : mapZoom; 
+	        		
+	        		mouseWheelTimer.start();
+			}
+			
+			private function onMouseWheelTimer(event:TimerEvent):void {
+				modestMap.zoom = mapZoom;
+			}	
+			
+			
+		]]>
+	</mx:Script>
+
+	<flex:Map id="modestMap" provider="{tileProviderComboBox.selectedItem}" width="100%" height="100%" mouseWheel="onMapMouseWheel(event);" zoom="2" />
+
+	<mx:ComboBox id="tileProviderComboBox" dataProvider="{mapTileProviders}" labelFunction="mapLabelFunction" top="13" right="41"/>
+
+	
+</mx:WindowedApplication>
