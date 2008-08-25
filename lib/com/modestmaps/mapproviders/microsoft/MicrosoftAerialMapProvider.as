@@ -1,27 +1,15 @@
 
 package com.modestmaps.mapproviders.microsoft
 {
-	import com.modestmaps.core.Coordinate;
-	import com.modestmaps.mapproviders.IMapProvider;
-	import com.modestmaps.mapproviders.microsoft.AbstractMicrosoftMapProvider;
-	
 	/**
 	 * @author darren
 	 * $Id$
 	 */
-	
-	public class MicrosoftAerialMapProvider 
-		extends AbstractMicrosoftMapProvider
-		implements IMapProvider
+	public class MicrosoftAerialMapProvider extends MicrosoftProvider
 	{
-		override public function toString():String
+		public function MicrosoftAerialMapProvider(minZoom:int=MIN_ZOOM, maxZoom:int=MAX_ZOOM)
 		{
-			return "MICROSOFT_AERIAL";
-		}
-		
-		override public function getTileUrl(coord:Coordinate):String
-		{		
-	        return "http://a" + Math.floor(Math.random() * 4) + ".ortho.tiles.virtualearth.net/tiles/a" + getZoomString( coord ) + ".jpeg?g=90";
+			super(AERIAL, true, minZoom, maxZoom);
 		}
 	}
 }

@@ -8,10 +8,9 @@ package com.modestmaps.geo
 	import com.modestmaps.geo.Transformation;
 	import com.modestmaps.geo.AbstractProjection; 
 	 
-	public class MercatorProjection
-		extends AbstractProjection
+	public class MercatorProjection extends AbstractProjection
 	{
-	    function MercatorProjection(zoom:Number, T:Transformation)
+	    public function MercatorProjection(zoom:Number, T:Transformation)
 	    {
 	        super(zoom, T);
 	    }

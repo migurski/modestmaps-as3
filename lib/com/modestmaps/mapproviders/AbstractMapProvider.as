@@ -17,24 +17,16 @@
 package com.modestmaps.mapproviders
 {
 	import com.modestmaps.core.Coordinate;
-	import com.modestmaps.events.MapProviderEvent;
 	import com.modestmaps.geo.IProjection;
-	import com.modestmaps.geo.LinearProjection;
 	import com.modestmaps.geo.Location;
+	import com.modestmaps.geo.MercatorProjection;
 	import com.modestmaps.geo.Transformation;
-	import com.modestmaps.io.RequestThrottler;
 	
-	import flash.display.Sprite;
-	import flash.events.EventDispatcher;
-	import flash.text.TextField;
-	
-	internal class AbstractMapProvider  
-		extends EventDispatcher
-	{
-		// Event Types
-		//public static var EVENT_PAINT_COMPLETE : String = "onPaintComplete"; // TODO: OK to delete? TC
+	public class AbstractMapProvider
+	{		
+		protected static const MIN_ZOOM:int = 1;
+		protected static const MAX_ZOOM:int = 20;
 		
-		protected var __requestThrottler : RequestThrottler;
 		protected var __projection:IProjection;
 		
 		// boundaries for the current provider
@@ -44,28 +36,16 @@ package com.modestmaps.mapproviders
 		/*
 		 * Abstract constructor, should not be instantiated directly.
 		 */
-		public function AbstractMapProvider()
+		public function AbstractMapProvider(minZoom:int=MIN_ZOOM, maxZoom:int=MAX_ZOOM)
 		{
-			__requestThrottler = RequestThrottler.getInstance();
-	
-		    var t:Transformation = new Transformation(1, 0, 0, 0, 1, 0);
-	        __projection = new LinearProjection(Coordinate.MAX_ZOOM, t);
-	
-	        __topLeftOutLimit = new Coordinate(0, 0, 0);
-	        __bottomRightInLimit = (new Coordinate(1, 1, 0)).zoomTo(Coordinate.MAX_ZOOM);
-		}
-	
-		/**
-		 * Paints a map graphic onto the supplied DisplayObject.
-		 * 
-		 * @param sprite The DisplayObject to contain the graphics.
-		 * @param coord The coordinate of the Tile that contains the sprite.
-		 */
-		public function paint(sprite:Sprite, coord:Coordinate):void 
-		{
-			var image:Sprite = new Sprite();
-			image.name = "image";
-			sprite.addChild(image);
+		    // see: http://modestmaps.mapstraction.com/trac/wiki/TileCoordinateComparisons#TileGeolocations
+		    var t:Transformation = new Transformation(1.068070779e7, 0, 3.355443185e7,
+			                                          0, -1.068070890e7, 3.355443057e7);
+						                                          
+	        __projection = new MercatorProjection(26, t);
+
+	        __topLeftOutLimit = new Coordinate(0, Number.NEGATIVE_INFINITY, minZoom);
+	        __bottomRightInLimit = (new Coordinate(1, Number.POSITIVE_INFINITY, 0)).zoomTo(maxZoom);
 		}
 	
 	   /*
@@ -77,47 +57,35 @@ package com.modestmaps.mapproviders
 		}
 	
 		/**
-		 * Generates a copy of the specified coordinate.
+		 * Wraps the column around the earth, doesn't touch the row.
 		 * 
-		 * @param coord The Coordinate to copy.
+		 * Row coordinates shouldn't be outside of outerLimits, 
+		 * so we shouldn't need to worry about them here.
+		 * 
+		 * @param coord The Coordinate to wrap.
 		 */
 	    public function sourceCoordinate(coord:Coordinate):Coordinate
 	    {
-	        return coord.copy();
+		    var wrappedColumn:Number = coord.column % Math.pow(2, coord.zoom);
+	
+		    while (wrappedColumn < 0)
+		    {
+		        wrappedColumn += Math.pow(2, coord.zoom);
+		    }
+		    
+		    // we don't wrap rows here because the map/grid should be enforcing outerLimits :)
+		        
+	        return new Coordinate(coord.row, wrappedColumn, coord.zoom);
 	    }
 	
-	   /*
+	   /**
 	    * Get top left outer-zoom limit and bottom right inner-zoom limits,
 	    * as Coordinates in a two element array.
 	    */
 	    public function outerLimits():/*Coordinate*/Array
 	    {
-	        var limits:/*Coordinate*/Array = new Array();
-	
-	        limits[0] = __topLeftOutLimit.copy();
-	        limits[1] = __bottomRightInLimit.copy();
-	
-	        return limits;
+	        return [ __topLeftOutLimit.copy(), __bottomRightInLimit.copy() ];
 	    }
-	
-		/**
-		 * Creates a text label for debugging purposes.
-		 * 
-		 * @param sprite The DisplayObject to contain the label.
-		 * @param label The text the label.
-		 */
-		public function createLabel(sprite:Sprite, label:String):void
-		{
-			var field:TextField = sprite.getChildByName("label") as TextField;
-			if (!field)
-			{
-				field = new TextField();
-				field.name = "label";
-				field.selectable = false;
-				sprite.addChild(field);
-			}
-			field.text = label;
-		}
 	
 	   /*
 	    * Return projected and transformed coordinate for a location.
@@ -134,14 +102,16 @@ package com.modestmaps.mapproviders
 	    {
 	        return __projection.coordinateLocation(coordinate);
 	    }
-		
-		// Private Methods
-		
-		protected function raisePaintComplete(sprite:Sprite, coord:Coordinate):void
+
+		public function get tileWidth():Number
 		{
-			var event:MapProviderEvent = new MapProviderEvent(MapProviderEvent.PAINT_COMPLETE, sprite, coord);
-//			trace("raisePaintComplete" + event);
-			dispatchEvent(event);
+			return 256;
 		}
+
+		public function get tileHeight():Number
+		{
+			return 256;
+		}
+
 	}
 }

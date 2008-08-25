@@ -1,7 +1,6 @@
 package com.modestmaps.mapproviders.google
 {
 	import com.modestmaps.core.Coordinate;
-	import com.modestmaps.mapproviders.google.AbstractGoogleMapProvider;
 	import com.modestmaps.mapproviders.IMapProvider;
 	import com.modestmaps.util.BinaryUtil;
 	
@@ -10,17 +9,22 @@ package com.modestmaps.mapproviders.google
 	 * $Id$
 	 */
 	public class GoogleAerialMapProvider 
-		extends AbstractGoogleMapProvider 
+		extends AbstractGoogleMapProvider
 		implements IMapProvider
 	{
-		override public function toString():String
+	    public function GoogleAerialMapProvider(minZoom:int=MIN_ZOOM, maxZoom:int=MAX_ZOOM)
+	    {
+	        super(minZoom, maxZoom);
+	    }
+	    
+		public function toString():String
 		{
 			return "GOOGLE_AERIAL";
 		}
 
-		override public function getTileUrl(coord:Coordinate):String
+		public function getTileUrls(coord:Coordinate):Array
 		{
-			return "http://kh" + Math.floor(Math.random() * 4) + ".google.com/kh?n=404&v=" + __aerialVersion + "&t=" + getZoomString(sourceCoordinate(coord));
+			return [ "http://kh" + Math.floor(Math.random() * 4) + ".google.com/kh?n=404&v=" + __aerialVersion + "&t=" + getZoomString(sourceCoordinate(coord)) ];
 		}
 		
 		protected function getZoomString(coord:Coordinate):String

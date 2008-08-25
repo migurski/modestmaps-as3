@@ -16,28 +16,21 @@ package com.modestmaps.core
 		public var east:Number;
 		public var west:Number;
 		
-		/** Creates a new MapExtent from the given String.
-		 * @param str "north, south, east, west"
-		 * @return a new MapExtent from the given string */
-		public static function fromString(str:String):MapExtent
-		{
-			var parts:Array = str.split(/\s*,\s*/, 4);
-			return new MapExtent(parseFloat(parts[0]),
-								 parseFloat(parts[1]),
-								 parseFloat(parts[2]),
-								 parseFloat(parts[3]));
-		}
-
 		/** @param n the most northerly latitude
 		 *  @param s the southern latitude
 		 *  @param e the eastern-most longitude
 		 *  @param w the westest longitude */
 		public function MapExtent(n:Number=0, s:Number=0, e:Number=0, w:Number=0)
 		{
-			north = n;
-			south = s;
-			east = e;
-			west = w;
+			north = Math.max(n, s);
+			south = Math.min(n, s);
+			east = Math.max(e, w);
+			west = Math.min(e, w);
+		}
+		
+		public function clone():MapExtent
+		{
+		    return new MapExtent(north, south, east, west);
 		}
 		
 		/** enlarges this extent so that the given extent is inside it */
@@ -101,20 +94,28 @@ package com.modestmaps.core
 			south = se.lat;
 			east = se.lon;
 		}
-		
-		public function get center():Location
-		{
-		    return new Location(south + (north - south) / 2, east + (west - east) / 2);
-		}
 
-        public function set center(value:Location):void
-        {
+		public function get center():Location
+        {   
+            return new Location(south + (north - south) / 2, east + (west - east) / 2);
+        }
+
+        public function set center(location:Location):void
+        {   
             var w:Number = east - west;
             var h:Number = north - south;
-            north = value.lat - h / 2;
-            south = value.lat + h / 2;
-            east = value.lon + w / 2;
-            west = value.lon - w / 2;
+            north = location.lat - h / 2;
+            south = location.lat + h / 2;
+            east = location.lon + w / 2;
+            west = location.lon - w / 2;
+        }
+
+        public function inflate(lat:Number, lon:Number):void
+        {
+            north += lat;
+            south -= lat;
+            west -= lon;
+            east += lon;
         }
 
         public function getRect():Rectangle
@@ -135,5 +136,49 @@ package com.modestmaps.core
 		{
 			return [north, south, east, west].join(', ');
 		}
+
+		/** Creates a new MapExtent from the given String.
+		 * @param str "north, south, east, west"
+		 * @return a new MapExtent from the given string */
+		public static function fromString(str:String):MapExtent
+		{
+			var parts:Array = str.split(/\s*,\s*/, 4);
+			return new MapExtent(parseFloat(parts[0]),
+								 parseFloat(parts[1]),
+								 parseFloat(parts[2]),
+								 parseFloat(parts[3]));
+		}
+
+        public static function fromLocations(locations:Array):MapExtent
+        {
+            var minLat:Number = Number.POSITIVE_INFINITY;
+            var minLon:Number = Number.POSITIVE_INFINITY;
+            var maxLat:Number = Number.NEGATIVE_INFINITY;
+            var maxLon:Number = Number.NEGATIVE_INFINITY;
+            for each (var location:Location in locations)
+            {
+                if (!location) continue;
+                minLat = Math.min(minLat, location.lat);
+                maxLat = Math.max(maxLat, location.lat);
+                minLon = Math.min(minLon, location.lon);
+                maxLon = Math.max(maxLon, location.lon);
+            }
+            return new MapExtent(maxLat, minLat, maxLon, minLon);
+        }
+        		
+        // TODO: decide which of fromLocationArray and fromLocations gets to stay!
+		public static function fromLocationArray(locations:Array):MapExtent
+		{
+			if (!locations || locations.length == 0) return new MapExtent();
+
+			var first:Location = locations[0] as Location;
+			var extent:MapExtent = new MapExtent(first.lat, first.lat, first.lon, first.lon);
+			for (var i:int = 1; i < locations.length; i++)
+			{
+				extent.enclose(locations[i]);
+			}
+			return extent;
+		}
+		
 	}
 }

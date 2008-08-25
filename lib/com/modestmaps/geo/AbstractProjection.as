@@ -27,7 +27,7 @@ package com.modestmaps.geo
 	        this.zoom = zoom;
 	    }
 	    
-	   /*
+	   /**
 	    * String signature of the current projection.
 	    */
 	    public function toString():String
@@ -36,8 +36,8 @@ package com.modestmaps.geo
 	        return null;
 	    }
 	    
-	   /*
-	    * Return raw projected point.
+	   /**
+	    * @return raw projected point.
 	    */
 	    protected function rawProject(point:Point):Point
 	    {
@@ -45,8 +45,8 @@ package com.modestmaps.geo
 	        return null;
 	    }
 	    
-	   /*
-	    * Return raw unprojected point.
+	   /**
+	    * @return raw unprojected point.
 	    */
 	    protected function rawUnproject(point:Point):Point
 	    {
@@ -54,8 +54,8 @@ package com.modestmaps.geo
 	        return null;
 	    }
 	    
-	   /*
-	    * Return projected and transformed point.
+	   /**
+	    * @return projected and transformed point.
 	    */
 	    public function project(point:Point):Point
 	    {
@@ -67,8 +67,8 @@ package com.modestmaps.geo
 	        return point;
 	    }
 	    
-	   /*
-	    * Return untransformed and unprojected point.
+	   /**
+	    * @return untransformed and unprojected point.
 	    */
 	    public function unproject(point:Point):Point
 	    {
@@ -80,8 +80,8 @@ package com.modestmaps.geo
 	        return point;
 	    }
 	    
-	   /*
-	    * Return projected and transformed coordinate for a location.
+	   /**
+	    * @return projected and transformed coordinate for a location.
 	    */
 	    public function locationCoordinate(location:Location):Coordinate
 	    {
@@ -90,8 +90,8 @@ package com.modestmaps.geo
 	        return new Coordinate(point.y, point.x, zoom);
 	    }
 	    
-	   /*
-	    * Return untransformed and unprojected location for a coordinate.
+	   /**
+	    * @return untransformed and unprojected location for a coordinate.
 	    */
 	    public function coordinateLocation(coordinate:Coordinate):Location
 	    {

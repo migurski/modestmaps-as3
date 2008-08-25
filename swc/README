@@ -1,0 +1,6 @@
+If you create a new Flex Builder library project and point it at this folder, and then 
+add ../lib to the source path, this should compile a swc file for you to use in your 
+projects.  These are less flexible because you can't easily fix bugs without recompiling 
+the swc, but as Modest Maps gets more stable it will cut the build time of your projects
+a lot!
+

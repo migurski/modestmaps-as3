@@ -5,253 +5,119 @@
 
 package com.modestmaps.core
 {
-    import com.modestmaps.events.MapProviderEvent;
-    import com.modestmaps.mapproviders.IMapProvider;
-    import com.stamen.twisted.Reactor;
-    
-    import flash.display.Sprite;
-    import flash.events.TimerEvent;
-    import flash.geom.Point;
-    import flash.utils.Timer;
-    
-    public class Tile extends Sprite
-    {
-        // hacked in tide fading, set Tile.FADE_STEPS to e.g. 10
-        // TODO: hook this into the Reactor and backport to AS2
-        public static var FADE_STEPS:int = 0;
-        
-        public var grid:TileGrid;
-    
-        protected var _coord:Coordinate;	
-        // Keeps track of all sprites awaiting painting.
-        protected var _displayClips : Array;
-        protected var _paintCall : TilePaintCall;		
-        protected var _active:Boolean;
-    
-        private var timer:Timer;
-
-		/** keep exact x and y for tile calculations, but use setter to round the sprite position for the screen 
-		 * @see http://getsatisfaction.com/modestmaps/topics/as3_tile_discontinuity_after_panning */
-		protected var __x:Number, __y:Number;
-    
-        public function Tile(grid:TileGrid, coord:Coordinate, x:Number, y:Number)
-        {
-            super();
-            this.grid = grid;
-            this._coord = coord;
-            this.x = x;
-            this.y = y;
-            _active = true;
-            _displayClips = new Array();  	
-        }
-
-		/** @see http://getsatisfaction.com/modestmaps/topics/as3_tile_discontinuity_after_panning */      
-		public override function get x():Number
+	import flash.display.Bitmap;
+	import flash.display.DisplayObject;
+	import flash.display.Loader;
+	import flash.display.Sprite;
+	
+	public class Tile extends Sprite
+	{		
+		public static var count:int = 0;
+		
+		// not a coordinate, because it's very important these are ints
+		public var zoom:int;
+		public var row:int;
+		public var column:int;
+				
+		public function Tile(column:int, row:int, zoom:int)
 		{
-			return this.__x;
-		}
+			init(column, row, zoom);
+			
+			// otherwise you'll get seams between tiles :(
+			this.cacheAsBitmap = false;
+			
+			count++;
+		} 
+		
+		/** override this in a subclass and call grid.setTileClass if you want to draw on your tiles */
+	    public function init(column:int, row:int, zoom:int):void
+	    {
+			this.zoom = zoom;
+			this.row = row;
+			this.column = column;			
+			hide();
+	    }        
 
-		/** @see http://getsatisfaction.com/modestmaps/topics/as3_tile_discontinuity_after_panning */      
-		public override function set x(_lx:Number):void
+		/** once TileGrid is done with a tile, it will call destroy and possibly reuse it later */
+	    public function destroy():void
+	    {
+	    	while (numChildren > 0) {
+	    		var child:DisplayObject = removeChildAt(0);
+	    		if (child is Loader) {
+	    			try {
+	    				Loader(child).unload();
+	    			}
+	    			catch (error:Error) {
+	    				// meh
+	    			}
+	    		}
+	    	}
+	    	graphics.clear();
+	    }        
+		
+		public function isShowing():Boolean
 		{
-			this.__x = _lx;
-			super.x = Math.floor(_lx);
+			return this.alpha == 1.0;
 		}
-
-		/** @see http://getsatisfaction.com/modestmaps/topics/as3_tile_discontinuity_after_panning */      
-		public override function get y():Number
+		
+		public function showNow():void
 		{
-			return this.__y;
+			this.alpha = 1.0;
 		}
-
-		/** @see http://getsatisfaction.com/modestmaps/topics/as3_tile_discontinuity_after_panning */      
-		public override function set y(_ly:Number):void
+		
+		public function show():void 
 		{
-			this.__y = _ly;
-			super.y = Math.floor(_ly);
+			this.alpha = 1.0;
+			// if you want to do something when the tile is ready then override 
+			// this method and override Map.createTile to use your subclass 
 		}
+		
+		public function hide():void
+		{
+			this.alpha = 0.0;
+		}
+		
+		public function paintError(w:Number=256, h:Number=256):void
+		{
+		    // length of 'X' side, padding from edge, weight of 'X' symbol
+		    var size:uint = 32;
+		    var padding:uint = 4;
+		    var weight:uint = 4;
+		    
+		    with (graphics)
+			{
+				clear();		        
+			
+				beginFill(0x808080);
+				drawRect(0, 0, w, h);
 
-        public function get coord():Coordinate
-        {
-            return _coord;	
-        }
+		        moveTo(0, 0);
+		        beginFill(0x444444, 1);
+		        lineTo(size, 0);
+		        lineTo(size, size);
+		        lineTo(0, size);
+		        lineTo(0, 0);
+		        endFill();
+		        
+		        moveTo(weight+padding, padding);
+		        beginFill(0x888888, 1);
+		        lineTo(padding, weight+padding);
+		        lineTo(size-weight-padding, size-padding);
+		        lineTo(size-padding, size-weight-padding);
+		        lineTo(weight+padding, padding);
+		        endFill();
+		        
+		        moveTo(size-weight-padding, padding);
+		        beginFill(0x888888, 1);
+		        lineTo(size-padding, weight+padding);
+		        lineTo(weight+padding, size-padding);
+		        lineTo(padding, size-weight-padding);
+		        lineTo(size-weight-padding, padding);
+		        endFill();
+		    }			
+		}
+		
+		
+	}
 
-        public function set coord(coord:Coordinate):void
-        {
-            _coord = coord;
-            redraw();	
-        }
-        
-        public function isActive():Boolean
-        {
-            return _active;
-        }
-            
-        public function expire():void
-        {
-            cancelDraw();
-            _active = false;
-        }
-            
-        public function center():Point
-        {
-            return new Point(x + TileGrid.TILE_WIDTH / 2, y + TileGrid.TILE_HEIGHT / 2);
-        }
-        
-        public function zoomOut():void
-        {
-            coord = new Coordinate(Math.floor(coord.row / 2), Math.floor(coord.column / 2), coord.zoom + 1);
-        }
-    
-        public function zoomInTopLeft():void
-        {
-            coord = new Coordinate(coord.row * 2, coord.column * 2, coord.zoom - 1);
-        }
-    
-        public function zoomInTopRight():void
-        {
-            coord = new Coordinate(coord.row * 2, coord.column * 2 + 1, coord.zoom - 1);
-        }
-    
-        public function zoomInBottomLeft():void
-        {
-            coord = new Coordinate(coord.row * 2 + 1, coord.column * 2, coord.zoom - 1);
-        }
-    
-        public function zoomInBottomRight():void
-        {
-            coord = new Coordinate(coord.row * 2 + 1, coord.column * 2 + 1, coord.zoom - 1);
-        }
-    
-        public function panUp(distance:Number):void
-        {
-            coord = coord.up(distance);
-        }
-    
-        public function panRight(distance:Number):void
-        {
-            coord = coord.right(distance);
-        }
-    
-        public function panDown(distance:Number):void
-        {
-            coord = coord.down(distance);
-        }
-    
-        public function panLeft(distance:Number):void
-        {
-            coord = coord.left(distance);
-        }
-    
-        override public function toString():String
-        {
-            return id();
-        }
-    
-        public function id():String
-        {
-            return 'Tile' + coord.toString();
-        }
-    
-        public function redraw():void
-        {
-            
-            // any need to repeat ourselves?
-            if (_paintCall && _paintCall.match(grid.getMapProvider(), coord.copy()) && _paintCall.pending()) {
-                return;
-            }
-            
-            // are we even allowed to paint ourselves?
-            if (!grid || !grid.paintingAllowed()) {
-                return;
-            }
-                    
-            // cancel existing call, if any...
-            if (_paintCall) {
-                _paintCall.cancel();
-            }
-            
-            // hide all other displayClips to avoid weird "repaint" effect
-            var count:Number = _displayClips.length;
-            while (count--)
-            {
-                    _displayClips[count].sprite.visible = false;
-            }
-             
-            if (coord) 
-            {
-                // fire up a new call for the next frame...
-                _paintCall = new TilePaintCall(Reactor.callNextFrame(paint, grid.getMapProvider(), coord.copy()),
-                                                                     grid.getMapProvider(), coord.copy());
-            }
-        }
-        
-        public function paint(mapProvider:IMapProvider, tileCoord:Coordinate):void
-        {
-            // set up the proper sprite to paint here
-            grid.getMapProvider().addEventListener(MapProviderEvent.PAINT_COMPLETE, onPaintComplete);
-            
-            var spriteId:Number = _displayClips.length;
-            var sprite:Sprite = new Sprite();
-            sprite.name = "display" + spriteId;
-            
-            if (Tile.FADE_STEPS > 0) {
-                sprite.alpha = 0.0;
-                timer = new Timer(1000.0/stage.frameRate,FADE_STEPS);
-                timer.addEventListener(TimerEvent.TIMER, function(event:TimerEvent):void {
-                    sprite.alpha = event.target.currentCount/event.target.repeatCount;
-                });
-                timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:TimerEvent):void {
-                    sprite.alpha = 1.0;
-                });		    	
-            }
-            addChild(sprite);
-                    
-            _displayClips.push({sprite: sprite, coord: tileCoord}); 
-            
-            mapProvider.paint(sprite, tileCoord);
-        }
-        
-        public function cancelDraw():void
-        {
-            if (_paintCall) {
-                _paintCall.cancel();
-            }
-        }
-        
-        // Event Handlers
-        
-        protected function onPaintComplete(event:MapProviderEvent):void
-        {
-            if (coord.equalTo(event.coord))
-            {
-                grid.getMapProvider().removeEventListener(MapProviderEvent.PAINT_COMPLETE, onPaintComplete);
-                    
-                // remove all other displayClips /below/ this sprite   		
-                var dcCoord:Coordinate;
-                for (var i:int = 0; i < _displayClips.length; i++)
-                {
-                    dcCoord = _displayClips[i].coord as Coordinate;
-                                                    
-                    if (dcCoord.equalTo(coord))
-                    {
-                        break; // only removing *below* this sprite
-                    }
-                    else
-                    {
-                        var sprite:Sprite = _displayClips[i].sprite as Sprite;
-                        removeChild(sprite);
-                        _displayClips.splice(i, 1);
-                        i--;
-                    }
-                }
-                    
-                if (Tile.FADE_STEPS > 0 && !timer.running) {
-                    timer.start();
-                }
-
-                dispatchEvent(event);
-            }
-        }
-    }
 }

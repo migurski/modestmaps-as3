@@ -9,8 +9,6 @@ package com.modestmaps.events
 	
 	import flash.events.Event;
 	import flash.geom.Point;
-	//import com.modestmaps.geo.Location;
-	//import com.modestmaps.core.Coordinate;
 
 	public class MapEvent extends Event
 	{
@@ -23,10 +21,8 @@ package com.modestmaps.events
 	    
 	    public static const START_PANNING:String = 'startPanning';
 	    public static const STOP_PANNING:String = 'stopPanning';
-//	    public var centerLocation:Location;
-//	    public var centerCoordinate:Coordinate;
 
-	    public static const PANNED:String = 'pannedBy';
+	    public static const PANNED:String = 'panned';
 		public var panDelta:Point;
 	    
 	    public static const RESIZED:String = 'resized';
@@ -34,6 +30,9 @@ package com.modestmaps.events
 	    	    
 	    public static const COPYRIGHT_CHANGED:String = 'copyrightChanged';
 	    public var newCopyright:String;
+
+	    public static const BEGIN_EXTENT_CHANGE:String = 'beginExtentChange';
+		public var oldExtent:MapExtent;
 	    
 	    public static const EXTENT_CHANGED:String = 'extentChanged';
 		public var newExtent:MapExtent;
@@ -41,9 +40,67 @@ package com.modestmaps.events
 		public static const PROVIDER_CHANGED:String = 'providerChanged';
 		public var newMapProvider:IMapProvider;
 
-		public function MapEvent(type:String, bubbles:Boolean=true, cancelable:Boolean=false)
+	    public static const MAP_PROVIDER_CHANGED:String = 'mapProviderChanged';
+		public var newProvider:IMapProvider;
+
+	    public static const BEGIN_TILE_LOADING:String = 'beginTileLoading';
+	    public static const ALL_TILES_LOADED:String = 'alLTilesLoaded';
+
+		/** listen out for this if you want to be sure map is in its final state before reprojecting markers etc. */
+	    public static const RENDERED:String = 'rendered';
+
+		public function MapEvent(type:String, ...rest)
 		{
-			super(type, bubbles, cancelable);
+			super(type, true, true);
+			
+			switch(type) {
+				case PANNED:
+					if (rest.length > 0 && rest[0] is Point) {
+						panDelta = rest[0];
+					}
+					break;
+				case ZOOMED_BY:
+					if (rest.length > 0 && rest[0] is Number) {
+						zoomDelta = rest[0];
+					}
+					break;
+				case EXTENT_CHANGED:
+	    			if (rest.length > 0 && rest[0] is MapExtent) {
+	    				newExtent = rest[0];
+	    			}
+					break;	    	    
+				case START_ZOOMING:
+				case STOP_ZOOMING:
+					if (rest.length > 0 && rest[0] is Number) {
+						zoomLevel = rest[0];
+					}
+					break;					
+	    		case RESIZED:
+	    			if (rest.length > 0 && rest[0] is Array) {
+	    				newSize = rest[0];
+	    			}
+					break	    	    
+				case COPYRIGHT_CHANGED:
+	    			if (rest.length > 0 && rest[0] is String) {
+	    				newCopyright = rest[0];
+	    			}
+					break;	    	    
+				case BEGIN_EXTENT_CHANGE:
+	    			if (rest.length > 0 && rest[0] is MapExtent) {
+	    				oldExtent = rest[0];
+	    			}
+					break;	    	    
+				case MAP_PROVIDER_CHANGED:
+	    			if (rest.length > 0 && rest[0] is IMapProvider) {
+	    				newProvider = rest[0];
+	    			}
+			}
+			
+		}
+		
+		override public function clone():Event
+		{
+			return this;
 		}
 	}
 }

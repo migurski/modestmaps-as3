@@ -6,33 +6,29 @@ package com.modestmaps.util
 {
 	public class BinaryUtil 
 	{
+		private static const PADDING:String = "00000000000000000000000000000000";
+		
+		/** 
+		 * @return 32 digit binary representation of numberToConvert
+		 *  
+		 * NB:- don't use int.toString(2) here because it 
+		 * doesn't do what we want with negative numbers - which is
+		 * wrap around and pad with 1's. Hence convert to uint first. 
+		 */
 		public static function convertToBinary(numberToConvert:int):String 
-		{ 
-		    var result:String = ""; 
-		    for ( var i : Number = 0; i < 32; i++) 
-		    { 
-		        // Extract least significant bit using bitwise AND 
-		        var lsb:int = numberToConvert & 1; 
-		        
-		        // Add this bit to the result 
-		        result = (lsb ? "1" : "0") + result; 
-		        
-		        // Shift numberToConvert right by one bit, to see next bit 
-		        numberToConvert >>= 1; 
-		    } 
-		    return result; 
+		{
+			var num:uint = numberToConvert; // should wrap around negatives
+			var result:String = num.toString(2);
+			if (result.length < 32) {
+				result = PADDING.slice(result.length)+result;
+			}
+			return result;
 		}
 		
 		public static function convertToDecimal(binaryRepresentation:String):int
 		{
-			var result:Number = 0;
-				
-			for (var i:int = binaryRepresentation.length; i > 0; i--)
-			{
-				result += parseInt(binaryRepresentation.charAt(binaryRepresentation.length - i)) * Math.pow(2, i - 1);
-			}
-			
-			return result;
+			// let Flash handle this one:
+			return parseInt(binaryRepresentation, 2);
 		}
 	}
 }

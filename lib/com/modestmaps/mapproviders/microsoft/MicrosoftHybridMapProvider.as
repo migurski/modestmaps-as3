@@ -1,26 +1,14 @@
 package com.modestmaps.mapproviders.microsoft
 {
-	import com.modestmaps.core.Coordinate;
-	import com.modestmaps.mapproviders.IMapProvider;
-	import com.modestmaps.mapproviders.microsoft.AbstractMicrosoftMapProvider;
-	
 	/**
 	 * @author darren
 	 * $Id$
 	 */
-	
-	public class MicrosoftHybridMapProvider 
-		extends AbstractMicrosoftMapProvider
-		implements IMapProvider
+	public class MicrosoftHybridMapProvider extends MicrosoftProvider
 	{
-		override public function toString():String
+		public function MicrosoftHybridMapProvider(minZoom:int=MIN_ZOOM, maxZoom:int=MAX_ZOOM)
 		{
-			return "MICROSOFT_HYBRID";
-		}
-		
-		override public function getTileUrl(coord:Coordinate):String
-		{		
-	        return "http://h" + Math.floor(Math.random() * 4) + ".ortho.tiles.virtualearth.net/tiles/h" + getZoomString( coord ) + ".jpeg?g=90";
+			super(HYBRID, true, minZoom, maxZoom);
 		}
 	}
 }

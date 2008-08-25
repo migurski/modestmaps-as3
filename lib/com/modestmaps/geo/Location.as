@@ -10,10 +10,10 @@ package com.modestmaps.geo
 	    public var lat:Number;
 	    public var lon:Number;
 	
-		public static function fromString(str:String, lonLat:Boolean=false):Location
+		public static function fromString(str:String, lonlat:Boolean=false):Location
 		{
 			var parts:Array = str.split(/\s*,\s*/, 2);
-			if (lonLat) parts = parts.reverse();
+			if (lonlat) parts = parts.reverse();
 			return new Location(parseFloat(parts[0]), parseFloat(parts[1]));
 		}
 
@@ -23,9 +23,27 @@ package com.modestmaps.geo
 	        this.lon = lon;
 	    }
 	    
-	    public function toString():String
+	    public function clone():Location
 	    {
-	        return '(' + lat.toFixed(3) + ',' + lon.toFixed(3) + ')';
+	        return new Location(lat, lon);
+	    }
+
+        /**
+         * This function normalizes latitude and longitude values to a sensible range
+         * (±84°N, ±180°E), and returns a new Location instance.
+         */
+        public function normalize():Location
+        {
+            var loc:Location = clone();
+            loc.lat = Math.max(-84, Math.min(84, loc.lat));
+            while (loc.lon > 180) loc.lon -= 360;
+            while (loc.lon < -180) loc.lon += 360;
+            return loc;
+        }
+
+	    public function toString(precision:int=5):String
+	    {
+	        return [lat.toFixed(precision), lon.toFixed(precision)].join(',');
 	    }
 	}
 }

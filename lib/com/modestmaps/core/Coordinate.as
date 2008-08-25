@@ -10,8 +10,6 @@ package com.modestmaps.core
 	    public var column:Number;
 	    public var zoom:Number;
 	    
-	    public static const MAX_ZOOM:Number = 20;
-	
 	    public function Coordinate(row:Number, column:Number, zoom:Number)
 	    {
 	        this.row = row;

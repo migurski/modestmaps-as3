@@ -1,22 +1,27 @@
 package com.modestmaps.mapproviders.google
 {
-	import com.modestmaps.core.Coordinate;
-	import com.modestmaps.geo.MercatorProjection;
-	import com.modestmaps.geo.Transformation;
-	import com.modestmaps.mapproviders.AbstractImageBasedMapProvider;
-	import com.modestmaps.io.XmlThrottledRequest;
 	import com.modestmaps.events.*;
-	import flash.display.Sprite;
+	import com.modestmaps.mapproviders.AbstractMapProvider;
+	
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
+	import flash.events.IOErrorEvent;
+	import flash.events.SecurityErrorEvent;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
 	
 	/**
 	 * @author darren
-	 * $Id$
+	 * @author tom
+  	 * $Id$
 	 */
 	public class AbstractGoogleMapProvider 
-		extends AbstractImageBasedMapProvider 
+		extends AbstractMapProvider
+		implements IEventDispatcher
 	{
-		protected var __paintQueue:Array;
-	
+		public static const READY:String = "ready";
+		
 	    // Google often updates its tiles and expires old sets.
 	    // The version numbers here are recent, but may change.
 		protected static var __roadVersion:String = "w2.69";
@@ -27,95 +32,81 @@ package com.modestmaps.mapproviders.google
 	    // Check for updates at http://modestmaps.com for current versions.
 		protected static var __versionSource:String = "google_version.xml";
 		protected static var __versionRequested:Boolean = false;
+
+		protected var eventDispatcher:EventDispatcher;
 		
-		public function AbstractGoogleMapProvider() 
+		public function AbstractGoogleMapProvider(minZoom:int=MIN_ZOOM, maxZoom:int=MAX_ZOOM) 
 		{
-			super();
-	
-		    // see: http://modestmaps.mapstraction.com/trac/wiki/TileCoordinateComparisons#TileGeolocations
-		    var t:Transformation = new Transformation(1.068070779e7, 0, 3.355443185e7,
-			                                          0, -1.068070890e7, 3.355443057e7);
-						                                          
-	        __projection = new MercatorProjection(26, t);
+			super(minZoom, maxZoom);
 			
-			__paintQueue = new Array();
+			eventDispatcher = new EventDispatcher(this);
 			
-	        __topLeftOutLimit = new Coordinate(0, Number.NEGATIVE_INFINITY, 0);
-	        __bottomRightInLimit = (new Coordinate(1, Number.POSITIVE_INFINITY, 0)).zoomTo(Coordinate.MAX_ZOOM);
+			if (!__versionRequested) {
+				try {
+					var loader:URLLoader = new URLLoader(new URLRequest(__versionSource));
+					loader.addEventListener(IOErrorEvent.IO_ERROR, onLoadError);
+					loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onLoadError);
+					loader.addEventListener(Event.COMPLETE, onLoadComplete);
+					__versionRequested = true;
+				}
+				catch (error:Error) {
+					onLoadError();
+				}
+			}
 	   	}
-	
-	    override public function sourceCoordinate(coord:Coordinate):Coordinate
-	    {
-		    var wrappedColumn:Number = coord.column % Math.pow(2, coord.zoom);
-	
-		    while(wrappedColumn < 0)
-		        wrappedColumn += Math.pow(2, coord.zoom);
-		        
-	        return new Coordinate(coord.row, wrappedColumn, coord.zoom);
-	    }
-	    
-	    override public function paint( sprite:Sprite, coord:Coordinate ):void 
-		{
-			checkVersionRequested();
-			
-			if (__roadVersion && __hybridVersion && __aerialVersion)
-				super.paint(sprite, coord);
-			else
-				enqueuePaintRequest(sprite, coord);					
-		}
-		
-		// Private Methods
-		
-		protected function checkVersionRequested():void
-		{			
-			if ( !AbstractGoogleMapProvider.__versionRequested )
-			{
-				//trace ("  checkVersionRequested(): " + AbstractGoogleMapProvider.__versionRequested );
-				// we need to create a blocking request to load our version number
-				AbstractGoogleMapProvider.__versionRequested = true;
-			
-				var request:XmlThrottledRequest = new XmlThrottledRequest(__versionSource, true);
-				request.addEventListener(ThrottledRequestEvent.RESPONSE_COMPLETE, onVersionResponseComplete);
-				request.addEventListener(ThrottledRequestEvent.RESPONSE_ERROR, onVersionResponseError);
-				request.send();
-			}
-		}
-		
-		protected function enqueuePaintRequest( sprite:Sprite, coord:Coordinate ):void
-		{
-			__paintQueue.push( { sprite:sprite, coord:coord } );
-		}
-		
-		protected function processQueue():void
-		{
-			var paintRequest:Object;
-			while ( __paintQueue.length )
-			{
-				paintRequest = __paintQueue.shift();
-				paint( paintRequest.sprite, paintRequest.coord ); 	
-			}
-		}
 	
 		// Event Handlers
 		
-		protected function onVersionResponseComplete(event:ThrottledRequestEvent):void
+		protected function onLoadComplete(event:Event):void
 		{			
-			var attrib:Object = event.xml.firstChild.attributes;			
+			// <version road="w2.66" hybrid="w2t.66" aerial="24"/>
+			var version:XML = XML((event.target as URLLoader).data);			
 			
-			trace(__versionSource+' loaded (road='+attrib.road+' hybrid='+attrib.hybrid+' aerial='+attrib.aerial+')');			
-			
-			if(attrib.road!=null) __roadVersion = attrib.road;
-	        if(attrib.hybrid!=null)__hybridVersion = attrib.hybrid;
-	        if(attrib.aerial!=null) __aerialVersion = attrib.aerial;
+			if(version.@road.toString().length > 0) __roadVersion = version.@road;
+	        if(version.@hybrid.toString().length > 0) __hybridVersion = version.@hybrid;
+	        if(version.@aerial.toString().length > 0) __aerialVersion = version.@aerial;
 	        
-			processQueue();
+			trace("Modest Maps: "+__versionSource+' loaded (road='+__roadVersion+' hybrid='+__hybridVersion+' aerial='+__aerialVersion+')');			
+			
+			dispatchEvent(new Event(AbstractGoogleMapProvider.READY));
 		}
 		
-		protected function onVersionResponseError(event:ThrottledRequestEvent):void
+		protected function onLoadError(event:Event=null):void
 		{
-			//trace('Failed to load Google Version XML. Using defaults');			
 		    // just use the defaults, I guess.
-			processQueue();
-		}		
+			trace("Modest Maps: error loading " + __versionSource + ", using defaults from AbstractGoogleMapProvider.as");
+			dispatchEvent(new Event(AbstractGoogleMapProvider.READY));
+		}
+
+		/** delegated to eventDispatcher */
+		public function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void
+		{
+			eventDispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
+		}
+		
+		/** delegated to eventDispatcher */
+		public function removeEventListener(type:String, listener:Function, useCapture:Boolean=false):void
+		{
+			eventDispatcher.removeEventListener(type, listener, useCapture);			
+		}
+		
+		/** delegated to eventDispatcher */
+		public function hasEventListener(type:String):Boolean
+		{
+			return eventDispatcher.hasEventListener(type);
+		}
+		
+		/** delegated to eventDispatcher */
+		public function willTrigger(type:String):Boolean
+		{
+			return eventDispatcher.willTrigger(type);
+		}
+		
+		/** delegated to eventDispatcher */
+		public function dispatchEvent(event:Event):Boolean
+		{
+			return eventDispatcher.dispatchEvent(event);			
+		}  
+		
 	}
 }
