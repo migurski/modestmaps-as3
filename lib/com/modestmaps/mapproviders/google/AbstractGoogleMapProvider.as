@@ -24,12 +24,14 @@ package com.modestmaps.mapproviders.google
 		
 	    // Google often updates its tiles and expires old sets.
 	    // The version numbers here are recent, but may change.
-		protected static var __roadVersion:String = "w2.69";
-		protected static var __hybridVersion:String = "w2t.69";
-		protected static var __aerialVersion:String = "25";
+		protected static var __roadVersion:String = "w2.80";
+		protected static var __hybridVersion:String = "w2t.80";
+		protected static var __aerialVersion:String = "30";
+		protected static var __terrainVersion:String = "w2p.81";
 	
 	    // An XML file is checked for up-to-date version numbers.
 	    // Check for updates at http://modestmaps.com for current versions.
+	    // TODO: make this URL customizable in the constructor
 		protected static var __versionSource:String = "google_version.xml";
 		protected static var __versionRequested:Boolean = false;
 
@@ -65,8 +67,9 @@ package com.modestmaps.mapproviders.google
 			if(version.@road.toString().length > 0) __roadVersion = version.@road;
 	        if(version.@hybrid.toString().length > 0) __hybridVersion = version.@hybrid;
 	        if(version.@aerial.toString().length > 0) __aerialVersion = version.@aerial;
+	        if(version.@terrain.toString().length > 0) __terrainVersion = version.@terrain;
 	        
-			trace("Modest Maps: "+__versionSource+' loaded (road='+__roadVersion+' hybrid='+__hybridVersion+' aerial='+__aerialVersion+')');			
+			trace("Modest Maps: "+__versionSource+' loaded (road='+__roadVersion+' hybrid='+__hybridVersion+' aerial='+__aerialVersion+' terrain='+__terrainVersion+')');			
 			
 			dispatchEvent(new Event(AbstractGoogleMapProvider.READY));
 		}
