@@ -23,6 +23,11 @@ package com.modestmaps.geo
 	        this.lon = lon;
 	    }
 	    
+	    public function equals(loc:Location):Boolean
+	    {
+	        return loc && loc.lat == lat && loc.lon == lon;
+	    }
+	    
 	    public function clone():Location
 	    {
 	        return new Location(lat, lon);
