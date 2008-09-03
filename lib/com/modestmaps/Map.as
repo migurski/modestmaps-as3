@@ -330,15 +330,18 @@ package com.modestmaps
 	    */
 	    public function setSize(w:Number, h:Number):void
 	    {
-	        mapWidth = w;
-	        mapHeight = h;
-
-	        // mask out out of bounds marker remnants
-	        scrollRect = new Rectangle(0,0,mapWidth,mapHeight);
-        	
-        	grid.resizeTo(new Point(mapWidth, mapHeight));
-        	
-	        dispatchEvent(new MapEvent(MapEvent.RESIZED, this.getSize()));	        
+	        if (w != mapWidth || h != mapHeight)
+	        {
+    	        mapWidth = w;
+    	        mapHeight = h;
+    
+    	        // mask out out of bounds marker remnants
+    	        scrollRect = new Rectangle(0,0,mapWidth,mapHeight);
+            	
+            	grid.resizeTo(new Point(mapWidth, mapHeight));
+            	
+    	        dispatchEvent(new MapEvent(MapEvent.RESIZED, this.getSize()));
+    	    }	        
 	    }
 	
 	   /**
