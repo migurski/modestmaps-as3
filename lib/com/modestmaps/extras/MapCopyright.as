@@ -78,6 +78,8 @@ package com.modestmaps.extras
 					                    this.google.copyright('&t=h', cenLat, cenLon, maxLat-minLat, maxLon-minLon, zoom);
 					                    break;
 
+									// TODO: GOOGLE_TERRAIN
+
 					                case 'YAHOO_ROAD':
 					                case 'YAHOO_AERIAL':
 					                case 'YAHOO_HYBRID':

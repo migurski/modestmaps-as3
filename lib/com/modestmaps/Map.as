@@ -219,7 +219,7 @@ package com.modestmaps
 		public function locationsCoordinate(locations:Array, fitWidth:Number=0, fitHeight:Number=0):Coordinate
 		{
 			if (!fitWidth) fitWidth = mapWidth;
-			if (!fitWidth) fitWidth = mapHeight;
+			if (!fitHeight) fitHeight = mapHeight;
 			
 	        var TL:Coordinate = mapProvider.locationCoordinate(locations[0]);
 	        var BR:Coordinate = TL.copy();
@@ -246,7 +246,7 @@ package com.modestmaps
 	        var hPossibleZoom:Number = TL.zoom - Math.ceil(hZoomDiff);
 	        
 	        // multiplication factor between vertical span and map height
-	        var vFactor:Number = (BR.row - TL.row) / (fitWidth / mapProvider.tileHeight);
+	        var vFactor:Number = (BR.row - TL.row) / (fitHeight / mapProvider.tileHeight);
 	        
 	        // multiplication factor expressed as base-2 logarithm, for zoom difference
 	        var vZoomDiff:Number = Math.log(vFactor) / Math.log(2);
@@ -496,7 +496,7 @@ package com.modestmaps
         }
         
 		/** zoom in or out by zoomDelta, keeping the requested point in the same place */
-        public function zoomByAbout(zoomDelta:int, targetPoint:Point=null, duration:Number=-1):void
+        public function zoomByAbout(zoomDelta:Number, targetPoint:Point=null, duration:Number=-1):void
         {
             if (!targetPoint) targetPoint = new Point(mapWidth/2, mapHeight/2);        	
         	
@@ -648,7 +648,7 @@ package com.modestmaps
 	        markerClip.removeMarker(id); // also calls grid.removeMarker
 	    }
 	    
-		public function removeAllMakers():void {
+		public function removeAllMarkers():void {
 			markerClip.removeAllMarkers()
 		}
 		
@@ -692,6 +692,8 @@ package com.modestmaps
         /** pans and zooms in on double clicked location */
         public function onDoubleClick(event:MouseEvent):void
         {
+        	if (!__draggable) return;
+        	
             var p:Point = grid.globalToLocal(new Point(event.stageX, event.stageY));
             if (event.shiftKey) {
             	if (grid.zoomLevel > grid.minZoom) {
@@ -712,7 +714,7 @@ package com.modestmaps
             		panBy(mapWidth/2 - p.x, mapHeight/2 - p.y);
             	}
             }
-        }
+        }        
 		
 	}
 }

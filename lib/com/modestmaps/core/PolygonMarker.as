@@ -11,8 +11,10 @@ package com.modestmaps.core
 	public class PolygonMarker extends Sprite
 	{
 		protected var map:Map;
+		protected var drawZoom:Number;
 		
-		public var coordinates:Array = [];
+		public var locations:Array;
+		public var extent:MapExtent;
 		public var location:Location;
 				
 		public var line:Boolean = true;
@@ -24,20 +26,32 @@ package com.modestmaps.core
 		public var fillColor:uint = 0xff0000;
 		public var fillAlpha:Number = 0.2;
 				
-		public function PolygonMarker(map:Map, coordinates:Array)
+		public function PolygonMarker(map:Map, locations:Array)
 		{
 			this.map = map;
 			this.mouseEnabled = false;
 
-			map.addEventListener(MapEvent.EXTENT_CHANGED, redraw);
+			map.addEventListener(MapEvent.EXTENT_CHANGED, rescale);
+			map.addEventListener(MapEvent.ZOOMED_BY, rescale);
 			map.addEventListener(MapEvent.STOP_ZOOMING, redraw);
 			
-			this.coordinates = coordinates;	
-			location = coordinates[0] as Location;		
+			if (locations && locations.length > 0) {
+				this.locations = locations;
+				this.extent = MapExtent.fromLocations(locations);
+				this.location = locations[0] as Location;
+			}
+		}
+	
+		public function rescale(event:Event=null):void
+		{
+			scaleX = scaleY = Math.pow(2, map.grid.zoomLevel - drawZoom);
 		}
 		
 		public function redraw(event:Event=null):void
 		{
+			drawZoom = map.grid.zoomLevel;
+			scaleX = scaleY = 1;
+			
 			var firstPoint:Point = map.locationPoint(location)		
 			graphics.clear();
 			if (line && lineAlpha) {
@@ -50,7 +64,7 @@ package com.modestmaps.core
 				graphics.beginFill(fillColor, fillAlpha);
 			}
 			graphics.moveTo(0, 0);
-			for each (var loc:Location in coordinates.slice(1)) {
+			for each (var loc:Location in locations.slice(1)) {
 				var p:Point = map.locationPoint(loc);
 				graphics.lineTo(p.x-firstPoint.x, p.y-firstPoint.y);
 			}

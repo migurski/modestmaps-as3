@@ -19,7 +19,7 @@ package com.modestmaps.extras
 		public var offsetX:Number = 10;
 		public var offsetY:Number = 10;
 		
-		public function VirtualEarthCopyright(map:Map, offsetX:Number=undefined, offsetY:Number=undefined):void
+		public function VirtualEarthCopyright(map:Map, offsetX:Number=undefined, offsetY:Number=undefined)
 		{	
 			super(map);
 			

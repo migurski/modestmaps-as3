@@ -203,30 +203,10 @@ package com.modestmaps.core
 	        var marker:DisplayObject;
 
 	    	//var t:int = flash.utils.getTimer();
-	        var w:Number = map.getWidth() * 2;
-	        var h:Number = map.getHeight() * 2;
 	        var doSort:Boolean = false;
 	    	for each (marker in markers)
 	    	{
-	    	    // TODO: note, hidden markers are not updated, so when 
-	    	    // revealing markers using visible=true, they may end up in the wrong spot ?
-	    	    if (marker.visible)
-	    	    {
-	                updateClip(marker);
-        	        if (markerInBounds(marker, w, h))
-        	        {
-        	            if (!contains(marker))
-        	            {
-        	                addChild(marker);
-        	                doSort = true;
-        	            }
-        	        }
-        	        else if (contains(marker))
-        	        {
-        	            removeChild(marker);
-        	            doSort = true;
-        	        }
-	            }
+	    	    doSort = updateClip(marker) || doSort; // wow! bad things did happen when this said doSort ||= updateClip(marker);
 	    	}
 
             if (doSort) sortMarkers(true);
@@ -265,14 +245,37 @@ package com.modestmaps.core
 	        }
 	    }
 
-	    public function updateClip(marker:DisplayObject):void
-	    {
-	    	// this method previously used the location of the marker
-	    	// but map.locationPoint hands off to grid to grid.coordinatePoint
-	    	// in the end so we may as well cache the first step
-	        var point:Point = map.grid.coordinatePoint(coordinates[marker], this);
-            marker.x = snapToPixels ? Math.round(point.x) : point.x;
-            marker.y = snapToPixels ? Math.round(point.y) : point.y;
+		/** returns true if the marker was added or removed from the stage, so that updateClips can sort the markers */ 
+	    public function updateClip(marker:DisplayObject):Boolean
+	    {	    	
+    	    if (marker.visible)
+    	    {
+		    	// this method previously used the location of the marker
+		    	// but map.locationPoint hands off to grid to grid.coordinatePoint
+		    	// in the end so we may as well cache the first step
+		        var point:Point = map.grid.coordinatePoint(coordinates[marker], this);
+	            marker.x = snapToPixels ? Math.round(point.x) : point.x;
+	            marker.y = snapToPixels ? Math.round(point.y) : point.y;
+
+		        var w:Number = map.getWidth() * 2;
+		        var h:Number = map.getHeight() * 2;
+	            
+    	        if (markerInBounds(marker, w, h))
+    	        {
+    	            if (!contains(marker))
+    	            {
+    	                addChild(marker);
+    	                return true;
+    	            }
+    	        }
+    	        else if (contains(marker))
+    	        {
+    	            removeChild(marker);
+    	            return true;
+    	        }
+            }
+            
+            return false;            
 	    }
 
 	    protected function onMapStartPanning(event:MapEvent):void

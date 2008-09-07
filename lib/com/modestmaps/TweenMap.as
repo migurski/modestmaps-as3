@@ -15,8 +15,11 @@ package com.modestmaps
 	import com.modestmaps.geo.Location;
 	import com.modestmaps.mapproviders.IMapProvider;
 	
+	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
+	import flash.utils.clearTimeout;
+	import flash.utils.setTimeout;
 	
 	import gs.TweenLite;
 	
@@ -35,6 +38,9 @@ package com.modestmaps
 
 		/** time to pan and zoom using, uh, panAndZoom */
 		public var panAndZoomDuration:Number = 0.3;
+
+		protected var mouseWheelingIn:Boolean = false;
+		protected var mouseWheelingOut:Boolean = false;
 
         /*
 	    * Initialize the map: set properties, add a tile grid, draw it.
@@ -97,20 +103,29 @@ package com.modestmaps
         }
 
 		/** zoom in or out by zoomDelta, keeping the requested point in the same place */        
-        override public function zoomByAbout(zoomDelta:int, targetPoint:Point=null, duration:Number=-1):void
+        override public function zoomByAbout(zoomDelta:Number, targetPoint:Point=null, duration:Number=-1):void
         {
             if (duration < 0) duration = panAndZoomDuration;
             if (!targetPoint) targetPoint = new Point(mapWidth/2, mapHeight/2);        	
 
-         	if (grid.zoomLevel + zoomDelta < grid.minZoom) {
-        		zoomDelta = grid.minZoom - grid.zoomLevel;        		
+			var constrainedDelta:Number = zoomDelta;
+
+         	if (grid.zoomLevel + constrainedDelta < grid.minZoom) {
+        		constrainedDelta = grid.minZoom - grid.zoomLevel;        		
         	}
-        	else if (grid.zoomLevel + zoomDelta > grid.maxZoom) {
-        		zoomDelta = grid.maxZoom - grid.zoomLevel; 
+        	else if (grid.zoomLevel + constrainedDelta > grid.maxZoom) {
+        		constrainedDelta = grid.maxZoom - grid.zoomLevel; 
         	}
         	
         	// round the zoom delta up or down so that we end up at a power of 2
-        	var preciseZoomDelta:Number = zoomDelta + (Math.round(grid.zoomLevel) - grid.zoomLevel)
+        	var preciseZoomDelta:Number;
+
+			if (mouseWheelingIn || mouseWheelingOut) {
+				preciseZoomDelta = constrainedDelta;
+			}
+			else {
+				preciseZoomDelta = constrainedDelta + (Math.round(grid.zoomLevel) - grid.zoomLevel);
+			}
         	
         	var sc:Number = Math.pow(2, preciseZoomDelta);
 			
@@ -223,6 +238,56 @@ package com.modestmaps
 		    }
 	    }
 
+		protected var wheeltimer:uint;
+
+        /** zooms in or out of mouse-wheeled location */
+        public function onMouseWheel(event:MouseEvent):void
+        {       	
+        	if (!__draggable) return;
+
+            var p:Point = grid.globalToLocal(new Point(event.stageX, event.stageY));
+            if (event.delta < 0) {
+            	if (grid.zoomLevel > grid.minZoom) {
+	        		mouseWheelingOut = true;
+	        		mouseWheelingIn = false;
+            		zoomByAbout(Math.min(-1,event.delta/20.0), p, 0.0);
+            	}
+            	else {
+            		panBy(mapWidth/2 - p.x, mapHeight/2 - p.y);
+            	}
+            }
+            else if (event.delta > 0) {
+            	if (grid.zoomLevel < grid.maxZoom) {
+            		mouseWheelingIn = true;
+	        		mouseWheelingOut = false;            		
+	            	zoomByAbout(Math.max(1,event.delta/20.0), p, 0.0);
+	            }
+            	else {
+            		panBy(mapWidth/2 - p.x, mapHeight/2 - p.y);
+            	}
+            }
+            
+        	if (wheeltimer) {
+        		clearTimeout(wheeltimer);
+        	}
+        	
+            if (mouseWheelingIn || mouseWheelingOut) {
+				wheeltimer = setTimeout(doneMouseWheeling, 100);
+            }
+        }
+        
+        protected function doneMouseWheeling():void
+        {
+        	if (mouseWheelingIn) { 
+        		zoomByAbout(Math.ceil(grid.zoomLevel) - grid.zoomLevel, new Point(grid.mouseX, grid.mouseY), 0.05); // round off to whole value up
+        	}
+        	else if (mouseWheelingOut) { 
+	        	zoomByAbout(Math.floor(grid.zoomLevel) - grid.zoomLevel, new Point(grid.mouseX, grid.mouseY), 0.05); // round off to whole value down
+        	}
+        	mouseWheelingOut = false;
+        	mouseWheelingIn = false;
+        }
+        
 	}
 }
 

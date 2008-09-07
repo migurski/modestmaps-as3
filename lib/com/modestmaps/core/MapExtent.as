@@ -149,35 +149,25 @@ package com.modestmaps.core
 								 parseFloat(parts[3]));
 		}
 
-        public static function fromLocations(locations:Array):MapExtent
-        {
-            var minLat:Number = Number.POSITIVE_INFINITY;
-            var minLon:Number = Number.POSITIVE_INFINITY;
-            var maxLat:Number = Number.NEGATIVE_INFINITY;
-            var maxLon:Number = Number.NEGATIVE_INFINITY;
-            for each (var location:Location in locations)
-            {
-                if (!location) continue;
-                minLat = Math.min(minLat, location.lat);
-                maxLat = Math.max(maxLat, location.lat);
-                minLon = Math.min(minLon, location.lon);
-                maxLon = Math.max(maxLon, location.lon);
-            }
-            return new MapExtent(maxLat, minLat, maxLon, minLon);
-        }
-        		
-        // TODO: decide which of fromLocationArray and fromLocations gets to stay!
-		public static function fromLocationArray(locations:Array):MapExtent
+        /** calculate the north/south/east/west extremes of the given array of locations */
+		public static function fromLocations(locations:Array):MapExtent
 		{
 			if (!locations || locations.length == 0) return new MapExtent();
 
 			var first:Location = locations[0] as Location;
 			var extent:MapExtent = new MapExtent(first.lat, first.lat, first.lon, first.lon);
-			for (var i:int = 1; i < locations.length; i++)
+			for each (var location:Location in locations.slice(1))
 			{
-				extent.enclose(locations[i]);
+				if (location) {
+					extent.enclose(location);
+				}
 			}
 			return extent;
+		}
+		
+		public static function fromLocationProperties(objects:Array, locationProp:String='location'):MapExtent
+		{
+			return fromLocations(objects.map(function(obj:Object, ...rest):Location { return obj[locationProp] as Location }));
 		}
 		
 	}
