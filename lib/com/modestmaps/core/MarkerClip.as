@@ -17,15 +17,19 @@ package com.modestmaps.core
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
+	import flash.utils.clearTimeout;
+	import flash.utils.getTimer;
+	import flash.utils.setTimeout;
 	
     [Event(name="markerRollOver",    type="com.modestmaps.events.MarkerEvent")]
     [Event(name="markerRollOut",     type="com.modestmaps.events.MarkerEvent")]
     [Event(name="markerClick",       type="com.modestmaps.events.MarkerEvent")]
 	public class MarkerClip extends Sprite
 	{
-		// TODO: mask me?
 	    protected var map:Map;
-	    protected var starting:Point;
+	    
+	    protected var drawCoord:Coordinate;
+	    
 	    protected var locations:Dictionary = new Dictionary();
 	    protected var coordinates:Dictionary = new Dictionary();
 	    protected var markers:Array = []; // all markers
@@ -33,6 +37,7 @@ package com.modestmaps.core
 
         // enable this if you want intermediate zooming steps to
         // stretch your graphics instead of reprojecting the points
+        // it's useful for polygons, but for points 
         // it looks worse and probably isn't faster, but there it is :)
         public var scaleZoom:Boolean = false;
         
@@ -74,10 +79,12 @@ package com.modestmaps.core
 	    	this.map = map;
 	    	this.x = map.getWidth() / 2;
 	    	this.y = map.getHeight() / 2;
-	    		
+	    	
+	    	drawCoord = map.grid.centerCoordinate.copy();
+	    	
 	    	previousGeometry = map.getMapProvider().geometry();
 
-	        map.addEventListener(MapEvent.START_ZOOMING, onMapStartZooming);
+			map.addEventListener(MapEvent.START_ZOOMING, onMapStartZooming);
 	        map.addEventListener(MapEvent.STOP_ZOOMING, onMapStopZooming);
 	        map.addEventListener(MapEvent.ZOOMED_BY, onMapZoomedBy);
 	        map.addEventListener(MapEvent.START_PANNING, onMapStartPanning);
@@ -194,25 +201,48 @@ package com.modestmaps.core
 	    	}
 	    }
 	        
+	    private var sortTimer:uint;
+	        
 	    public function updateClips(event:Event=null):void
 	    {
 	    	if (!dirty) {
 	    		return;
 	    	}
 	    	
+	    	var center:Coordinate = map.grid.centerCoordinate;
+	    	
+	    	if (center.equalTo(drawCoord)) {
+	    		dirty = false;
+	    		return;
+	    	}
+	    	
+	    	drawCoord = center.copy();
+	    	
+	    	this.x = map.getWidth() / 2;
+	    	this.y = map.getHeight() / 2;	    	
+	    	
+	        if (scaleZoom) {
+	            scaleX = scaleY = 1.0;
+	        }	    	
+	    	
 	        var marker:DisplayObject;
 
-	    	//var t:int = flash.utils.getTimer();
 	        var doSort:Boolean = false;
 	    	for each (marker in markers)
 	    	{
 	    	    doSort = updateClip(marker) || doSort; // wow! bad things did happen when this said doSort ||= updateClip(marker);
 	    	}
 
-            if (doSort) sortMarkers(true);
+            if (doSort) {
+            	// use a timer so we don't do this every single frame
+            	// sorting markers and applying depths pretty much doubles the time to update 
+            	if (sortTimer) {
+            		clearTimeout(sortTimer);
+            	}
+            	sortTimer = setTimeout(sortMarkers, 100, true); 
+            }
             
 	    	dirty = false;
-	    	//trace("reprojected all markers in " + (flash.utils.getTimer() - t) + "ms");
 	    }
 	    
 	    /** call this if you've made a change to the underlying map geometry such that
@@ -224,6 +254,7 @@ package com.modestmaps.core
 	    	for each (var marker:DisplayObject in markers) {
 				coordinates[marker] = provider.locationCoordinate(locations[marker]);
 	    	}
+	    	dirty = true;
 	    }
 	    
 	    public function sortMarkers(updateOrder:Boolean=false):void
@@ -277,93 +308,77 @@ package com.modestmaps.core
             
             return false;            
 	    }
+	    
+	    ///// Events....
 
-	    protected function onMapStartPanning(event:MapEvent):void
+	    protected function onMapExtentChanged(event:MapEvent):void
 	    {
-	        starting = new Point(x, y);
+	    	onMapZoomedBy(event);
+	    	onMapPanned(event);
 	    }
 	    
 	    protected function onMapPanned(event:MapEvent):void
 	    {
-	    	if (map.grid.panning && map.grid.zooming) {
-	    		// only reprojecting can save you now
-	    		dirty = true;
-	    		return;
-	    	}
- 	        else if (starting) {
-	            x = starting.x + event.panDelta.x;
-	            y = starting.y + event.panDelta.y;
-	        }
-	        else {
-	        	// TODO: this shouldn't really ever happen, and the following might not work:
-	            x = event.panDelta.x;
-	            y = event.panDelta.y;	            
-	        }
-	    }
-	    
-	    protected function onMapStopPanning(event:MapEvent):void
-	    {
-	    	if (starting) {
-		        x = starting.x;
-		        y = starting.y;
-		        starting = null;
-		    }
-		    else {
-		    	// make sure we're centered
-		    	x = map.getWidth() / 2;
-		    	y = map.getHeight() / 2;
-		    }
-		    dirty = true;
-	        //updateClips();
-	    }
-	    
-	    protected function onMapResized(event:MapEvent):void
-	    {
-	        x = event.newSize[0] / 2;
-	        y = event.newSize[1] / 2;
-	        dirty = true;
-	        updateClips(); // force redraw because flash seems stingy about it
-	    }
-	    
-	    protected function onMapStartZooming(event:MapEvent):void
-	    {
-	        dirty = true;
-	    }
-
-	    protected function onMapExtentChanged(event:MapEvent):void
-	    {
-			dirty = true;
-	    }
-	    
-	    protected function onMapStopZooming(event:MapEvent):void
-	    {
-	        if (scaleZoom) {
-	    	    //trace("scaling zoom back to 1");
-	            scaleX = scaleY = 1.0;
-	        }
-	        dirty = true;
+	        var p:Point = map.grid.coordinatePoint(drawCoord);
+	        this.x = p.x;
+	        this.y = p.y;
 	    }
 	    
 	    protected function onMapZoomedBy(event:MapEvent):void
 	    {
+	    	cacheAsBitmap = false;
 	        if (scaleZoom) {
-	        	//trace("scaling zoom");
-    	        scaleX = scaleY = Math.pow(2, event.zoomDelta);
+    	        scaleX = scaleY = Math.pow(2, map.grid.zoomLevel - drawCoord.zoom);
 	        }
 	        else { 
 		        dirty = true;
 	        }
 	    }
+
+	    protected function onMapStartPanning(event:MapEvent):void
+	    {
+	    	// optimistically, we set this to true in case we're just moving
+		    cacheAsBitmap = true;
+	    }
+	    
+	    protected function onMapStartZooming(event:MapEvent):void
+	    {
+	    	// overrule onMapStartPanning if there's scaling involved
+	        cacheAsBitmap = false;
+	    }
+	    
+	    protected function onMapStopPanning(event:MapEvent):void
+	    {
+	    	// tidy up
+	    	cacheAsBitmap = false;
+		    dirty = true;
+	    }
+	    
+	    protected function onMapStopZooming(event:MapEvent):void
+	    {
+	        dirty = true;
+	    }
+	    
+	    protected function onMapResized(event:MapEvent):void
+	    {
+	        x = map.getWidth() / 2;
+	        y = map.getHeight() / 2;
+	        dirty = true;
+	        updateClips(); // force redraw because flash seems stingy about it
+	    }
+	    
 	    
 	    protected function onMapProviderChanged(event:MapEvent):void
 	    {
-	    	var mapProvider:IMapProvider = event.newProvider;	
+	    	var mapProvider:IMapProvider = map.getMapProvider();	
 	    	if (mapProvider.geometry() != previousGeometry)
 			{
 	        	resetCoordinates();
 	        	previousGeometry = mapProvider.geometry();
 	        }
 	    }
+	    
+	    ///// Invalidations...
 	    
 		protected function set dirty(d:Boolean):void
 		{
@@ -377,6 +392,8 @@ package com.modestmaps.core
 		{
 			return _dirty;
 		}
+
+		////// Marker Events...
 
 		/**
 	    * Dispatches MarkerEvent.CLICK when a marker is clicked.

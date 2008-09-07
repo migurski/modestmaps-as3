@@ -164,7 +164,7 @@ package com.modestmaps.core
 		protected var centerColumn:Number;
 
 		// for pan events
-		protected var startPan:Point;
+		protected var startPan:Coordinate;
 		public var panning:Boolean;
 		
 		// previous mouse position when dragging 
@@ -338,25 +338,17 @@ package com.modestmaps.core
 
 			var boundsEnforced:Boolean = enforceBounds();
 
-			if (zooming && panning) {
-				// doesn't bubble, unlike MapEvent
-				// Map will pick this up and dispatch MapEvent.EXTENT_CHANGED for us
-				dispatchEvent(new Event(Event.CHANGE, false, false));
-			} 
- 			else if (panning) {
-				if (startPan) {
-					dispatchEvent(new MapEvent(MapEvent.PANNED, new Point(worldMatrix.tx-startPan.x, worldMatrix.ty-startPan.y)));
-				}			
-				else {
-					// TODO: this should probably be an error, but I'm not convinced that it can't happen yet :)
-					//trace("panning but no startPan");
-				}		
-			}	
-			else if (zooming) {
-    			var zoomEvent:MapEvent = new MapEvent(MapEvent.ZOOMED_BY, zoomLevel-startZoom);
-    			// this might also be useful
-    	        zoomEvent.zoomLevel = zoomLevel;
-    	        dispatchEvent(zoomEvent);
+			if (zooming || panning) {
+				if (panning) {
+					var pt:Point = coordinatePoint(startPan);
+					dispatchEvent(new MapEvent(MapEvent.PANNED, pt.subtract(new Point(mapWidth/2, mapHeight/2))));
+				}	
+				if (zooming) {
+    				var zoomEvent:MapEvent = new MapEvent(MapEvent.ZOOMED_BY, zoomLevel-startZoom);
+    				// this might also be useful
+    	    	    zoomEvent.zoomLevel = zoomLevel;
+    	        	dispatchEvent(zoomEvent);
+				}
 			}
 			else if (boundsEnforced) {
 				// doesn't bubble, unlike MapEvent
@@ -1078,17 +1070,20 @@ package com.modestmaps.core
 		public function coordinatePoint(coord:Coordinate, context:DisplayObject=null):Point
 		{
 			// this is the same as coord.zoomTo, but doesn't make a new Coordinate:
-			var zoomFactor:Number = Math.pow(2, zoomLevel - coord.zoom)
+			var zoomFactor:Number = Math.pow(2, zoomLevel - coord.zoom);
+			//zoomFactor *= tileWidth/scale;
 			var zoomedColumn:Number = coord.column * zoomFactor;
 			var zoomedRow:Number = coord.row * zoomFactor;
 			
-			var tl:Coordinate = topLeftCoordinate;
+ 			var tl:Coordinate = topLeftCoordinate;
 			var br:Coordinate = bottomRightCoordinate;
 			
 			var cols:Number = br.column - tl.column;
 			var rows:Number = br.row - tl.row;
 			
-			var screenPoint:Point = new Point(mapWidth * (zoomedColumn-tl.column) / cols, mapHeight * (zoomedRow-tl.row) / rows);
+			var screenPoint:Point = new Point(mapWidth * (zoomedColumn-tl.column) / cols, mapHeight * (zoomedRow-tl.row) / rows); 
+			
+			//var screenPoint:Point = worldMatrix.transformPoint(new Point(zoomedColumn, zoomedRow));
 
 			if (context && context != this)
             {
@@ -1120,7 +1115,7 @@ package com.modestmaps.core
 					removeEventListener(MouseEvent.MOUSE_DOWN, mousePressed, true);
 				}
 			}
-			startPan = new Point(tx, ty);
+			startPan = centerCoordinate.copy();
 			panning = true;
 			dispatchEvent(new MapEvent(MapEvent.START_PANNING));
 		}

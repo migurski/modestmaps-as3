@@ -164,6 +164,12 @@ package com.modestmaps.core
 			}
 			return extent;
 		}
+
+		public static function fromLocation(location:Location):MapExtent
+		{
+			return new MapExtent(location.lat, location.lat, location.lon, location.lon);
+		}
+		
 		
 		public static function fromLocationProperties(objects:Array, locationProp:String='location'):MapExtent
 		{

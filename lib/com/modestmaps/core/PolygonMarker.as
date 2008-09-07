@@ -1,19 +1,22 @@
 package com.modestmaps.core
 {
 	import com.modestmaps.Map;
-	import com.modestmaps.events.MapEvent;
 	import com.modestmaps.geo.Location;
 	
+	import flash.display.LineScaleMode;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Point;
 
-	public class PolygonMarker extends Sprite
+	public class PolygonMarker extends Sprite implements Redrawable
 	{
 		protected var map:Map;
 		protected var drawZoom:Number;
 		
+		public var zoomTolerance:Number = 4;
+		
 		public var locations:Array;
+		protected var coordinates:Array;
 		public var extent:MapExtent;
 		public var location:Location;
 				
@@ -31,31 +34,35 @@ package com.modestmaps.core
 			this.map = map;
 			this.mouseEnabled = false;
 
-			map.addEventListener(MapEvent.EXTENT_CHANGED, rescale);
-			map.addEventListener(MapEvent.ZOOMED_BY, rescale);
-			map.addEventListener(MapEvent.STOP_ZOOMING, redraw);
-			
 			if (locations && locations.length > 0) {
 				this.locations = locations;
 				this.extent = MapExtent.fromLocations(locations);
 				this.location = locations[0] as Location;
+				this.coordinates = locations.map(l2c);
 			}
 		}
-	
-		public function rescale(event:Event=null):void
-		{
-			scaleX = scaleY = Math.pow(2, map.grid.zoomLevel - drawZoom);
-		}
 		
-		public function redraw(event:Event=null):void
+		protected function l2c(l:Location, ...rest):Coordinate
 		{
-			drawZoom = map.grid.zoomLevel;
+			return map.getMapProvider().locationCoordinate(l);
+		}
+	
+		public function redraw(event:Event=null):void
+		{	
+			var grid:TileGrid = map.grid;
+			
+			if (drawZoom && Math.abs(grid.zoomLevel-drawZoom) < zoomTolerance) {
+				scaleX = scaleY = Math.pow(2, grid.zoomLevel-drawZoom);
+				return;
+			}
+			
+			drawZoom = grid.zoomLevel;
 			scaleX = scaleY = 1;
 			
-			var firstPoint:Point = map.locationPoint(location)		
+			var firstPoint:Point = grid.coordinatePoint(coordinates[0]); // map.locationPoint(location)		
 			graphics.clear();
 			if (line && lineAlpha) {
-				graphics.lineStyle(lineThickness, lineColor, lineAlpha);
+				graphics.lineStyle(lineThickness, lineColor, lineAlpha, false, LineScaleMode.NONE);
 			}
 			else {
 				graphics.lineStyle();
@@ -64,13 +71,14 @@ package com.modestmaps.core
 				graphics.beginFill(fillColor, fillAlpha);
 			}
 			graphics.moveTo(0, 0);
-			for each (var loc:Location in locations.slice(1)) {
-				var p:Point = map.locationPoint(loc);
+			var p:Point;
+			for each (var coord:Coordinate in coordinates.slice(1)) {
+				p = grid.coordinatePoint(coord);
 				graphics.lineTo(p.x-firstPoint.x, p.y-firstPoint.y);
 			}
-			if (loc.lat != location.lat && loc.lon != location.lon) {
+/* 			if (loc.lat != location.lat && loc.lon != location.lon) {
 				graphics.lineTo(0, 0);
-			}
+			} */
 			if (fillAlpha) {
 				graphics.endFill();
 			}
