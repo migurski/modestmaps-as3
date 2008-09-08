@@ -10,18 +10,28 @@ package com.modestmaps.overlays
 	import flash.geom.Point;
 	import flash.geom.Rectangle;	
 
-	/**
-	 *  Poly line renderer for Modest Maps
+	/** 
+	 * Polyline clip for rendering Polyline instances on your map.
 	 * 
-	 *  Originally contributed by simonoliver.
+	 * Polylines can be added using:
+	 * 
+	 * <pre>
+	 *  var polylineClip:PolylineClip = new PolylineClip(map);
+	 *  map.addChild(polylineClip);
+	 *  
+	 *  var polyline:Polyline = new Polyline('poly-id-1', [ new Location(10,10), new Location (20,20) ]);
+	 *  polylineClip.addPolyline(polyline);
+	 * </pre>
+	 * 
+	 * @see Polyline
 	 */
-	public class PolyLinesClip extends Sprite
+	public class PolylineClip extends Sprite
 	{
 		protected var map:Map;
 		
 		protected var drawCoord:Coordinate;
 		
-		protected var polyLines:Array = []; // all markers
+		protected var polylines:Array = []; // all markers
 		protected var polylinesByName:Object = {};
 
 		// enable this if you want intermediate zooming steps to
@@ -32,7 +42,7 @@ package com.modestmaps.overlays
 		
 		protected var _dirty:Boolean = true;
 		
-		public function PolyLinesClip(map:Map)
+		public function PolylineClip(map:Map)
 		{
 			this.map = map;
 			this.x = map.getWidth() / 2;
@@ -48,41 +58,39 @@ package com.modestmaps.overlays
 			map.addEventListener(MapEvent.PANNED, onMapPanned);
 			map.addEventListener(MapEvent.RESIZED, onMapResized);
 			map.addEventListener(MapEvent.EXTENT_CHANGED, onMapExtentChanged);
-			map.addEventListener(MapEvent.RENDERED, updatePolyLines);
+			map.addEventListener(MapEvent.RENDERED, updatePolylines);
 		}
 		
-		public function addPolyLine(polyLine:PolyLine):void
+		public function addPolyline(polyline:Polyline):void
 		{
-			polylinesByName[polyLine.id] = polyLine;		   
-			polyLines.push(polyLine);
+			polylinesByName[polyline.id] = polyline;		   
+			polylines.push(polyline);
 			dirty = true;		  
 		}
 		
-		public function getPolyLine(id:String):PolyLine
+		public function getPolyline(id:String):Polyline
 		{
-			return polylinesByName[id] as PolyLine;
+			return polylinesByName[id] as Polyline;
 		}
 		
-		public function removePolyLine(id:String):void
+		public function removePolyline(id:String):void
 		{			
-			var polyLine:PolyLine = getPolyLine(id);
-			if (polyLine) {
-				var index:int = polyLines.indexOf(polyLine);
+			var polyline:Polyline = getPolyline(id);
+			if (polyline) {
+				var index:int = polylines.indexOf(polyline);
 				if (index >= 0) {
-					polyLines.splice(index,1);
+					polylines.splice(index,1);
 				}
-				delete polylinesByName[polyLine.id];
+				delete polylinesByName[polyline.id];
 			}		  
 		}
 			
 		/**
-		* Redraw each active polyLine
+		* Redraw each active polyline
 		*/ 
-		public function updatePolyLines(event:Event=null):void
+		public function updatePolylines(event:Event=null):void
 		{			
 			if (!dirty) return;
-			
-			trace('updating polylines');
 			
 			drawCoord = map.grid.centerCoordinate.copy();
 			
@@ -92,17 +100,17 @@ package com.modestmaps.overlays
 			y = map.getHeight()/2;
 			
 			this.graphics.clear();					   
-			for each (var polyLine:PolyLine in polyLines) {			   
-				updatePolyLine(polyLine);				   
+			for each (var polyline:Polyline in polylines) {			   
+				updatePolyline(polyline);				   
 			}
 			
 			dirty = false;
 		}
 		
 		/**
-		* Update an individual polyLine - determine its visibility and draw if so
+		* Update an individual polyline - determine its visibility and draw if so
 		*/
-		public function updatePolyLine(polyLine:PolyLine):void
+		public function updatePolyline(polyline:Polyline):void
 		{
 			var w:Number = map.getWidth() * 2;
 			var h:Number = map.getHeight() * 2;
@@ -110,19 +118,19 @@ package com.modestmaps.overlays
 			var localPointsArray:Array=new Array();		
 			var i:uint=0;
 			
-			this.graphics.lineStyle(polyLine.lineThickness,polyLine.lineColor,polyLine.lineAlpha,polyLine.pixelHinting,polyLine.scaleMode,polyLine.caps,polyLine.joints,polyLine.miterLimit);
+			this.graphics.lineStyle(polyline.lineThickness,polyline.lineColor,polyline.lineAlpha,polyline.pixelHinting,polyline.scaleMode,polyline.caps,polyline.joints,polyline.miterLimit);
 						
 			var boundaryWindow:Rectangle=new Rectangle(-w/2,-h/2,w,h);
 			
 			// Calculate local coordinates for each point
-			for (i=0;i<polyLine.locationsArray.length;i++)
+			for (i=0;i<polyline.locationsArray.length;i++)
 			{				
-				var tLocation:Location=polyLine.locationsArray[i];
+				var tLocation:Location=polyline.locationsArray[i];
 				var point:Point = map.locationPoint(tLocation, this);
 				localPointsArray.push(point);	
 			}
 			
-			for (i=1;i<polyLine.locationsArray.length;i++)
+			for (i=1;i<polyline.locationsArray.length;i++)
 			{
 				// Create duplicates of each point for clipping
 				var tPoint1:Point=new Point(localPointsArray[i-1].x,localPointsArray[i-1].y);
@@ -240,7 +248,7 @@ package com.modestmaps.overlays
 			dirty = true;
 			// Flash doesn't always dispatch a rendered event during resize
 			// so...
-			updatePolyLines();
+			updatePolylines();
 		}
 		
 		protected function onMapStartZooming(event:MapEvent):void
