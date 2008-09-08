@@ -1,11 +1,5 @@
-/**
- *  Poly line renderer for Modest Maps
- * 
- *  @author simonoliver
- */
-
-package com.modestmaps.extras {
-
+package com.modestmaps.overlays
+{
 	import com.modestmaps.Map;
 	import com.modestmaps.core.Coordinate;
 	import com.modestmaps.events.MapEvent;
@@ -14,9 +8,13 @@ package com.modestmaps.extras {
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	
+	import flash.geom.Rectangle;	
 
+	/**
+	 *  Poly line renderer for Modest Maps
+	 * 
+	 *  Originally contributed by simonoliver.
+	 */
 	public class PolyLinesClip extends Sprite
 	{
 		protected var map:Map;

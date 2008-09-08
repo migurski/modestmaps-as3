@@ -1,6 +1,9 @@
-package com.modestmaps.core
+package com.modestmaps.overlays
 {
 	import com.modestmaps.Map;
+	import com.modestmaps.core.Coordinate;
+	import com.modestmaps.core.MapExtent;
+	import com.modestmaps.core.TileGrid;
 	import com.modestmaps.geo.Location;
 	
 	import flash.display.LineScaleMode;

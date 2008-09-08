@@ -1,4 +1,4 @@
-package com.modestmaps.core
+package com.modestmaps.overlays
 {
 	import com.modestmaps.Map;
 	

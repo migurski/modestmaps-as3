@@ -1,13 +1,25 @@
-/**
- *  PolyLine class. Polylines can be added using map.putPolyLine()
- * 
- *  @author simonoliver
- */
- package com.modestmaps.extras
+package com.modestmaps.overlays
 {
+	/**
+	 * PolyLine class that takes polyline data and draws it in the given style.
+	 * 
+	 * Polylines can be added using:
+	 * 
+	 * <pre>
+	 *  var polyLinesClip:PolyLinesClip = new PolyLinesClip(map);
+	 *  map.addChild(polyLinesClip);
+	 *  
+	 *  var polyLine:PolyLine = new PolyLine('poly-id-1', [ new Location(10,10), new Location (20,20) ]);
+	 *  polylineClip.addPolyLine(polyLine);
+	 * </pre>
+	 * 
+	 * @see PolyLinesClip
+	 * 
+	 * Originally contributed by simonoliver.
+	 * 
+	 */
 	public class PolyLine
 	{
-		
 		public var id:String;
 		public var locationsArray:Array;
 		public var lineThickness:Number;

@@ -1,11 +1,7 @@
-/*
- * vim:et sts=4 sw=4 cindent:
- * $Id$
- */
-
-package com.modestmaps.core
+package com.modestmaps.overlays
 {
 	import com.modestmaps.Map;
+	import com.modestmaps.core.Coordinate;
 	import com.modestmaps.events.MapEvent;
 	import com.modestmaps.events.MarkerEvent;
 	import com.modestmaps.geo.Location;
@@ -18,7 +14,6 @@ package com.modestmaps.core
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
 	import flash.utils.clearTimeout;
-	import flash.utils.getTimer;
 	import flash.utils.setTimeout;
 	
     [Event(name="markerRollOver",    type="com.modestmaps.events.MarkerEvent")]

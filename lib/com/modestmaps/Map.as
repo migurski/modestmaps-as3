@@ -30,6 +30,7 @@ package com.modestmaps
 	import com.modestmaps.geo.*;
 	import com.modestmaps.mapproviders.IMapProvider;
 	import com.modestmaps.mapproviders.microsoft.MicrosoftProvider;
+	import com.modestmaps.overlays.MarkerClip;
 	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
