@@ -30,11 +30,15 @@ package com.modestmaps.overlays
 	    protected var markers:Array = []; // all markers
 	    protected var markersByName:Object = {};
 
-        // enable this if you want intermediate zooming steps to
-        // stretch your graphics instead of reprojecting the points
-        // it's useful for polygons, but for points 
-        // it looks worse and probably isn't faster, but there it is :)
+        /** enable this if you want intermediate zooming steps to
+         * stretch your graphics instead of reprojecting the points
+         * it's useful for polygons, but for points 
+         * it looks worse and probably isn't faster, but there it is :) */
         public var scaleZoom:Boolean = false;
+        
+        /** if scaleZoom is true, this is how many zoom levels you
+         * can zoom by before things will be reprojected regardless */
+        public var zoomTolerance:Number = 4; 
         
         // enable this if you want marker locations snapped to pixels
         public var snapToPixels:Boolean = false;
@@ -74,8 +78,6 @@ package com.modestmaps.overlays
 	    	this.map = map;
 	    	this.x = map.getWidth() / 2;
 	    	this.y = map.getHeight() / 2;
-	    	
-	    	drawCoord = map.grid.centerCoordinate.copy();
 	    	
 	    	previousGeometry = map.getMapProvider().geometry();
 
@@ -132,11 +134,8 @@ package com.modestmaps.overlays
 	        locations[marker] = location.clone();
 	        coordinates[marker] = map.getMapProvider().locationCoordinate(location);
 	        markersByName[marker.name] = marker;
-	        markers.push(marker);
-	        
-	        // set dirty to true, so that the next call to updateClips will set the 
-	        // position and add the marker to the stage if it's visible 
-	        dirty = true;
+	        markers.push(marker);	        
+	        updateClip(marker);
 	    }
 	    
 	    protected function markerInBounds(marker:DisplayObject, w:Number, h:Number):Boolean
@@ -314,16 +313,26 @@ package com.modestmaps.overlays
 	    
 	    protected function onMapPanned(event:MapEvent):void
 	    {
-	        var p:Point = map.grid.coordinatePoint(drawCoord);
-	        this.x = p.x;
-	        this.y = p.y;
+	    	if (drawCoord) {
+		        var p:Point = map.grid.coordinatePoint(drawCoord);
+		        this.x = p.x;
+	    	    this.y = p.y;
+	    	}
+	    	else {
+	    		dirty = true;
+	    	}
 	    }
 	    
 	    protected function onMapZoomedBy(event:MapEvent):void
 	    {
 	    	cacheAsBitmap = false;
-	        if (scaleZoom) {
-    	        scaleX = scaleY = Math.pow(2, map.grid.zoomLevel - drawCoord.zoom);
+	        if (scaleZoom && drawCoord) {
+	        	if (Math.abs(map.grid.zoomLevel - drawCoord.zoom) < zoomTolerance) { 
+    	        	scaleX = scaleY = Math.pow(2, map.grid.zoomLevel - drawCoord.zoom);
+    	     	}
+    	     	else {
+    	     		dirty = true;	
+    	     	}
 	        }
 	        else { 
 		        dirty = true;

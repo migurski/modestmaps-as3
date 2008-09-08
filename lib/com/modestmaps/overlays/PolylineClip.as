@@ -60,6 +60,16 @@ package com.modestmaps.overlays
 			map.addEventListener(MapEvent.EXTENT_CHANGED, onMapExtentChanged);
 			map.addEventListener(MapEvent.RENDERED, updatePolylines);
 		}
+
+		public function removePolylines():void
+		{
+			for (var n:String in polylinesByName) {
+				delete polylinesByName[n];
+			}
+			polylines = [];
+			dirty = true;
+		}
+
 		
 		public function addPolyline(polyline:Polyline):void
 		{

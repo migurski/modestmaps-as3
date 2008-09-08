@@ -84,12 +84,12 @@ package com.modestmaps.core
 	        return new Coordinate(row, column - distance, zoom);
 	    }
 	    
-	    /*
+	    /**
 	     * Returns true if the the two coordinates refer to the same Tile location.
 	     */
 	    public function equalTo( coord : Coordinate ) : Boolean
 	    {
-	    	return coord.row == this.row && coord.column == this.column && coord.zoom == this.zoom;
+	    	return coord && coord.row == this.row && coord.column == this.column && coord.zoom == this.zoom;
 	    }
 	}
 }

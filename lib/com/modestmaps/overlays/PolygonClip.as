@@ -26,17 +26,17 @@ package com.modestmaps.overlays
 
 		override protected function markerInBounds(marker:DisplayObject, w:Number, h:Number):Boolean
 		{
-  			var rect:Rectangle = new Rectangle(-w, -h, w*2, h*2);
+   			var rect:Rectangle = new Rectangle(-w, -h, w*2, h*2);
 			return rect.intersects(marker.getBounds(this));
 		}
 		
 		override public function updateClip(marker:DisplayObject):Boolean
 		{
-			var needsSort:Boolean = super.updateClip(marker);
-			if (contains(marker) && marker is Redrawable) {
+			// we need to redraw this marker before MarkerClip.updateClip so that markerInBounds will be correct
+			if (marker is Redrawable) {
 				Redrawable(marker).redraw();
 			}
-			return needsSort;
+			return super.updateClip(marker);
 		}
 		
 	}
