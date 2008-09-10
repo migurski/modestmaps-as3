@@ -233,9 +233,6 @@ package com.modestmaps.overlays
             if (doSort) {
             	requestSort(true); 
             }
-            else {
-            	trace('not sorting markers');
-            }
             
 	    	dirty = false;
 	    }
