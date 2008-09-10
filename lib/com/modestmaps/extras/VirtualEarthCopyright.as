@@ -16,19 +16,9 @@ package com.modestmaps.extras
 		
 		public var veLogo:Bitmap;
 		
-		public var offsetX:Number = 10;
-		public var offsetY:Number = 10;
-		
-		public function VirtualEarthCopyright(map:Map, offsetX:Number=undefined, offsetY:Number=undefined)
+		public function VirtualEarthCopyright(map:Map, offsetX:Number=10, offsetY:Number=10)
 		{	
-			super(map);
-			
-			if (offsetX) {
-				this.offsetX = offsetX;
-			}
-			if (offsetY) {
-				this.offsetY = offsetY;
-			}
+			super(map, offsetX, offsetY);
 			
 			copyrightField.embedFonts = true;
 			copyrightField.antiAliasType = AntiAliasType.ADVANCED;

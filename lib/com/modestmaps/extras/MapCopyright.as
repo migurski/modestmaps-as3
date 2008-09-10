@@ -216,10 +216,16 @@ package com.modestmaps.extras
 		public var copyright:String = "";
 
 		public var copyrightField:TextField;
+		
+		protected var offsetX:Number=10;
+		protected var offsetY:Number=10;
 
-		public function MapCopyright(map:Map)
+		public function MapCopyright(map:Map, offsetX:Number=10, offsetY:Number=10)
 		{
 			this.map = map;
+			
+			this.offsetX = offsetX;
+			this.offsetY = offsetY;
 
 			if (!scriptAdded) {
 				try {
@@ -260,8 +266,8 @@ package com.modestmaps.extras
 	    
 	    protected function onMapResized(event:MapEvent):void
 	    {
-			copyrightField.x = map.getWidth() - copyrightField.width - 10;
-			copyrightField.y = map.getHeight() - copyrightField.height - 10;	    		
+			copyrightField.x = map.getWidth() - copyrightField.width - offsetX;
+			copyrightField.y = map.getHeight() - copyrightField.height - offsetY;	    		
 	    }
 	    
 	   /**

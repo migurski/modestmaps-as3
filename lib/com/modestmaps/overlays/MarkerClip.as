@@ -134,8 +134,13 @@ package com.modestmaps.overlays
 	        locations[marker] = location.clone();
 	        coordinates[marker] = map.getMapProvider().locationCoordinate(location);
 	        markersByName[marker.name] = marker;
-	        markers.push(marker);	        
-	        updateClip(marker);
+	        markers.push(marker);
+	        
+	        var added:Boolean = updateClip(marker);
+	        
+	        if (added) {
+	        	requestSort(true);
+	        }
 	    }
 	    
 	    protected function markerInBounds(marker:DisplayObject, w:Number, h:Number):Boolean
@@ -195,8 +200,6 @@ package com.modestmaps.overlays
 	    	}
 	    }
 	        
-	    private var sortTimer:uint;
-	        
 	    public function updateClips(event:Event=null):void
 	    {
 	    	if (!dirty) {
@@ -228,12 +231,10 @@ package com.modestmaps.overlays
 	    	}
 
             if (doSort) {
-            	// use a timer so we don't do this every single frame
-            	// sorting markers and applying depths pretty much doubles the time to update 
-            	if (sortTimer) {
-            		clearTimeout(sortTimer);
-            	}
-            	sortTimer = setTimeout(sortMarkers, 100, true); 
+            	requestSort(true); 
+            }
+            else {
+            	trace('not sorting markers');
             }
             
 	    	dirty = false;
@@ -250,6 +251,19 @@ package com.modestmaps.overlays
 	    	}
 	    	dirty = true;
 	    }
+	    
+	    protected var sortTimer:uint;	        
+	    
+	    protected function requestSort(updateOrder:Boolean=false):void
+	    {
+        	// use a timer so we don't do this every single frame, otherwise
+        	// sorting markers and applying depths pretty much doubles the 
+        	// time to run updateClips 
+         	if (sortTimer) {
+        		clearTimeout(sortTimer);
+        	}
+        	sortTimer = setTimeout(sortMarkers, 50, updateOrder);
+     	}	    
 	    
 	    public function sortMarkers(updateOrder:Boolean=false):void
 	    {
@@ -270,7 +284,7 @@ package com.modestmaps.overlays
 	        }
 	    }
 
-		/** returns true if the marker was added or removed from the stage, so that updateClips can sort the markers */ 
+		/** returns true if the marker was added to the stage, so that updateClips or attachMarker can sort the markers */ 
 	    public function updateClip(marker:DisplayObject):Boolean
 	    {	    	
     	    if (marker.visible)
@@ -290,13 +304,15 @@ package com.modestmaps.overlays
     	            if (!contains(marker))
     	            {
     	                addChild(marker);
+    	                // notify the caller that we've added something and need to sort markers
     	                return true;
     	            }
     	        }
     	        else if (contains(marker))
     	        {
     	            removeChild(marker);
-    	            return true;
+    	            // only need to sort if we've added something
+    	            return false;
     	        }
             }
             
@@ -307,8 +323,7 @@ package com.modestmaps.overlays
 
 	    protected function onMapExtentChanged(event:MapEvent):void
 	    {
-	    	onMapZoomedBy(event);
-	    	onMapPanned(event);
+			dirty = true;	    	
 	    }
 	    
 	    protected function onMapPanned(event:MapEvent):void
@@ -327,7 +342,7 @@ package com.modestmaps.overlays
 	    {
 	    	cacheAsBitmap = false;
 	        if (scaleZoom && drawCoord) {
-	        	if (Math.abs(map.grid.zoomLevel - drawCoord.zoom) < zoomTolerance) { 
+	        	if (Math.abs(map.grid.zoomLevel - drawCoord.zoom) < zoomTolerance) {
     	        	scaleX = scaleY = Math.pow(2, map.grid.zoomLevel - drawCoord.zoom);
     	     	}
     	     	else {
