@@ -856,7 +856,7 @@ package com.modestmaps.core
 					tileQueue.push(tile);
 				}
 				else {
-					trace("no urls needed for that tile", tempCoord);
+					// trace("no urls needed for that tile", tempCoord);
 					tile.show();
 				}
 				well.addChild(tile);
