@@ -92,6 +92,9 @@ package com.modestmaps
 	    {
 			if (!mapProvider) mapProvider = new MicrosoftProvider(MicrosoftProvider.ROAD);
 
+			// TODO getter/setter for this that disables interaction in TileGrid
+			__draggable = draggable;
+
 			// don't call setMapProvider here
 			// the extent calculations are all squirrely
 	        this.mapProvider = mapProvider;
@@ -241,7 +244,7 @@ package com.modestmaps
 	        var hFactor:Number = (BR.column - TL.column) / (fitWidth / mapProvider.tileWidth);
 	        
 	        // multiplication factor expressed as base-2 logarithm, for zoom difference
-	        var hZoomDiff:Number = Math.log(hFactor) / Math.log(2);
+	        var hZoomDiff:Number = Math.log(hFactor) / Math.LN2;
 	        
 	        // possible horizontal zoom to fit geographical extent in map width
 	        var hPossibleZoom:Number = TL.zoom - Math.ceil(hZoomDiff);
@@ -250,7 +253,7 @@ package com.modestmaps
 	        var vFactor:Number = (BR.row - TL.row) / (fitHeight / mapProvider.tileHeight);
 	        
 	        // multiplication factor expressed as base-2 logarithm, for zoom difference
-	        var vZoomDiff:Number = Math.log(vFactor) / Math.log(2);
+	        var vZoomDiff:Number = Math.log(vFactor) / Math.LN2;
 	        
 	        // possible vertical zoom to fit geographical extent in map height
 	        var vPossibleZoom:Number = TL.zoom - Math.ceil(vZoomDiff);

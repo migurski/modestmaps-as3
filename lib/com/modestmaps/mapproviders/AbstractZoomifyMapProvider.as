@@ -67,7 +67,7 @@ package com.modestmaps.mapproviders
 		{
 	        __baseDirectory = baseDirectory;
 	
-	        var zoom:Number = Math.ceil(Math.log(Math.max(width, height)) / Math.log(2));
+	        var zoom:Number = Math.ceil(Math.log(Math.max(width, height)) / Math.LN2);
 	
 	        __topLeftOutLimit = new Coordinate(0, 0, 0);
 	        __bottomRightInLimit = (new Coordinate(height, width, zoom)).zoomTo(zoom - 8);

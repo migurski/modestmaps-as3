@@ -123,17 +123,19 @@ package com.modestmaps.overlays
 				}
 			}
 			
-			var firstPoint:Point = grid.coordinatePoint(coordinates[0][0]);
-			for each (var ring:Array in coordinates) {
-				var ringPoint:Point = grid.coordinatePoint(ring[0]);
-				graphics.moveTo(ringPoint.x-firstPoint.x, ringPoint.y-firstPoint.y);
-				var p:Point;
-				for each (var coord:Coordinate in ring.slice(1)) {
-					p = grid.coordinatePoint(coord);
-					graphics.lineTo(p.x-firstPoint.x, p.y-firstPoint.y);
-				}
-	 			if (!ringPoint.equals(p)) {
-					graphics.lineTo(ringPoint.x-firstPoint.x, ringPoint.y-firstPoint.y);
+			if (location) {
+				var firstPoint:Point = grid.coordinatePoint(coordinates[0][0]);
+				for each (var ring:Array in coordinates) {
+					var ringPoint:Point = grid.coordinatePoint(ring[0]);
+					graphics.moveTo(ringPoint.x-firstPoint.x, ringPoint.y-firstPoint.y);
+					var p:Point;
+					for each (var coord:Coordinate in ring.slice(1)) {
+						p = grid.coordinatePoint(coord);
+						graphics.lineTo(p.x-firstPoint.x, p.y-firstPoint.y);
+					}
+		 			if (!ringPoint.equals(p)) {
+						graphics.lineTo(ringPoint.x-firstPoint.x, ringPoint.y-firstPoint.y);
+					}
 				}
 			}
 			

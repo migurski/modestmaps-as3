@@ -18,8 +18,6 @@ package com.modestmaps
 	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
-	import flash.utils.clearTimeout;
-	import flash.utils.setTimeout;
 	
 	import gs.TweenLite;
 	
@@ -68,21 +66,13 @@ package com.modestmaps
 	    	}
 	    }      
 		    
-	    /** default easing function for panUp, panDown, panLeft, panRight and setCenter */
-	    protected static function linearEaseOut(t:Number, b:Number, c:Number, d:Number):Number
-	    {
-			return c * t / d + b;
-		}
+	    /** default easing function for panUp, panDown, panLeft, panRight, etc. */
 		protected static function quadraticEaseOut(t:Number, b:Number, c:Number, d:Number):Number
 		{
 			return -c * (t /= d) * (t - 2) + b;
 		}
-		protected static function exponentialEaseOut(t:Number, b:Number, c:Number, d:Number):Number
-		{
-			return t == d ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
-		}
 		
-		/** zoom in or out by sc, moving the given location to the requested target */        
+		/** zoom in or out by sc, moving the given location to the requested target (or map center, if omitted) */        
         override protected function panAndZoomBy(sc:Number, location:Location, targetPoint:Point=null, duration:Number=-1):void
         {
             if (duration < 0) duration = panAndZoomDuration;
@@ -92,6 +82,20 @@ package com.modestmaps
 			
 			grid.prepareForZooming();
 			grid.prepareForPanning();
+
+			var constrainedDelta:Number = Math.log(sc) / Math.LN2;
+
+         	if (grid.zoomLevel + constrainedDelta < grid.minZoom) {
+        		constrainedDelta = grid.minZoom - grid.zoomLevel;        		
+        	}
+        	else if (grid.zoomLevel + constrainedDelta > grid.maxZoom) {
+        		constrainedDelta = grid.maxZoom - grid.zoomLevel; 
+        	}
+        	
+        	// round the zoom delta up or down so that we end up at a power of 2
+        	var preciseZoomDelta:Number = constrainedDelta + (Math.round(grid.zoomLevel+constrainedDelta) - (grid.zoomLevel+constrainedDelta));
+			
+			sc = Math.pow(2, preciseZoomDelta);
 			
 			var m:Matrix = grid.getMatrix();
 			
@@ -99,7 +103,7 @@ package com.modestmaps
 			m.scale(sc, sc);
 			m.translate(targetPoint.x, targetPoint.y);
 			
-			TweenLite.to(grid, panAndZoomDuration, { a: m.a, b: m.b, c: m.c, d: m.d, tx: m.tx, ty: m.ty, onComplete: panAndZoomComplete });
+			TweenLite.to(grid, duration, { a: m.a, b: m.b, c: m.c, d: m.d, tx: m.tx, ty: m.ty, onComplete: panAndZoomComplete });
         }
 
 		/** zoom in or out by zoomDelta, keeping the requested point in the same place */        
@@ -118,15 +122,8 @@ package com.modestmaps
         	}
         	
         	// round the zoom delta up or down so that we end up at a power of 2
-        	var preciseZoomDelta:Number;
+        	var preciseZoomDelta:Number = constrainedDelta + (Math.round(grid.zoomLevel+constrainedDelta) - (grid.zoomLevel+constrainedDelta));
 
-			if (mouseWheelingIn || mouseWheelingOut) {
-				preciseZoomDelta = constrainedDelta;
-			}
-			else {
-				preciseZoomDelta = constrainedDelta + (Math.round(grid.zoomLevel) - grid.zoomLevel);
-			}
-        	
         	var sc:Number = Math.pow(2, preciseZoomDelta);
 			
 			grid.prepareForZooming();
@@ -138,7 +135,7 @@ package com.modestmaps
 			m.scale(sc, sc);
 			m.translate(targetPoint.x, targetPoint.y);
 			
-			TweenLite.to(grid, panAndZoomDuration, { a: m.a, b: m.b, c: m.c, d: m.d, tx: m.tx, ty: m.ty, onComplete: panAndZoomComplete }); 
+			TweenLite.to(grid, duration, { a: m.a, b: m.b, c: m.c, d: m.d, tx: m.tx, ty: m.ty, onComplete: panAndZoomComplete }); 
         }
         
         /** EXPERIMENTAL! */
@@ -238,51 +235,64 @@ package com.modestmaps
 		    }
 	    }
 
-		protected var wheeltimer:uint;
-
-        /** zooms in or out of mouse-wheeled location */
+        /** 
+         * Zooms in or out of mouse-wheeled location, rounded off to nearest whole zoom level when zooming ends.
+         *
+         * @see http://blog.pixelbreaker.com/flash/swfmacmousewheel/ for Mac mouse wheel support  
+         */
         public function onMouseWheel(event:MouseEvent):void
         {       	
-        	if (!__draggable) return;
+        	if (!__draggable || grid.panning) return;
 
-            var p:Point = grid.globalToLocal(new Point(event.stageX, event.stageY));
+			TweenLite.killTweensOf(grid);
+			TweenLite.killDelayedCallsTo(doneMouseWheeling);
+
             if (event.delta < 0) {
+            	var sc:Number;
             	if (grid.zoomLevel > grid.minZoom) {
 	        		mouseWheelingOut = true;
 	        		mouseWheelingIn = false;
-            		zoomByAbout(Math.min(-1,event.delta/20.0), p, 0.0);
-            	}
-            	else {
-            		panBy(mapWidth/2 - p.x, mapHeight/2 - p.y);
+					sc = Math.max(0.5, 1.0+event.delta/20.0);
             	}
             }
             else if (event.delta > 0) {
             	if (grid.zoomLevel < grid.maxZoom) {
             		mouseWheelingIn = true;
 	        		mouseWheelingOut = false;            		
-	            	zoomByAbout(Math.max(1,event.delta/20.0), p, 0.0);
+					sc = Math.min(2.0, 1.0+event.delta/20.0);				
 	            }
-            	else {
-            		panBy(mapWidth/2 - p.x, mapHeight/2 - p.y);
-            	}
+            }
+
+            /* trace('scale', sc);
+			trace('delta', event.delta);
+            trace('mouseWheelingIn', mouseWheelingIn);
+            trace('mouseWheelingOut', mouseWheelingOut); */
+            
+            if (sc) {
+	            var p:Point = grid.globalToLocal(new Point(event.stageX, event.stageY));        	
+				var m:Matrix = grid.getMatrix();
+				m.translate(-p.x, -p.y);
+				m.scale(sc, sc);
+				m.translate(p.x, p.y);
+				grid.setMatrix(m);            	
+	            TweenLite.delayedCall(0.1, doneMouseWheeling);
             }
             
-        	if (wheeltimer) {
-        		clearTimeout(wheeltimer);
-        	}
-        	
-            if (mouseWheelingIn || mouseWheelingOut) {
-				wheeltimer = setTimeout(doneMouseWheeling, 100);
-            }
+            event.updateAfterEvent();
+            
         }
         
         protected function doneMouseWheeling():void
         {
+            var p:Point = grid.globalToLocal(new Point(stage.mouseX, stage.mouseY));
         	if (mouseWheelingIn) { 
-        		zoomByAbout(Math.ceil(grid.zoomLevel) - grid.zoomLevel, new Point(grid.mouseX, grid.mouseY), 0.05); // round off to whole value up
+        		zoomByAbout(Math.ceil(grid.zoomLevel) - grid.zoomLevel, p, 0.15); // round off to whole value up
         	}
         	else if (mouseWheelingOut) { 
-	        	zoomByAbout(Math.floor(grid.zoomLevel) - grid.zoomLevel, new Point(grid.mouseX, grid.mouseY), 0.05); // round off to whole value down
+	        	zoomByAbout(Math.floor(grid.zoomLevel) - grid.zoomLevel, p, 0.15); // round off to whole value down
+        	}
+        	else {
+        		zoomByAbout(Math.round(grid.zoomLevel) - grid.zoomLevel, p, 0.15); // round off to whole value down
         	}
         	mouseWheelingOut = false;
         	mouseWheelingIn = false;

@@ -4,6 +4,11 @@ package com.modestmaps.extras
     
     public class Distance
     {
+    	public static const R_MILES:Number = 3963.1;
+    	public static const R_NAUTICAL_MILES:Number = 3443.9;
+    	public static const R_KM:Number = 6378;
+    	public static const R_METERS:Number = 6378000;
+    	
         /** 
          * <p>you can specify different units by optionally providing the 
          * earth's radius in the units you desire</p>
@@ -19,7 +24,7 @@ package com.modestmaps.extras
          * 
          * @see http://jan.ucc.nau.edu/~cvm/latlon_formula.html 
          * */
-        public static function approxDistance(start:Location, end:Location, r:Number=6378000):Number 
+        public static function approxDistance(start:Location, end:Location, r:Number=R_METERS):Number 
         {
             
 			var a1:Number = radians(start.lat);

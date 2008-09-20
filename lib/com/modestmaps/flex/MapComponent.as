@@ -6,7 +6,7 @@
 package com.modestmaps.flex
 {
 	/**
-	 * The flex.Map class is an ActionScript UI component. To use it in your application,
+	 * The flex.MapComponent class is an ActionScript UI component. To use it in your application,
 	 * simply specify a new namespace in the root node of your application. As long as the
 	 * com.modestmaps.flex namespace is in your path, Flex Builder should find the class
 	 * and auto-complete the element name once you've opened a new tag and typed the namespace.
@@ -32,21 +32,23 @@ package com.modestmaps.flex
 	import flash.events.Event;
 	import mx.core.UIComponent;
 
-	/**
-	 * There's something funky going on with coercion of these event types.
-	 * I'll have to investigate before event attributes will work in MXML.
-	 * - shawn
-	 */
-	/*
-	[Event(name="startPanning", type="com.modestmaps.events.MapEvent")]
-	[Event(name="pannedBy", type="com.modestmaps.events.MapEvent")]
-	[Event(name="stopPanning", type="com.modestmaps.events.MapEvent")]
-	[Event(name="startZooming", type="com.modestmaps.events.MapEvent")]
-	[Event(name="zoomedBy", type="com.modestmaps.events.MapEvent")]
-	[Event(name="stopZooming", type="com.modestmaps.events.MapEvent")]
-	*/
-
-	public class MapComponent extends UIComponent
+    [Event(name="startZooming",      type="com.modestmaps.events.MapEvent")]
+    [Event(name="stopZooming",       type="com.modestmaps.events.MapEvent")]
+    [Event(name="zoomedBy",          type="com.modestmaps.events.MapEvent")]
+    [Event(name="startPanning",      type="com.modestmaps.events.MapEvent")]
+    [Event(name="stopPanning",       type="com.modestmaps.events.MapEvent")]
+    [Event(name="panned",            type="com.modestmaps.events.MapEvent")]
+    [Event(name="resized",           type="com.modestmaps.events.MapEvent")]
+    [Event(name="mapProviderChanged",type="com.modestmaps.events.MapEvent")]
+    [Event(name="beginExtentChange", type="com.modestmaps.events.MapEvent")]
+    [Event(name="extentChanged",     type="com.modestmaps.events.MapEvent")]
+    [Event(name="beginTileLoading",  type="com.modestmaps.events.MapEvent")]
+    [Event(name="allTilesLoaded",    type="com.modestmaps.events.MapEvent")]
+    [Event(name="rendered",          type="com.modestmaps.events.MapEvent")]
+    [Event(name="markerRollOver",    type="com.modestmaps.events.MarkerEvent")]
+    [Event(name="markerRollOut",     type="com.modestmaps.events.MarkerEvent")]
+    [Event(name="markerClick",       type="com.modestmaps.events.MarkerEvent")]
+    public class MapComponent extends UIComponent
 	{
 		public static const DEFAULT_MEASURED_WIDTH:Number = 400;
 	    public static const DEFAULT_MEASURED_MIN_WIDTH:Number = 100;
@@ -57,7 +59,7 @@ package com.modestmaps.flex
 
 	    public static const DEFAULT_MAP_PROVIDER:IMapProvider = new BlueMarbleMapProvider();
 		
-		protected var _map:com.modestmaps.Map;
+		protected var _map:Map;
 		protected var mapInitDirty:Boolean = true;
 
 		public function MapComponent()
@@ -76,94 +78,35 @@ package com.modestmaps.flex
 		
 		override protected function createChildren():void
 		{
+			trace("Map.createChildren()");
+			
 			super.createChildren();
-
-/* 			if (_map == null)
-			{
-				_map = new com.modestmaps.Map();
-				_map.addEventListener(MapEvent.PANNED, onMapPanned);
-				_map.addEventListener(MapEvent.RESIZED, onMapResized);
-				_map.addEventListener(MapEvent.START_PANNING, onMapStartPanning);
-				_map.addEventListener(MapEvent.STOP_PANNING, onMapStopPanning);
-				_map.addEventListener(MapEvent.START_ZOOMING, onMapStartZooming);
-				_map.addEventListener(MapEvent.STOP_ZOOMING, onMapStopZooming);
-				_map.addEventListener(MapEvent.ZOOMED_BY, onMapZoomedBy);
-				addChild(_map);
-			} */
-		}
-
-		/**
-		 * Updates the map's provider, extent or center/zoom, and size. This is called
-		 * by the Flex framework when necessary. There's probably some more optimization that
-		 * could be done in the whole invalidation/validation/update process; for instance,
-		 * a flag set in invalidateSize() could be used to determine whether or not we should
-		 * call _map.setSize(), rather than just comparing the size.
-		 */
-		override protected function updateDisplayList(w:Number, h:Number):void
-		{
-			trace("Map.updateDisplayList()");
-
 			if (mapInitDirty && _map == null)
 			{
 				// TODO: implement draggable switch?
-				trace(' * initializing map: ' + w + 'x' + h + ', ' + _draggable + ', provider: ' + _mapProvider.toString());
+				//trace(' * initializing map: ' + w + 'x' + h + ', ' + _draggable + ', provider: ' + _mapProvider.toString());
 				//_map.init(w, h, _draggable, _mapProvider || DEFAULT_MAP_PROVIDER);
-				_map = new com.modestmaps.Map(w, h, _draggable, _mapProvider || DEFAULT_MAP_PROVIDER);
-				_map.addEventListener(MapEvent.PANNED, onMapPanned);
-				_map.addEventListener(MapEvent.RESIZED, onMapResized);
-				_map.addEventListener(MapEvent.START_PANNING, onMapStartPanning);
-				_map.addEventListener(MapEvent.STOP_PANNING, onMapStopPanning);
-				_map.addEventListener(MapEvent.START_ZOOMING, onMapStartZooming);
-				_map.addEventListener(MapEvent.STOP_ZOOMING, onMapStopZooming);
-				_map.addEventListener(MapEvent.ZOOMED_BY, onMapZoomedBy);
+				_map = new Map(unscaledWidth, unscaledHeight, _draggable, _mapProvider || DEFAULT_MAP_PROVIDER);
 				addChild(_map);
+				mapProviderDirty = false;
 				mapInitDirty = false;
 			}
-			else if (mapProviderDirty && _map)
+		}
+		
+		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+		{
+			if (_map.getWidth() != unscaledWidth || _map.getHeight() != unscaledHeight)
 			{
-				trace(' * setting map provider: ' + _mapProvider.toString());
-				_map.setMapProvider(_mapProvider);
-				mapProviderDirty = false;
+				_map.setSize(unscaledWidth, unscaledHeight);
 			}
-
-			if (_extent && mapExtentDirty && _map)
-			{
+			
+			// save extent setting until the map has a valid size
+	        if (mapExtentDirty && _map.getWidth() > 0 && _map.getHeight() > 0)
+	        {
 				trace(' * extent is dirty, setting to: ' + _extent);
-				_map.setExtent(_extent);
-				mapExtentDirty = false;
-			}
-			else if (mapCenterDirty && _map)
-			{
-				trace (' * center is dirty...');
-				if (mapZoomDirty)
-				{
-					trace(' ** setting center and zoom: ' + _centerLocation + ', ' + _zoom);
-					_map.setCenterZoom(_centerLocation, _zoom);
-					mapZoomDirty = false;
-				}
-				else
-				{
-					var zoomLevel:int = int(_map.getCenterZoom()[1]);
-					trace(' ** setting center: ' + _centerLocation + ' with implicit zoom: ' + zoomLevel);
-					_map.setCenterZoom(_centerLocation, zoomLevel);
-				}
-				mapCenterDirty = false;
-			}
-			
-			if (mapZoomDirty && _map)
-			{
-				trace(' * map zoom is still dirty! this should NOT happen.');
-				// FIXME: this doesn't work during initialization
-				// map.setCenterZoom(map.getCenter(), _zoom);
-				mapZoomDirty = false;
-			}
-
-			if (_map.getWidth() != w || _map.getHeight() != h)
-			{
-				_map.setSize(w, h);
-			}
-			
-			super.invalidateDisplayList();
+	            _map.setExtent(_extent);
+	            mapExtentDirty = false;
+	        }
 		}
 
 		protected var mapExtentDirty:Boolean = false;
@@ -181,7 +124,7 @@ package com.modestmaps.flex
 		 * method. This allows the extent to be defined as a string in MXML
 		 * attributes, a la "north, south, east, west".
 		 */
-		[Inspectable(category="Map")]
+		[Inspectable(category="MapComponent")]
 		public function set extent(mapExtent:*):void
 		{
 			if (mapExtent is String)
@@ -200,7 +143,7 @@ package com.modestmaps.flex
 			mapExtentDirty = true;
 			mapCenterDirty = false;
 			mapZoomDirty = false;
-			invalidateDisplayList();
+			invalidateProperties();
 		}
 
 		public function get extent():MapExtent
@@ -329,6 +272,7 @@ package com.modestmaps.flex
 		[Inspectable(category="Map")]
 		public function set draggable(isDraggable:Boolean):void
 		{
+			trace('draggable', isDraggable);
 			if (initialized)
 			{
 				throw new Error("'draggable' is not settable post initialization");
@@ -345,35 +289,53 @@ package com.modestmaps.flex
 		}
 
 		/**
-		 * TODO: implement our own event dispatchers here,
-		 * or simply let the events bubble up?
+		 * Updates the map's provider, extent or center/zoom, and size. This is called
+		 * by the Flex framework when necessary. There's probably some more optimization that
+		 * could be done in the whole invalidation/validation/update process; for instance,
+		 * a flag set in invalidateSize() could be used to determine whether or not we should
+		 * call _map.setSize(), rather than just comparing the size.
 		 */
-		protected function onMapPanned(event:MapEvent):void
+
+		// http://ccgi.arutherford.plus.com/blog/wordpress/?p=169
+		override protected function commitProperties():void
 		{
-		}
+			trace('commitProperties()', this.id);
+			
+		    if (_map!=null)
+		    {
+		        if (mapZoomDirty)
+		        {
+		        	trace (' * zoom is dirty...');
+		            _map.setZoom(_zoom);
+		            mapZoomDirty = false;
+		        }
 		
-		protected function onMapResized(event:MapEvent):void
-		{
-		}
+		        if (mapCenterDirty)
+		        {
+					trace (' * center is dirty...');
+		            _map.setCenter(_centerLocation);
+		            mapCenterDirty = false;
+		        }
 		
-		protected function onMapStartPanning(event:MapEvent):void
-		{
+		        if (mapExtentDirty && _map.getWidth() > 0 && _map.getHeight() > 0)
+		        {
+					trace(' * extent is dirty, setting to: ' + _extent);
+		            _map.setExtent(_extent);
+		            mapExtentDirty = false;
+		        }
+
+				if (mapProviderDirty)
+				{
+					trace(' * setting map provider: ' + _mapProvider.toString());
+					_map.setMapProvider(_mapProvider);
+					mapProviderDirty = false;
+				}
+				
+		    }
+
+		    super.commitProperties();		
+
 		}
-		
-		protected function onMapStopPanning(event:MapEvent):void
-		{
-		}
-		
-		protected function onMapStartZooming(event:MapEvent):void
-		{
-		}
-		
-		protected function onMapStopZooming(event:MapEvent):void
-		{
-		}
-		
-		protected function onMapZoomedBy(event:MapEvent):void
-		{
-		}
+
 	}	
 }

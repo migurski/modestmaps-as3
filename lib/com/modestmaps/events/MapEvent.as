@@ -37,11 +37,8 @@ package com.modestmaps.events
 	    public static const EXTENT_CHANGED:String = 'extentChanged';
 		public var newExtent:MapExtent;
 		
-		public static const PROVIDER_CHANGED:String = 'providerChanged';
-		public var newMapProvider:IMapProvider;
-
 	    public static const MAP_PROVIDER_CHANGED:String = 'mapProviderChanged';
-		public var newProvider:IMapProvider;
+		public var newMapProvider:IMapProvider;
 
 	    public static const BEGIN_TILE_LOADING:String = 'beginTileLoading';
 	    public static const ALL_TILES_LOADED:String = 'alLTilesLoaded';
@@ -92,7 +89,7 @@ package com.modestmaps.events
 					break;	    	    
 				case MAP_PROVIDER_CHANGED:
 	    			if (rest.length > 0 && rest[0] is IMapProvider) {
-	    				newProvider = rest[0];
+	    				newMapProvider = rest[0];
 	    			}
 			}
 			

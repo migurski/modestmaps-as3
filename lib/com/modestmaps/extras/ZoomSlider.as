@@ -38,6 +38,12 @@ package com.modestmaps.extras {
 			track.graphics.lineStyle(5, 0xd9c588);
 			track.graphics.moveTo(0, 0);
 			track.graphics.lineTo(0, trackHeight);
+			track.graphics.lineStyle(0, 0x000000, 0.2);
+			for (var i:int = map.grid.minZoom; i <= map.grid.maxZoom; i++) {
+				var tick:Number = trackHeight * (i - map.grid.minZoom) / (map.grid.maxZoom - map.grid.minZoom);
+				track.graphics.moveTo(-2, tick);
+				track.graphics.lineTo(2, tick);
+			}
 			track.x = 5;
 			addChild(track);
 			
@@ -59,7 +65,7 @@ package com.modestmaps.extras {
 		{
 			var p:Point = globalToLocal(new Point(event.stageX, event.stageY));
 			thumb.y = p.y;
-			map.grid.zoomLevel = Math.round(map.grid.minZoom + (map.grid.maxZoom - map.grid.minZoom) * proportion);
+			TweenLite.to(map.grid, 0.25, { zoomLevel: Math.round(map.grid.minZoom + (map.grid.maxZoom - map.grid.minZoom) * (1 - proportion)) }); 
 		}
         
 		private function onThumbMouse(event:Event):void
@@ -91,7 +97,7 @@ package com.modestmaps.extras {
 		{
 			//if (event) trace(event.type, "in ZoomSlider.update");
 			if (!dragging) {
-				proportion = (map.grid.zoomLevel - map.grid.minZoom) / (map.grid.maxZoom - map.grid.minZoom);
+				proportion = 1.0 - (map.grid.zoomLevel - map.grid.minZoom) / (map.grid.maxZoom - map.grid.minZoom);
 			}
 		}
 	
@@ -106,7 +112,7 @@ package com.modestmaps.extras {
 				thumb.y = prop * trackHeight;
 			}
 			else {
-				map.grid.zoomLevel = map.grid.minZoom + (map.grid.maxZoom - map.grid.minZoom) * prop;
+				map.grid.zoomLevel = map.grid.minZoom + (map.grid.maxZoom - map.grid.minZoom) * (1.0 - prop);
 			}
 		}
 		

@@ -255,7 +255,9 @@ package com.modestmaps.core
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
 			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-			stage.invalidate(); // call onRender
+			dirty = true;
+			// force an on-render in case we were added in a render handler
+			onRender();
 		}
 		
 		private function onRemovedFromStage(event:Event):void
@@ -322,6 +324,49 @@ package com.modestmaps.core
 			processQueue();
 		}
 		
+		protected function onRendered():void
+		{
+			// listen out for this if you want to be sure map is in its final state before reprojecting markers etc.
+			dispatchEvent(new MapEvent(MapEvent.RENDERED));
+		}
+		
+		protected function onPanned():void
+		{
+			var pt:Point = coordinatePoint(startPan);
+			dispatchEvent(new MapEvent(MapEvent.PANNED, pt.subtract(new Point(mapWidth/2, mapHeight/2))));			
+		}
+		
+		protected function onZoomed():void
+		{
+			var zoomEvent:MapEvent = new MapEvent(MapEvent.ZOOMED_BY, zoomLevel-startZoom);
+			// this might also be useful
+		    zoomEvent.zoomLevel = zoomLevel;
+	    	dispatchEvent(zoomEvent);			
+		}
+		
+		protected function onChanged():void
+		{
+			// doesn't bubble, unlike MapEvent
+			// Map will pick this up and dispatch MapEvent.EXTENT_CHANGED for us
+			dispatchEvent(new Event(Event.CHANGE, false, false));			
+		}
+		
+		protected function onBeginTileLoading():void
+		{
+			dispatchEvent(new MapEvent(MapEvent.BEGIN_TILE_LOADING));			
+		}
+		
+		protected function onProgress():void
+		{
+		    // dispatch tile load progress
+		    dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS, false, false, previousOpenRequests - openRequests.length, previousOpenRequests));			
+		}
+		
+		protected function onAllTilesLoaded():void
+		{
+			dispatchEvent(new MapEvent(MapEvent.ALL_TILES_LOADED));			
+		}
+		
 		/** 
 		 * figures out from worldMatrix which tiles we should be showing, adds them to the stage, adds them to the tileQueue if needed, etc.
 		 * 
@@ -332,7 +377,7 @@ package com.modestmaps.core
 		protected function onRender(event:Event=null):void
 		{
 			if (!dirty || !stage) {
-				dispatchEvent(new MapEvent(MapEvent.RENDERED));
+				onRendered();
 				return;
 			}
 
@@ -340,24 +385,18 @@ package com.modestmaps.core
 
 			if (zooming || panning) {
 				if (panning) {
-					var pt:Point = coordinatePoint(startPan);
-					dispatchEvent(new MapEvent(MapEvent.PANNED, pt.subtract(new Point(mapWidth/2, mapHeight/2))));
+					onPanned();
 				}	
 				if (zooming) {
-    				var zoomEvent:MapEvent = new MapEvent(MapEvent.ZOOMED_BY, zoomLevel-startZoom);
-    				// this might also be useful
-    	    	    zoomEvent.zoomLevel = zoomLevel;
-    	        	dispatchEvent(zoomEvent);
+					onZoomed();
 				}
 			}
 			else if (boundsEnforced) {
-				// doesn't bubble, unlike MapEvent
-				// Map will pick this up and dispatch MapEvent.EXTENT_CHANGED for us
-				dispatchEvent(new Event(Event.CHANGE, false, false));
+				onChanged();
 			}
 			else if (matrixChanged) {
 				matrixChanged = false;
-				dispatchEvent(new Event(Event.CHANGE, false, false));
+				onChanged();
 			}
 			
 			// what zoom level of tiles should we be loading, taking into account min/max zoom?
@@ -453,8 +492,7 @@ package com.modestmaps.core
 			centerRow = center.row;
 			centerColumn = center.column;
 
-			// listen out for this if you want to be sure map is in its final state before reprojecting markers etc.
-			dispatchEvent(new MapEvent(MapEvent.RENDERED));
+			onRendered();
 
 			dirty = false;
 		}
@@ -714,17 +752,17 @@ package com.modestmaps.core
 			// you might want to wait for tiles to load before displaying other data, interface elements, etc.
 			// these events take care of that for you...
 			if (previousOpenRequests == 0 && openRequests.length > 0) {
-				dispatchEvent(new MapEvent(MapEvent.BEGIN_TILE_LOADING));
+				onBeginTileLoading();
 			}
 			else if (previousOpenRequests > 0)
 			{
-			    // dispatch tile load progress
-			    dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS, false, false, previousOpenRequests - openRequests.length, previousOpenRequests));
+				// TODO: a custom event for load progress rather than overloading bytesloaded?
+				onProgress();
 
 			    // if we're finished...
 			    if (openRequests.length == 0)
 			    {
-				    dispatchEvent(new MapEvent(MapEvent.ALL_TILES_LOADED));
+			    	onAllTilesLoaded();
     				// request redraw to take parent and child tiles off the stage if we haven't already
     				dirty = true;
     			}
@@ -1107,7 +1145,7 @@ package com.modestmaps.core
 		
 		public function prepareForPanning(dragging:Boolean=false):void
 		{
-			if (startPan != null) {
+			if (panning) {
 				donePanning();
 			}
 			if (!dragging && draggable) {
@@ -1117,6 +1155,11 @@ package com.modestmaps.core
 			}
 			startPan = centerCoordinate.copy();
 			panning = true;
+			onStartPanning();
+		}
+		
+		protected function onStartPanning():void
+		{
 			dispatchEvent(new MapEvent(MapEvent.START_PANNING));
 		}
 		
@@ -1129,6 +1172,11 @@ package com.modestmaps.core
 			}
 			startPan = null;
 			panning = false;
+			onStopPanning();
+		}
+		
+		protected function onStopPanning():void
+		{
 			dispatchEvent(new MapEvent(MapEvent.STOP_PANNING));
 		}
 		
@@ -1140,7 +1188,11 @@ package com.modestmaps.core
 
 			startZoom = zoomLevel;
 			zooming = true;
- 
+			onStartZooming();
+		}
+		
+		protected function onStartZooming():void
+		{
 			dispatchEvent(new MapEvent(MapEvent.START_ZOOMING, startZoom));
 		}
 			    		
@@ -1148,7 +1200,11 @@ package com.modestmaps.core
 		{
 			startZoom = -1;
 			zooming = false;
+			onStopZooming();			
+		}
 
+		protected function onStopZooming():void
+		{
 			dispatchEvent(new MapEvent(MapEvent.STOP_ZOOMING, zoomLevel));
 		}
 
@@ -1167,7 +1223,7 @@ package com.modestmaps.core
 
 		public function get zoomLevel():Number
 		{
-			return Math.log(scale) / Math.log(2);
+			return Math.log(scale) / Math.LN2;
 		}
 
 		public function set zoomLevel(n:Number):void
@@ -1229,8 +1285,9 @@ package com.modestmaps.core
     			// force this but only for onResize
     			onRender();
 		    }
-			
+
 			// this makes sure the well is clickable even without tiles
+			well.graphics.clear();
 			well.graphics.beginFill(0x000000, 0);
 			well.graphics.drawRect(0, 0, mapWidth, mapHeight);
 		}
