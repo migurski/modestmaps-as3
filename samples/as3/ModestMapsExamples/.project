@@ -14,4 +14,11 @@
 	<natures>
 		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>[source path] lib</name>
+			<type>2</type>
+			<locationURI>MODEST_MAPS_TRUNK/as%33/lib</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

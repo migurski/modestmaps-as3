@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <actionScriptProperties mainApplicationPath="HelloExtras.as" version="3">
 <compiler additionalCompilerArguments="" copyDependentFiles="true" enableModuleDebug="true" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersion="9.0.28" htmlPlayerVersionCheck="true" outputFolderPath="bin-debug" strict="true" useApolloConfig="false" verifyDigests="true" warn="true">
-<compilerSourcePath/>
+<compilerSourcePath>
+<compilerSourcePathEntry kind="1" linkType="1" path="${MODEST_MAPS_TRUNK}/as3/lib"/>
+</compilerSourcePath>
 <libraryPath defaultLinkType="1">
 <libraryPathEntry kind="4" path="">
 <excludedEntries>
-<libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/automation.swc" useDefaultLinkType="false"/>
 <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/automation_agent.swc" useDefaultLinkType="false"/>
+<libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/automation.swc" useDefaultLinkType="false"/>
 <libraryPathEntry kind="1" linkType="1" path="${PROJECT_FRAMEWORKS}/locale/{locale}"/>
 <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/automation_flashflexkit.swc" useDefaultLinkType="false"/>
 <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/qtp.swc" useDefaultLinkType="false"/>
-<libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/rpc.swc" useDefaultLinkType="false"/>
 <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/charts.swc" useDefaultLinkType="false"/>
-<libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/datavisualization.swc" useDefaultLinkType="false"/>
+<libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/rpc.swc" useDefaultLinkType="false"/>
 <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/automation_charts.swc" useDefaultLinkType="false"/>
+<libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/datavisualization.swc" useDefaultLinkType="false"/>
 <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/automation_dmv.swc" useDefaultLinkType="false"/>
 </excludedEntries>
 </libraryPathEntry>
-<libraryPathEntry kind="3" linkType="1" path="/Users/tom/Documents/Stamen/ModestMapsV1/modestmaps/trunk/as3/swc/bin/ModestMapsSWC.swc" sourcepath="/Users/tom/Documents/Stamen/ModestMapsV1/modestmaps/trunk/as3/lib" useDefaultLinkType="false"/>
 </libraryPath>
-<sourceAttachmentPath>
-<sourceAttachmentPathEntry kind="3" linkType="1" path="/Users/tom/Documents/Stamen/ModestMapsV1/modestmaps/trunk/as3/swc/bin/ModestMapsSWC.swc" sourcepath="/Users/tom/Documents/Stamen/ModestMapsV1/modestmaps/trunk/as3/lib" useDefaultLinkType="false"/>
-</sourceAttachmentPath>
+<sourceAttachmentPath/>
 </compiler>
 <applications>
 <application path="HelloMandel.as"/>
