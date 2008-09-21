@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" xmlns:modest="com.modestmaps.flex.*" viewSourceURL="srcview/index.html">
+
+    <mx:Panel title="Modest Maps Flex Example" 
+        paddingTop="10" paddingLeft="10" paddingRight="10" paddingBottom="10" top="10" left="10" bottom="10" right="10">
+
+        <mx:Text width="100%" color="blue"
+            text="Drag the divider side to side to resize the maps."/>
+		
+		<mx:HDividedBox width="100%" height="100%" liveDragging="true">
+		
+			<mx:VBox width="100%" height="100%">
+		
+				<mx:HBox width="100%">
+					<mx:Button label="Zoom In" width="82" click="leftMap.map.zoomIn(event)"  top="10" x="219"/>
+					<mx:Button label="Zoom Out" click="leftMap.map.zoomOut(event)"  top="40" x="219"/>
+				</mx:HBox>
+				
+				<modest:MapComponent id="leftMap" 
+									 width="100%" height="100%" draggable="true" provider="MICROSOFT_AERIAL"
+				    				 extent="40.764941, 40.693655, -73.938675, -74.039612"
+				    				 doubleClick="leftMap.map.onDoubleClick(event)" />
+				    
+			</mx:VBox>
+
+			<mx:VBox width="100%" height="100%">
+			
+				<mx:HBox width="100%">
+					<mx:Button label="Zoom In" click="rightMap.map.zoomIn(event)" left="10" width="82" top="10" height="22"/>
+					<mx:Button label="Zoom Out" click="rightMap.map.zoomOut(event)" left="10" top="40"/>
+				</mx:HBox>
+				 
+				<modest:MapComponent id="rightMap"
+									 width="100%" height="100%" draggable="true" provider="MICROSOFT_ROAD" 
+									 zoom="11" center="37.75, -122.46"
+									 doubleClick="rightMap.map.onDoubleClick(event)" />
+
+			</mx:VBox>				
+			    
+		</mx:HDividedBox>
+		
+    </mx:Panel>
+	
+</mx:Application>
