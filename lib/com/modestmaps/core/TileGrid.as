@@ -280,6 +280,7 @@ package com.modestmaps.core
 		public function setTileClass(tileClass:Class):void
 		{
 			tilePool.setTileClass(tileClass);
+			clearEverything();
 		}
 		
 		/** processes the tileQueue and optionally outputs stats into debugField */
@@ -1301,6 +1302,11 @@ package com.modestmaps.core
 			
 			calculateBounds();
 			
+			clearEverything();
+		}
+		
+		protected function clearEverything():void
+		{
 			while (well.numChildren > 0) {			
 				var tile:Tile = well.removeChildAt(0) as Tile;
 				if (!tileCache.containsKey(tile.name)) {
@@ -1667,7 +1673,7 @@ class TileCache
  */ 
 class TilePool 
 {
-	protected static const MIN_POOL_SIZE:int = 128;
+	protected static const MIN_POOL_SIZE:int = 256;
 	protected static const MAX_NEW_TILES:int = 256;
 	
 	protected var pool:Array = [];
@@ -1691,7 +1697,7 @@ class TilePool
     			pool.push(new tileClass(0,0,0));
     		}
     	}						
-		var tile:Tile = pool.shift() as Tile;
+		var tile:Tile = pool.pop() as Tile;
 		tile.init(column, row, zoom);
 		return tile;
 	}
