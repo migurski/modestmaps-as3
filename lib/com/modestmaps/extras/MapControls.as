@@ -1,6 +1,6 @@
 package com.modestmaps.extras {
 	
-    import com.modestmaps.Map;    import com.modestmaps.events.MapEvent;    import com.modestmaps.extras.ui.Button;    import com.modestmaps.extras.ui.FullScreenButton;        import flash.display.DisplayObject;    import flash.display.Sprite;    import flash.events.Event;    import flash.events.FullScreenEvent;    import flash.events.KeyboardEvent;    import flash.events.MouseEvent;    import flash.filters.DropShadowFilter;    import flash.geom.ColorTransform;    import flash.text.TextField;    import flash.ui.Keyboard;    
+    import com.modestmaps.Map;    import com.modestmaps.events.MapEvent;    import com.modestmaps.extras.ui.Button;    import com.modestmaps.extras.ui.FullScreenButton;        import flash.display.DisplayObject;    import flash.display.Sprite;    import flash.events.Event;    import flash.events.FullScreenEvent;    import flash.events.KeyboardEvent;    import flash.events.MouseEvent;    import flash.filters.DropShadowFilter;    import flash.geom.ColorTransform;    import flash.ui.Keyboard;    
 
 	/** 
 	 * this is a bit of a silly class really,
@@ -169,8 +169,8 @@ package com.modestmaps.extras {
         private function onAddedToStage(event:Event):void
         {
             if (keyboard) { 
-            	stage.addEventListener(KeyboardEvent.KEY_UP, onStageKeyboardEvent);
-            	stage.addEventListener(KeyboardEvent.KEY_DOWN, onStageKeyboardEvent);
+            	map.addEventListener(KeyboardEvent.KEY_UP, onStageKeyboardEvent);
+            	map.addEventListener(KeyboardEvent.KEY_DOWN, onStageKeyboardEvent);
             }
             if (fullScreen) { 
             	stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreenEvent);
@@ -179,13 +179,19 @@ package com.modestmaps.extras {
             // since our size is based on map size, wait for map to be resized, so we don't 
             // accidentally get sized before the map on stage resize events            
             map.addEventListener( MapEvent.RESIZED, onMapResize );  
+            map.addEventListener( MouseEvent.MOUSE_DOWN, onMouseDown);
             
             onMapResize(null);
         }
         
+        private function onMouseDown(event:MouseEvent):void
+        {
+        	stage.focus = map;
+        	map.focusRect = false;
+        }
+        
         private function onStageKeyboardEvent(event:KeyboardEvent):void
         {
-        	if (stage.focus is TextField) return;
         	var buttonKeys:Object = {
 				'+': inButton,        		
 				'=': inButton,        		
@@ -214,7 +220,8 @@ package com.modestmaps.extras {
 	        		buttonKeys[event.keyCode].onMouseOut();
     	    		(actions[buttons.indexOf(buttonKeys[event.keyCode])] as Function).call();
     	    	}
-        	}        	
+        	}
+        	event.stopImmediatePropagation();
         }
         
         private function onMapResize(event:Event):void
