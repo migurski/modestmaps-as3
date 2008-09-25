@@ -21,6 +21,8 @@ package com.modestmaps.overlays
     [Event(name="markerClick",       type="com.modestmaps.events.MarkerEvent")]
 	public class MarkerClip extends Sprite
 	{
+		public static const DEFAULT_ZOOM_TOLERANCE:int = 4;
+		
 	    protected var map:Map;
 	    
 	    protected var drawCoord:Coordinate;
@@ -38,7 +40,7 @@ package com.modestmaps.overlays
         
         /** if scaleZoom is true, this is how many zoom levels you
          * can zoom by before things will be reprojected regardless */
-        public var zoomTolerance:Number = 4; 
+        public var zoomTolerance:Number = DEFAULT_ZOOM_TOLERANCE; 
         
         // enable this if you want marker locations snapped to pixels
         public var snapToPixels:Boolean = false;
