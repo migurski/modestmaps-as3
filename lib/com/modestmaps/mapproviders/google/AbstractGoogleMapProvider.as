@@ -27,7 +27,7 @@ package com.modestmaps.mapproviders.google
 		protected static var __roadVersion:String = "w2.83";
 		protected static var __hybridVersion:String = "w2t.83";
 		protected static var __aerialVersion:String = "32";
-		protected static var __terrainVersion:String = "w2p.81";
+		protected static var __terrainVersion:String = "app.81";
 	
 	    // An XML file is checked for up-to-date version numbers.
 	    // Check for updates at http://modestmaps.com for current versions.
