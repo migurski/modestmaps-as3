@@ -1291,6 +1291,7 @@ package com.modestmaps.core
 			well.graphics.clear();
 			well.graphics.beginFill(0x000000, 0);
 			well.graphics.drawRect(0, 0, mapWidth, mapHeight);
+			well.graphics.endFill();
 		}
 		
 		public function setMapProvider(provider:IMapProvider):void
