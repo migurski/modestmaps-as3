@@ -130,6 +130,11 @@ package com.modestmaps.core
         {
             return getRect().contains(location.lon, location.lat);
         }
+        
+        public function containsExtent(extent:MapExtent):Boolean
+        {
+            return getRect().containsRect(extent.getRect());
+        }
 
 		/** @return "north, south, east, west" */
 		public function toString():String
