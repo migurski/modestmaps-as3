@@ -1,6 +1,6 @@
 package com.modestmaps.extras {
 	
-    import com.modestmaps.Map;    import com.modestmaps.events.MapEvent;    import com.modestmaps.extras.ui.Button;    import com.modestmaps.extras.ui.FullScreenButton;        import flash.display.DisplayObject;    import flash.display.Sprite;    import flash.events.Event;    import flash.events.FullScreenEvent;    import flash.events.KeyboardEvent;    import flash.events.MouseEvent;    import flash.filters.DropShadowFilter;    import flash.geom.ColorTransform;    import flash.ui.Keyboard;    
+    import com.modestmaps.Map;    import com.modestmaps.events.MapEvent;    import com.modestmaps.extras.ui.Button;    import com.modestmaps.extras.ui.FullScreenButton;        import flash.display.DisplayObject;    import flash.display.Sprite;    import flash.events.Event;    import flash.events.FullScreenEvent;    import flash.events.KeyboardEvent;    import flash.events.MouseEvent;    import flash.filters.DropShadowFilter;    import flash.geom.ColorTransform;    import flash.text.TextField;    import flash.ui.Keyboard;    
 
 	/** 
 	 * this is a bit of a silly class really,
@@ -192,6 +192,8 @@ package com.modestmaps.extras {
         
         private function onStageKeyboardEvent(event:KeyboardEvent):void
         {
+        	if (!stage || stage.focus is TextField) return;
+
         	var buttonKeys:Object = {
 				'+': inButton,        		
 				'=': inButton,        		

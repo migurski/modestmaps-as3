@@ -12,6 +12,9 @@ package com.modestmaps.events
 
 	public class MapEvent extends Event
 	{
+		public static const INITIALIZED:String = 'mapInitialized';
+		public static const CHANGED:String = 'mapChanged';
+		
 	    public static const START_ZOOMING:String = 'startZooming';
 	    public static const STOP_ZOOMING:String = 'stopZooming';
 		public var zoomLevel:Number;

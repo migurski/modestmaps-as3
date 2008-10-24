@@ -6,6 +6,11 @@ package com.modestmaps.geo
 {
 	public class Location
 	{
+	    public static const MAX_LAT:Number = 84;
+	    public static const MIN_LAT:Number = -MAX_LAT;
+	    public static const MAX_LON:Number = 180;
+	    public static const MIN_LON:Number = -MAX_LON;
+	    
 	    // Latitude, longitude, _IN DEGREES_.
 	    public var lat:Number;
 	    public var lon:Number;
@@ -40,7 +45,7 @@ package com.modestmaps.geo
         public function normalize():Location
         {
             var loc:Location = clone();
-            loc.lat = Math.max(-84, Math.min(84, loc.lat));
+            loc.lat = Math.max(MIN_LAT, Math.min(MAX_LAT, loc.lat));
             while (loc.lon > 180) loc.lon -= 360;
             while (loc.lon < -180) loc.lon += 360;
             return loc;

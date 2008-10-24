@@ -133,16 +133,19 @@ package com.modestmaps.overlays
 
         public function attachMarker(marker:DisplayObject, location:Location):void
 	    {
-	        locations[marker] = location.clone();
-	        coordinates[marker] = map.getMapProvider().locationCoordinate(location);
-	        markersByName[marker.name] = marker;
-	        markers.push(marker);
-	        
-	        var added:Boolean = updateClip(marker);
-	        
-	        if (added) {
-	        	requestSort(true);
-	        }
+	        if (markers.indexOf(marker) == -1)
+	        {
+    	        locations[marker] = location.clone();
+    	        coordinates[marker] = map.getMapProvider().locationCoordinate(location);
+    	        markersByName[marker.name] = marker;
+    	        markers.push(marker);
+    	        
+    	        var added:Boolean = updateClip(marker);
+    	        
+    	        if (added) {
+    	        	requestSort(true);
+    	        }
+    	    }
 	    }
 	    
 	    protected function markerInBounds(marker:DisplayObject, w:Number, h:Number):Boolean
@@ -224,10 +227,8 @@ package com.modestmaps.overlays
 	            scaleX = scaleY = 1.0;
 	        }	    	
 	    	
-	        var marker:DisplayObject;
-
 	        var doSort:Boolean = false;
-	    	for each (marker in markers)
+	    	for each (var marker:DisplayObject in markers)
 	    	{
 	    	    doSort = updateClip(marker) || doSort; // wow! bad things did happen when this said doSort ||= updateClip(marker);
 	    	}
@@ -277,7 +278,7 @@ package com.modestmaps.overlays
 	        {
 	            if (contains(marker))
 	            {
-	                setChildIndex(marker, index);
+	                setChildIndex(marker, Math.min(index, numChildren - 1));
 	                index++;
 	            }
 	        }
