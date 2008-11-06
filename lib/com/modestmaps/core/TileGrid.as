@@ -1199,14 +1199,16 @@ package com.modestmaps.core
 			    		
 		public function doneZooming():void
 		{
+			onStopZooming();
 			startZoom = -1;
 			zooming = false;
-			onStopZooming();			
 		}
 
 		protected function onStopZooming():void
 		{
-			dispatchEvent(new MapEvent(MapEvent.STOP_ZOOMING, zoomLevel));
+		    var event:MapEvent = new MapEvent(MapEvent.STOP_ZOOMING, zoomLevel);
+		    event.zoomDelta = zoomLevel - startZoom;
+			dispatchEvent(event);
 		}
 
 		public function resetTiles(coord:Coordinate):void

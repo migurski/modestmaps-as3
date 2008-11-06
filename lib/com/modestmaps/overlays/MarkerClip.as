@@ -163,6 +163,11 @@ package com.modestmaps.overlays
 	    	return locations[marker];
 	    }
 	    
+	    public function hasMarker(marker:DisplayObject):Boolean
+	    {
+	        return markers.indexOf(marker) != -1;
+	    }
+	    
 	    public function setMarkerLocation(marker:DisplayObject, location:Location):void
 	    {
 	        locations[marker] = new Location(location.lat, location.lon);
