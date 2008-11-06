@@ -62,10 +62,12 @@ package com.modestmaps.overlays
 			this.mouseEnabled = false;
 
 			if (locations && locations.length > 0) {
-				if (locations[0] is Location && locations.length > 0) {
+				if (locations.length > 0 && locations[0] is Location)
+				{
 					locations = [ locations ];
 				}
-				if (locations[0] is Array && locations[0].length > 0) {
+				if (locations[0].length > 0 && locations[0] is Array)
+				{
 					this.locations = [ locations[0] ];
 					this.extent = MapExtent.fromLocations(locations[0]);
 					this.location = locations[0][0] as Location;
