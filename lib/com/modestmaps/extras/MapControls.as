@@ -14,13 +14,13 @@ package com.modestmaps.extras {
 	 * take that!
 	 */    public class MapControls extends Sprite
     {
-        public var leftButton:Button = new Button(Button.LEFT);
-        public var rightButton:Button = new Button(Button.RIGHT);
-        public var upButton:Button = new Button(Button.UP);
-        public var downButton:Button = new Button(Button.DOWN);
+        public var leftButton:Button;
+        public var rightButton:Button;
+        public var upButton:Button;
+        public var downButton:Button;
 
-        public var inButton:Button = new Button(Button.IN);
-        public var outButton:Button = new Button(Button.OUT);
+        public var inButton:Button;
+        public var outButton:Button;
 
         public var fullScreenButton:FullScreenButton = new FullScreenButton();
 
@@ -125,8 +125,18 @@ package com.modestmaps.extras {
         };
 
 
-        public function MapControls(map:Map, keyboard:Boolean=true, fullScreen:Boolean=false, buttonPositions:Object=null)
+        public function MapControls(map:Map, keyboard:Boolean=true, fullScreen:Boolean=false, buttonPositions:Object=null, buttonClass:Class=null)
         {
+            if (!buttonClass) buttonClass = Button;
+            
+            leftButton = new buttonClass(Button.LEFT);
+            rightButton = new buttonClass(Button.RIGHT);
+            upButton = new buttonClass(Button.UP);
+            downButton = new buttonClass(Button.DOWN);
+            
+            inButton = new buttonClass(Button.IN);
+            outButton = new buttonClass(Button.OUT);
+        
             this.map = map;
             this.keyboard = keyboard;
             this.fullScreen = fullScreen;

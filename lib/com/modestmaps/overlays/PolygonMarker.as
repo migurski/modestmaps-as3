@@ -61,7 +61,8 @@ package com.modestmaps.overlays
 			this.map = map;
 			this.mouseEnabled = false;
 
-			if (locations && locations.length > 0) {
+			if (locations && locations.length > 0)
+			{
 				if (locations.length > 0 && locations[0] is Location)
 				{
 					locations = [ locations ];
@@ -72,7 +73,9 @@ package com.modestmaps.overlays
 					this.extent = MapExtent.fromLocations(locations[0]);
 					this.location = locations[0][0] as Location;
 					this.coordinates = [ locations[0].map(l2c) ];
-					for each (var hole:Array in locations.slice(1)) {
+					
+					for each (var hole:Array in locations.slice(1))
+					{
 						addHole(hole);
 					}					
 				}

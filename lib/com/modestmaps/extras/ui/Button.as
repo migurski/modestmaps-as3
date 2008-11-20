@@ -11,11 +11,14 @@ package com.modestmaps.extras.ui {
 		public static const IN:String = "in";
 		public static const OUT:String = "out";
 		
-	    public var overTransform:ColorTransform = new ColorTransform(1,1,1);
-	    public var outTransform:ColorTransform = new ColorTransform(1,.9,.6);
+	    public var overTransform:ColorTransform;
+	    public var outTransform:ColorTransform;
 	
-		public function Button(type:String=null)
+		public function Button(type:String=null, radius:Number=9, bgColor:uint=0xFFFFFF, fgColor:uint=0x000000, beveled:Boolean=true)
 		{
+		    if (!overTransform) overTransform = new ColorTransform(1, 1, 1);
+		    if (!outTransform) outTransform = new ColorTransform(1, .9, .6);
+		    
 	        useHandCursor = true;
 	        buttonMode = true;
 	        cacheAsBitmap = true;
@@ -24,20 +27,28 @@ package com.modestmaps.extras.ui {
 	        addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 	        
 	        graphics.clear();
-	        graphics.beginFill(0xdddddd);
-	        graphics.drawRoundRect(0, 0, 20, 20, 9, 9);
-	        graphics.beginFill(0xffffff);
-	        graphics.drawRoundRect(0, 0, 18, 18, 9, 9);
-	        graphics.beginFill(0xbbbbbb);
-	        graphics.drawRoundRect(2, 2, 18, 18, 9, 9);
-	        graphics.beginFill(0xdddddd);
-	        graphics.drawRoundRect(1, 1, 18, 18, 9, 9);
+	        if (beveled)
+	        {
+    	        graphics.beginFill(0xdddddd);
+    	        graphics.drawRoundRect(0, 0, 20, 20, radius, radius);
+    	        graphics.beginFill(bgColor);
+    	        graphics.drawRoundRect(0, 0, 18, 18, radius, radius);
+    	        graphics.beginFill(0xbbbbbb);
+    	        graphics.drawRoundRect(2, 2, 18, 18, radius, radius);
+    	        graphics.beginFill(0xdddddd);
+    	        graphics.drawRoundRect(1, 1, 18, 18, radius, radius);
+    	    }
+    	    else
+    	    {
+    	        graphics.beginFill(bgColor);
+    	        graphics.drawRoundRect(0, 0, 20, 20, radius, radius);
+    	    }
 	        
 	        switch(type) {
 	
 	        	// draw arrows...
 	        	case LEFT:
-		            graphics.beginFill(0x000000);
+		            graphics.beginFill(fgColor);
 		            graphics.moveTo(14,6);
 		            graphics.lineTo(6,10);
 		            graphics.lineTo(14,14);
@@ -45,7 +56,7 @@ package com.modestmaps.extras.ui {
 		            break;
 		
 	        	case RIGHT:
-		            graphics.beginFill(0x000000);
+		            graphics.beginFill(fgColor);
 		            graphics.moveTo(6,6);
 		            graphics.lineTo(14,10);
 		            graphics.lineTo(6,14);
@@ -53,7 +64,7 @@ package com.modestmaps.extras.ui {
 		            break;
 		            
 	        	case UP:
-		            graphics.beginFill(0x000000);
+		            graphics.beginFill(fgColor);
 		            graphics.moveTo(6,14);
 		            graphics.lineTo(10,6);
 		            graphics.lineTo(14,14);
@@ -61,7 +72,7 @@ package com.modestmaps.extras.ui {
 		            break;
 		
 	        	case DOWN:
-		            graphics.beginFill(0x000000);
+		            graphics.beginFill(fgColor);
 		            graphics.moveTo(6,6);
 		            graphics.lineTo(10,14);
 		            graphics.lineTo(14,6);            
@@ -70,7 +81,7 @@ package com.modestmaps.extras.ui {
 		
 	        	case IN:
 		            // draw plus...
-		            graphics.lineStyle(2, 0x000000, 1.0, true);
+		            graphics.lineStyle(2, fgColor, 1.0, true);
 		            graphics.moveTo(7,10);
 		            graphics.lineTo(13,10);
 		            graphics.lineTo(7,10);
@@ -81,7 +92,7 @@ package com.modestmaps.extras.ui {
 		            
 	        	case OUT:
 		            // draw minus...
-		            graphics.lineStyle(2, 0x000000, 1.0, true);
+		            graphics.lineStyle(2, fgColor, 1.0, true);
 		            graphics.moveTo(7,10);
 		            graphics.lineTo(13,10);
 		            graphics.lineTo(7,10);
