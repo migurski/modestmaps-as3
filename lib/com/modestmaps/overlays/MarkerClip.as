@@ -38,6 +38,9 @@ package com.modestmaps.overlays
          * it looks worse and probably isn't faster, but there it is :) */
         public var scaleZoom:Boolean = false;
         
+        /** if autoCache is true, we turn on cacheAsBitmap while panning, but off while zooming */
+        public var autoCache:Boolean = true;
+        
         /** if scaleZoom is true, this is how many zoom levels you
          * can zoom by before things will be reprojected regardless */
         public var zoomTolerance:Number = DEFAULT_ZOOM_TOLERANCE; 
@@ -100,6 +103,11 @@ package com.modestmaps.overlays
 			addEventListener( MouseEvent.ROLL_OUT, onMarkerRollOut, true );	
 
 	        addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+        }
+        
+        public function getMarkerCount():int
+        {
+        	return markers.length;
         }
         
         override public function set x(value:Number):void
@@ -345,7 +353,7 @@ package com.modestmaps.overlays
 	    
 	    protected function onMapZoomedBy(event:MapEvent):void
 	    {
-	    	cacheAsBitmap = false;
+	    	if (autoCache) cacheAsBitmap = false;
 	        if (scaleZoom && drawCoord) {
 	        	if (Math.abs(map.grid.zoomLevel - drawCoord.zoom) < zoomTolerance) {
     	        	scaleX = scaleY = Math.pow(2, map.grid.zoomLevel - drawCoord.zoom);
@@ -362,19 +370,19 @@ package com.modestmaps.overlays
 	    protected function onMapStartPanning(event:MapEvent):void
 	    {
 	    	// optimistically, we set this to true in case we're just moving
-		    cacheAsBitmap = true;
+		    if (autoCache) cacheAsBitmap = true;
 	    }
 	    
 	    protected function onMapStartZooming(event:MapEvent):void
 	    {
 	    	// overrule onMapStartPanning if there's scaling involved
-	        cacheAsBitmap = false;
+	        if (autoCache) cacheAsBitmap = false;
 	    }
 	    
 	    protected function onMapStopPanning(event:MapEvent):void
 	    {
 	    	// tidy up
-	    	cacheAsBitmap = false;
+	    	if (autoCache) cacheAsBitmap = false;
 		    dirty = true;
 	    }
 	    
@@ -424,13 +432,13 @@ package com.modestmaps.overlays
 	    * 
 	    * The MarkerEvent includes a reference to the marker and its location.
 	    *
-	    * @see com.modestmaps.events.MarkerEvent.CLICK
+	    * @see com.modestmaps.events.MarkerEvent.MARKER_CLICK
 	    */
 	    protected function onMarkerClick(event:MouseEvent):void
         {
         	var marker:DisplayObject = event.target as DisplayObject;
         	var location:Location = getMarkerLocation( marker );
-        	dispatchEvent( new MarkerEvent( MarkerEvent.CLICK, marker, location, true) );
+        	dispatchEvent( new MarkerEvent( MarkerEvent.MARKER_CLICK, marker, location, true) );
         }
         
 		/**
@@ -438,13 +446,13 @@ package com.modestmaps.overlays
 	    * 
 	    * The MarkerEvent includes a reference to the marker and its location.
 	    *
-	    * @see com.modestmaps.events.MarkerEvent.ROLL_OVER
+	    * @see com.modestmaps.events.MarkerEvent.MARKER_ROLL_OVER
 	    */
         protected function onMarkerRollOver(event:MouseEvent):void
         {
         	var marker:DisplayObject = event.target as DisplayObject;
         	var location:Location = getMarkerLocation( marker );
-        	dispatchEvent( new MarkerEvent( MarkerEvent.ROLL_OVER, marker, location, true) );
+        	dispatchEvent( new MarkerEvent( MarkerEvent.MARKER_ROLL_OVER, marker, location, true) );
         }
         
         /**
@@ -452,13 +460,13 @@ package com.modestmaps.overlays
 	    * 
 	    * The MarkerEvent includes a reference to the marker and its location.
 	    *
-	    * @see com.modestmaps.events.MarkerEvent.ROLL_OUT
+	    * @see com.modestmaps.events.MarkerEvent.MARKER_ROLL_OUT
 	    */
         protected function onMarkerRollOut(event:MouseEvent):void
         {
             var marker:DisplayObject = event.target as DisplayObject;
             var location:Location = getMarkerLocation( marker );
-        	dispatchEvent( new MarkerEvent( MarkerEvent.ROLL_OUT, marker, location, true) );
+        	dispatchEvent( new MarkerEvent( MarkerEvent.MARKER_ROLL_OUT, marker, location, true) );
         }		
 	}
 	

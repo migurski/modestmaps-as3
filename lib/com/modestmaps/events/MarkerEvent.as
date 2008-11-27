@@ -8,9 +8,10 @@ package com.modestmaps.events
 	import com.modestmaps.geo.Location;
     import flash.display.DisplayObject;	        public class MarkerEvent extends Event
 	{
-	    public static const ROLL_OVER:String = 'markerRollOver';
-	    public static const ROLL_OUT:String = 'markerRollOut';
-	    public static const CLICK:String = 'markerClick';
+		// these are prefixed marker to avoid conflicts with MouseEvent
+	    public static const MARKER_ROLL_OVER:String = 'markerRollOver';
+	    public static const MARKER_ROLL_OUT:String = 'markerRollOut';
+	    public static const MARKER_CLICK:String = 'markerClick';
 
 		protected var _marker:DisplayObject;
 		protected var _location:Location;
