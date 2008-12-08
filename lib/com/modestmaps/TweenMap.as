@@ -73,7 +73,7 @@ package com.modestmaps
 		}
 		
 		/** zoom in or out by sc, moving the given location to the requested target (or map center, if omitted) */        
-        override protected function panAndZoomBy(sc:Number, location:Location, targetPoint:Point=null, duration:Number=-1):void
+        override public function panAndZoomBy(sc:Number, location:Location, targetPoint:Point=null, duration:Number=-1):void
         {
             if (duration < 0) duration = panAndZoomDuration;
             if (!targetPoint) targetPoint = new Point(mapWidth/2, mapHeight/2);        	
