@@ -37,6 +37,12 @@ package com.modestmaps.core
 			TweenLite.killTweensOf(this);
 			this.alpha = 1;
 		}		
+
+		override public function destroy():void 
+		{
+			TweenLite.killTweensOf(this);
+			super.destroy();
+		}		
 				
 	}
 
