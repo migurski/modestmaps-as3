@@ -35,6 +35,8 @@ package com.modestmaps.overlays
 		public var lineJoints:String = null; 
 		public var lineMiterLimit:Number = 3; 		
 
+		public var autoClose:Boolean = true;
+
 		public var fill:Boolean = true;
 		public var fillColor:uint = 0xff0000;
 		public var fillAlpha:Number = 0.2;
@@ -56,10 +58,11 @@ package com.modestmaps.overlays
 		 * ring of the polygon, and subsequent arrays will be treated as holes if they overlap it.
 		 * 
 		 */
-		public function PolygonMarker(map:Map, locations:Array)
+		public function PolygonMarker(map:Map, locations:Array, autoClose:Boolean=true)
 		{
 			this.map = map;
 			this.mouseEnabled = false;
+			this.autoClose = autoClose;
 
 			if (locations && locations.length > 0)
 			{
@@ -138,7 +141,7 @@ package com.modestmaps.overlays
 						p = grid.coordinatePoint(coord);
 						graphics.lineTo(p.x-firstPoint.x, p.y-firstPoint.y);
 					}
-		 			if (!ringPoint.equals(p)) {
+		 			if (autoClose && !ringPoint.equals(p)) {
 						graphics.lineTo(ringPoint.x-firstPoint.x, ringPoint.y-firstPoint.y);
 					}
 				}
