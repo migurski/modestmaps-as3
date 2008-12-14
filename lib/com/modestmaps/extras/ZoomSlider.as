@@ -39,11 +39,11 @@ package com.modestmaps.extras {
 			track.graphics.moveTo(0, 0);
 			track.graphics.lineTo(0, trackHeight);
 			track.graphics.lineStyle(0, 0x000000, 0.2);
-			for (var i:int = map.grid.minZoom; i <= map.grid.maxZoom; i++) {
+/* 			for (var i:int = map.grid.minZoom; i <= map.grid.maxZoom; i++) {
 				var tick:Number = trackHeight * (i - map.grid.minZoom) / (map.grid.maxZoom - map.grid.minZoom);
 				track.graphics.moveTo(-2, tick);
 				track.graphics.lineTo(2, tick);
-			}
+			} */
 			track.x = 5;
 			addChild(track);
 			
