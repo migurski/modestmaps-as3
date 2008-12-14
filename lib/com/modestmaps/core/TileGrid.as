@@ -12,6 +12,7 @@ package com.modestmaps.core
 	import flash.events.IOErrorEvent;
 	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
+	import flash.events.TimerEvent;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -21,6 +22,7 @@ package com.modestmaps.core
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.utils.Dictionary;
+	import flash.utils.Timer;
 	import flash.utils.getTimer;
 
 	public class TileGrid extends Sprite
@@ -39,7 +41,8 @@ package com.modestmaps.core
 		protected static const DEFAULT_MAX_OPEN_REQUESTS:int = 4; // TODO: should this be split into max-new-requests-per-frame, too?
 		protected static const DEFAULT_ROUND_POSITIONS:Boolean = true;
 		protected static const DEFAULT_ROUND_SCALES:Boolean = true;
-		protected static const DEFAULT_CACHE_LOADERS:Boolean = false; // !!! only enable this if you have crossdomain permissions to access Loader content
+		protected static const DEFAULT_CACHE_LOADERS:Boolean = false;  // !!! only enable this if you have crossdomain permissions to access Loader content
+		protected static const DEFAULT_SMOOTH_CONTENT:Boolean = false; // !!! only enable this if you have crossdomain permissions to access Loader content
 		protected static const DEFAULT_MAX_LOADER_CACHE_SIZE:int = 0; // !!! suggest 256 or so
 
 		/** if we don't have a tile at currentZoom, onRender will look for tiles up to 5 levels out.
@@ -73,6 +76,9 @@ package com.modestmaps.core
 		
 		/** set this to false, along with roundPositionsEnabled, if you need a map to stay 'fixed' in place as it changes size */
 		public var roundScalesEnabled:Boolean = DEFAULT_ROUND_SCALES;
+
+		/** set this to true to enable bitmap smoothing on tiles - requires crossdomain.xml permissions so won't work online with most providers */
+		public var smoothContent:Boolean = DEFAULT_SMOOTH_CONTENT;
 		
 		/** with tile providers that you have crossdomain.xml support for, 
 		 *  it's possible to avoid extra requests by reusing bitmapdata. enable cacheLoaders to try and do that */
@@ -185,6 +191,8 @@ package com.modestmaps.core
 		// setting to true will dispatch a CHANGE event which Map will convert to an EXTENT_CHANGED for us
 		protected var matrixChanged:Boolean = false;
 		
+		protected var queueTimer:Timer;
+		
 		public function TileGrid(w:Number, h:Number, draggable:Boolean, provider:IMapProvider)
 		{
 			doubleClickEnabled = true;
@@ -233,7 +241,10 @@ package com.modestmaps.core
 
 			worldMatrix = new Matrix();
 			
-			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);			
+			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			
+			queueTimer = new Timer(200);
+			queueTimer.addEventListener(TimerEvent.TIMER, processQueue);
 		}
 		
 		/**
@@ -253,6 +264,7 @@ package com.modestmaps.core
 			}
 			addEventListener(Event.RENDER, onRender);
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			queueTimer.start();
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
 			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			dirty = true;
@@ -267,6 +279,7 @@ package com.modestmaps.core
 			}
 			removeEventListener(Event.RENDER, onRender);
 			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+			queueTimer.stop();
 			removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
@@ -322,7 +335,7 @@ package com.modestmaps.core
 				debugField.y = mapHeight - debugField.height - 15;
 			}
 			
-			processQueue();
+			//processQueue();
 		}
 		
 		protected function onRendered():void
@@ -716,7 +729,7 @@ package com.modestmaps.core
 		
 		/** called by the onEnterFrame handler to manage the tileQueue
 		 *  usual operation is extremely quick, ~1ms or so */
-		private function processQueue():void
+		private function processQueue(event:TimerEvent=null):void
 		{
 			if (openRequests.length < maxOpenRequests && tileQueue.length > 0) {
 
@@ -805,7 +818,7 @@ package com.modestmaps.core
 				}
 			}
 			else if (urls && urls.length == 0) {
-				if (tile.zoom == currentTileZoom) {
+				if (currentTileZoom-tile.zoom <= maxParentLoad) {
 					tile.show();
 				}
 				else {
@@ -858,7 +871,7 @@ package com.modestmaps.core
 				if (!tile) {
 					tile = tileCache.getTile(key);
 					well.addChildAt(tile,0);
-					if (tile.zoom == currentTileZoom) {
+					if (currentTileZoom-tile.zoom <= maxParentLoad) {
 						tile.show();
 					}
 					else {
@@ -962,6 +975,16 @@ package com.modestmaps.core
 					// ???
 				}
 			}
+			
+			if (smoothContent) {
+				try {
+					var smoothContent:Bitmap = loader.content as Bitmap;
+					smoothContent.smoothing = true;
+				}
+				catch (error:Error) {
+					// ???
+				}
+			}			
 
 			// tidy up the request monitor
 			var index:int = openRequests.indexOf(loader);
@@ -991,7 +1014,7 @@ package com.modestmaps.core
 					if (tile) {
 						delete layersNeeded[tile.name];
 						tile.paintError(tileWidth, tileHeight);
-						if (tile.zoom == currentTileZoom) {
+						if (currentTileZoom-tile.zoom <= maxParentLoad) {
 							tile.show();
 						}
 						else {
