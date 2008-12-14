@@ -151,7 +151,7 @@ package com.modestmaps.extras {
             addChild(buttonSprite);
             
             actions = [ map.panLeft, map.panRight, map.panUp, map.panDown, map.zoomIn, map.zoomOut ];
-            buttons = [leftButton, rightButton, upButton, downButton, inButton, outButton];
+            buttons = [ leftButton, rightButton, upButton, downButton, inButton, outButton ];
             
             if (fullScreen) {
                 buttons.push(fullScreenButton);
@@ -179,8 +179,8 @@ package com.modestmaps.extras {
         private function onAddedToStage(event:Event):void
         {
             if (keyboard) { 
-            	map.addEventListener(KeyboardEvent.KEY_UP, onStageKeyboardEvent);
-            	map.addEventListener(KeyboardEvent.KEY_DOWN, onStageKeyboardEvent);
+            	map.addEventListener(KeyboardEvent.KEY_UP, onKeyboardEvent);
+            	map.addEventListener(KeyboardEvent.KEY_DOWN, onKeyboardEvent);
             }
             if (fullScreen) { 
             	stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreenEvent);
@@ -196,11 +196,11 @@ package com.modestmaps.extras {
         
         private function onMouseDown(event:MouseEvent):void
         {
-        	stage.focus = map;
         	map.focusRect = false;
+        	stage.focus = map;
         }
         
-        private function onStageKeyboardEvent(event:KeyboardEvent):void
+        private function onKeyboardEvent(event:KeyboardEvent):void
         {
         	if (!stage || stage.focus is TextField) return;
 
