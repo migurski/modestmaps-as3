@@ -26,7 +26,6 @@ package com.modestmaps.flex
 	import com.modestmaps.geo.*;
 	import com.modestmaps.mapproviders.*;
 	import com.modestmaps.mapproviders.microsoft.*;
-	import com.modestmaps.mapproviders.google.*;
 	import com.modestmaps.mapproviders.yahoo.*;
 	
 	import flash.events.Event;
@@ -200,7 +199,7 @@ package com.modestmaps.flex
 		 * <modest:Map provider="{new FancyCustomMapProvider()}" .../>
 		 */
 		[Inspectable(category="Map",
-					 enumeration="BLUE_MARBLE,GOOGLE_AERIAL,GOOGLE_ROAD,GOOGLE_HYBRID,MICROSOFT_AERIAL,MICROSOFT_ROAD,MICROSOFT_HYBRID,YAHOO_ROAD,YAHOO_AERIAL,YAHOO_HYBRID,ZOOMIFY,OPEN_STREET_MAP,VANILLA",
+					 enumeration="BLUE_MARBLE,MICROSOFT_AERIAL,MICROSOFT_ROAD,MICROSOFT_HYBRID,YAHOO_ROAD,YAHOO_AERIAL,YAHOO_HYBRID,OPEN_STREET_MAP",
 					 defaultValue="BLUE_MARBLE")]
 		public function set provider(provider:*):void
 		{
@@ -223,15 +222,6 @@ package com.modestmaps.flex
 						break;
 					case "MICROSOFT_ROAD":
 						_mapProvider = new MicrosoftRoadMapProvider();
-						break;
-					case "GOOGLE_AERIAL":
-						_mapProvider = new GoogleAerialMapProvider();
-						break;
-					case "GOOGLE_HYBRID":
-						_mapProvider = new GoogleHybridMapProvider();
-						break;
-					case "GOOGLE_ROAD":
-						_mapProvider = new GoogleRoadMapProvider();
 						break;
 					case "YAHOO_AERIAL":
 						_mapProvider = new YahooAerialMapProvider();

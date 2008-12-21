@@ -16,7 +16,7 @@ package com.modestmaps.extras
 	 * VERY EXPERIMENTAL, requires javascript, uses this technique: 
 	 * http://www.actionscript.org/resources/articles/745/1/JavaScript-and-VBScript-Injection-in-ActionScript-3/Page1.html
 	 * 
-	 * TODO: update spans for Microsoft, fix slowness with Google, add Yahoo :)
+	 * TODO: update spans for Microsoft, add Yahoo :)
 	 * 
 	 * In general, lots of this needs reworking... at least, IMapProviders should be able to provide copyright strings 
 	 * without requiring javascript, and without needing to edit this file.
@@ -66,20 +66,6 @@ package com.modestmaps.extras
 					                    this.microsoft.copyright(undefined, minLat, minLon, maxLat, maxLon, zoom);
 					                    break;
 					    
-					                case 'GOOGLE_ROAD':
-					                    this.google.copyright('', cenLat, cenLon, maxLat-minLat, maxLon-minLon, zoom);
-					                    break;
-					        
-					                case 'GOOGLE_AERIAL':
-					                    this.google.copyright('&t=k', cenLat, cenLon, maxLat-minLat, maxLon-minLon, zoom);
-					                    break;
-					        
-					                case 'GOOGLE_HYBRID':
-					                    this.google.copyright('&t=h', cenLat, cenLon, maxLat-minLat, maxLon-minLon, zoom);
-					                    break;
-
-									// TODO: GOOGLE_TERRAIN
-
 					                case 'YAHOO_ROAD':
 					                case 'YAHOO_AERIAL':
 					                case 'YAHOO_HYBRID':
@@ -93,38 +79,6 @@ package com.modestmaps.extras
 					            } 
 					        },
 					    
-					    google: {
-					        holders: undefined,
-					    
-					        addCopyright:
-					            function(holder)
-					            {
-					                if(!this.holders || !holder) {
-					                    return;
-					                }
-					                
-					                var newHolder = true;
-					                
-					                for(var i = 0; i < this.holders.length; i += 1) {
-					                    if(holder == this.holders[i]) {
-					                        newHolder = false;
-					                    }
-					                }
-					                
-					                if(newHolder) {
-					                    this.holders.push(holder);
-					                    document.getElementById(modestMaps.swfId).copyrightCallback(this.holders.join(', '));
-					                }
-					            },
-					    
-					        copyright:
-					            function(t, cenLat, cenLon, spanLat, spanLon, zoom)
-					            {
-					                this.holders = ['&copy; Google'];
-					                var s = document.createElement('script');
-					                s.src='http://maps.google.com/maps?spn='+spanLat+','+spanLon+'&z='+zoom+'&vp='+cenLat+','+cenLon+'&ev=p'+t;
-					                document.getElementsByTagName('head')[0].appendChild(s);
-					            }
 					    },
 					
 					    microsoft: {
@@ -202,8 +156,6 @@ package com.modestmaps.extras
 					    }
 					    
 					};
-					
-					GAddCopyright = function(g,a,r,b,a,g,e, holder) { modestMaps.google.addCopyright(holder); };
 				}
 			]]>
 		</script>;

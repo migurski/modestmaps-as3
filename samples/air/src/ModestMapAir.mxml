@@ -13,7 +13,7 @@
 			
 			
 			/* ENUMS */
-			[Bindable] private var mapTileProviders:Array = ["GOOGLE_ROAD","GOOGLE_AERIAL","GOOGLE_HYBRID","MICROSOFT_AERIAL","MICROSOFT_ROAD","MICROSOFT_HYBRID","YAHOO_ROAD","YAHOO_AERIAL","YAHOO_HYBRID","ZOOMIFY","OPEN_STREET_MAP","BLUE_MARBLE",];
+			[Bindable] private var mapTileProviders:Array = ["MICROSOFT_AERIAL","MICROSOFT_ROAD","MICROSOFT_HYBRID","YAHOO_ROAD","YAHOO_AERIAL","YAHOO_HYBRID","ZOOMIFY","OPEN_STREET_MAP","BLUE_MARBLE",];
 	
 			/* Local Reference */
 			private var mouseWheelTimer:Timer = new Timer(150,1);
