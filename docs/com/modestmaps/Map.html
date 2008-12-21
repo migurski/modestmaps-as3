@@ -1,0 +1,1726 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="../../style.css" type="text/css" media="screen">
+<link rel="stylesheet" href="../../print.css" type="text/css" media="print">
+<meta content="Map,com.modestmaps.Map,__draggable,grid,mapHeight,mapProvider,mapWidth,markerClip,panFraction,size,doubleClickEnabled,extentCoordinate,getCenter,getCenterZoom,getExtent,getHeight,getMapProvider,getMarker,getSize,getWidth,getZoom,locationPoint,locationsCoordinate,onDoubleClick,onExtentChanged,onExtentChanging,panAndZoomBy,panAndZoomIn,panAndZoomOut,panBy,panDown,panLeft,panRight,panUp,pointLocation,putMarker,removeAllMarkers,removeMarker,setCenter,setCenterZoom,setExtent,setMapProvider,setSize,setZoom,zoomBy,zoomByAbout,zoomIn,zoomInAbout,zoomOut,zoomOutAbout" name="keywords">
+<title>com.modestmaps.Map</title>
+</head>
+<body>
+<script type="text/javascript" language="javascript" src="../../asdoc.js"></script><script type="text/javascript" language="javascript" src="../../cookies.js"></script><script type="text/javascript" language="javascript">
+<!--
+				asdocTitle = 'Map - API Documentation';
+				var baseRef = '../../';
+				window.onload = configPage;
+			--></script>
+<table style="display:none" id="titleTable" cellspacing="0" cellpadding="0" class="titleTable">
+<tr>
+<td align="left" class="titleTableTitle">API Documentation</td><td align="right" class="titleTableTopNav"><a onclick="loadClassListFrame('../../all-classes.html')" href="../../package-summary.html">All&nbsp;Packages</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../all-classes.html')" href="../../class-summary.html">All&nbsp;Classes</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../index-list.html')" href="../../all-index-A.html">Index</a>&nbsp;|&nbsp;<a href="../../index.html?com/modestmaps/Map.html&amp;com/modestmaps/class-list.html" id="framesLink1">Frames</a><a onclick="parent.location=document.location" href="" style="display:none" id="noFramesLink1">No&nbsp;Frames</a></td><td rowspan="3" align="right" class="titleTableLogo"><img alt="Adobe Logo" title="Adobe Logo" class="logoImage" src="../../images/logo.jpg"></td>
+</tr>
+<tr class="titleTableRow2">
+<td align="left" id="subTitle" class="titleTableSubTitle">Class&nbsp;Map</td><td align="right" id="subNav" class="titleTableSubNav"><a href="#propertySummary">Properties</a>&nbsp;| <a href="#methodSummary">Methods</a>&nbsp;| <a href="#eventSummary">Events</a></td>
+</tr>
+<tr class="titleTableRow3">
+<td colspan="2">&nbsp;</td>
+</tr>
+</table>
+<script type="text/javascript" language="javascript">
+<!--
+if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Class Map"); titleBar_setSubNav(false,true,false,false,true,false,true,false,false,false,false,false,false,false);}
+--></script>
+<div class="MainContent">
+<table cellspacing="0" cellpadding="0" class="classHeaderTable">
+<tr>
+<td class="classHeaderTableLabel">Package</td><td><a onclick="javascript:loadClassListFrame('class-list.html')" href="package-detail.html">com.modestmaps</a></td>
+</tr>
+<tr>
+<td class="classHeaderTableLabel">Class</td><td class="classSignature">public class Map</td>
+</tr>
+<tr>
+<td class="classHeaderTableLabel">Inheritance</td><td class="inheritanceList">Map <img class="inheritArrow" alt="Inheritance" title="Inheritance" src="../../images/inherit-arrow.gif"> flash.display.Sprite</td>
+</tr>
+<tr>
+<td class="classHeaderTableLabel">Subclasses</td><td><a href="../modestmaps/TweenMap.html">TweenMap</a></td>
+</tr>
+</table>
+<p></p>
+<p></p>
+<br>
+<hr>
+</div>
+<a name="propertySummary"></a>
+<div class="summarySection">
+<div class="summaryTableTitle">Public Properties</div>
+<table id="summaryTableProperty" class="summaryTable " cellpadding="3" cellspacing="0">
+<tr>
+<th>&nbsp;</th><th colspan="2">Property</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#doubleClickEnabled">doubleClickEnabled</a> : Boolean<div class="summaryTableDescription">[write-only]</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#grid">grid</a> : <a href="core/TileGrid.html">TileGrid</a>
+<div class="summaryTableDescription"> das grid </div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#markerClip">markerClip</a> : <a href="overlays/MarkerClip.html">MarkerClip</a>
+<div class="summaryTableDescription"> markers are attached here </div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#panFraction">panFraction</a> : Number = 0.333333333<div class="summaryTableDescription"> fraction of width/height to pan panLeft, panRight, panUp, panDown
+   </div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#size">size</a> : Point<div class="summaryTableDescription"></div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+</table>
+</div>
+<a name="protectedPropertySummary"></a>
+<div class="summarySection">
+<div class="summaryTableTitle">Protected Properties</div>
+<table id="summaryTableProtectedProperty" class="summaryTable " cellpadding="3" cellspacing="0">
+<tr>
+<th>&nbsp;</th><th colspan="2">Property</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#__draggable">__draggable</a> : Boolean = true<div class="summaryTableDescription"></div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#mapHeight">mapHeight</a> : Number = 240<div class="summaryTableDescription"></div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#mapProvider">mapProvider</a> : <a href="mapproviders/IMapProvider.html">IMapProvider</a>
+<div class="summaryTableDescription"> Who do we get our Map urls from? How far can we pan? </div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#mapWidth">mapWidth</a> : Number = 320<div class="summaryTableDescription"></div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+</table>
+</div>
+<a name="methodSummary"></a>
+<div class="summarySection">
+<div class="summaryTableTitle">Public Methods</div>
+<table id="summaryTableMethod" class="summaryTable " cellpadding="3" cellspacing="0">
+<tr>
+<th>&nbsp;</th><th colspan="2">Method</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#Map()">Map</a>(width:Number = 320, height:Number = 240, draggable:Boolean = true, mapProvider:<a href="mapproviders/IMapProvider.html">IMapProvider</a> = null, ... rest)</div>
+<div class="summaryTableDescription">
+     Initialize the map: set properties, add a tile grid, draw it.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#extentCoordinate()">extentCoordinate</a>(extent:<a href="core/MapExtent.html">MapExtent</a>):<a href="core/Coordinate.html">Coordinate</a>
+</div>
+<div class="summaryTableDescription"></div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getCenter()">getCenter</a>():<a href="geo/Location.html">Location</a>
+</div>
+<div class="summaryTableDescription"></div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getCenterZoom()">getCenterZoom</a>():Array</div>
+<div class="summaryTableDescription"></div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getExtent()">getExtent</a>():<a href="core/MapExtent.html">MapExtent</a>
+</div>
+<div class="summaryTableDescription"></div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getHeight()">getHeight</a>():Number</div>
+<div class="summaryTableDescription"> Get map height.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getMapProvider()">getMapProvider</a>():<a href="mapproviders/IMapProvider.html">IMapProvider</a>
+</div>
+<div class="summaryTableDescription">
+     Get a reference to the current map provider.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getMarker()">getMarker</a>(id:String):DisplayObject</div>
+<div class="summaryTableDescription">
+   Get a marker with the given id if one was created.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getSize()">getSize</a>():Array</div>
+<div class="summaryTableDescription">
+     Get map size.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getWidth()">getWidth</a>():Number</div>
+<div class="summaryTableDescription"> Get map width.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#getZoom()">getZoom</a>():int</div>
+<div class="summaryTableDescription"></div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#locationPoint()">locationPoint</a>(location:<a href="geo/Location.html">Location</a>, context:DisplayObject = null):Point</div>
+<div class="summaryTableDescription">
+     Get a point (x, y) for a location (lat, lon) in the context of a given clip.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#locationsCoordinate()">locationsCoordinate</a>(locations:Array, fitWidth:Number = 0, fitHeight:Number = 0):<a href="core/Coordinate.html">Coordinate</a>
+</div>
+<div class="summaryTableDescription"></div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#onDoubleClick()">onDoubleClick</a>(event:MouseEvent):void</div>
+<div class="summaryTableDescription"> pans and zooms in on double clicked location </div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#panAndZoomBy()">panAndZoomBy</a>(sc:Number, location:<a href="geo/Location.html">Location</a>, targetPoint:Point = null, duration:Number = -1):void</div>
+<div class="summaryTableDescription"> zoom in or out by sc, moving the given location to the requested target </div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#panAndZoomIn()">panAndZoomIn</a>(location:<a href="geo/Location.html">Location</a>, targetPoint:Point = null):void</div>
+<div class="summaryTableDescription"> zoom in and put the given location in the center of the screen, or optionally at the given targetPoint </div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#panAndZoomOut()">panAndZoomOut</a>(location:<a href="geo/Location.html">Location</a>, targetPoint:Point = null):void</div>
+<div class="summaryTableDescription"> zoom out and put the given location in the center of the screen, or optionally at the given targetPoint </div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#panBy()">panBy</a>(px:Number, py:Number):void</div>
+<div class="summaryTableDescription"></div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#panDown()">panDown</a>(event:Event = null):void</div>
+<div class="summaryTableDescription"> Pan down by 1/3 (or panFraction) of the map height.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#panLeft()">panLeft</a>(event:Event = null):void</div>
+<div class="summaryTableDescription"> Pan left by 1/3 (or panFraction) of the map width.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#panRight()">panRight</a>(event:Event = null):void</div>
+<div class="summaryTableDescription"> Pan left by 1/3 (or panFraction) of the map width.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#panUp()">panUp</a>(event:Event = null):void</div>
+<div class="summaryTableDescription"> Pan up by 1/3 (or panFraction) of the map height.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#pointLocation()">pointLocation</a>(point:Point, context:DisplayObject = null):<a href="geo/Location.html">Location</a>
+</div>
+<div class="summaryTableDescription">
+     Get a location (lat, lon) for a point (x, y) in the context of a given clip.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#putMarker()">putMarker</a>(location:<a href="geo/Location.html">Location</a>, marker:DisplayObject = null):void</div>
+<div class="summaryTableDescription">
+     Add a marker at the given location (lat, lon)
+          </div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#removeAllMarkers()">removeAllMarkers</a>():void</div>
+<div class="summaryTableDescription"></div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#removeMarker()">removeMarker</a>(id:String):void</div>
+<div class="summaryTableDescription">
+     Remove a marker with the given id.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#setCenter()">setCenter</a>(location:<a href="geo/Location.html">Location</a>):void</div>
+<div class="summaryTableDescription"> put the given location in the middle of the map </div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#setCenterZoom()">setCenterZoom</a>(location:<a href="geo/Location.html">Location</a>, zoom:Number):void</div>
+<div class="summaryTableDescription">
+     Based on a location and zoom level, determine appropriate initial
+     tile coordinate and point using calculateMapCenter(), and inform
+     the grid of tile coordinate and point by calling grid.resetTiles().</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#setExtent()">setExtent</a>(extent:<a href="core/MapExtent.html">MapExtent</a>):void</div>
+<div class="summaryTableDescription">
+     Based on an array of locations, determine appropriate map
+     bounds using calculateMapExtent(), and inform the grid of
+     tile coordinate and point by calling grid.resetTiles().</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#setMapProvider()">setMapProvider</a>(newProvider:<a href="mapproviders/IMapProvider.html">IMapProvider</a>):void</div>
+<div class="summaryTableDescription">
+     Set a new map provider, repainting tiles and changing bounding box if necessary.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#setSize()">setSize</a>(w:Number, h:Number):void</div>
+<div class="summaryTableDescription">
+     Set new map size, dispatch MapEvent.RESIZED.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#setZoom()">setZoom</a>(zoom:Number):void</div>
+<div class="summaryTableDescription">
+         Based on a zoom level, determine appropriate initial
+         tile coordinate and point using calculateMapCenter(), and inform
+         the grid of tile coordinate and point by calling grid.resetTiles().</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#zoomByAbout()">zoomByAbout</a>(zoomDelta:Number, targetPoint:Point = null, duration:Number = -1):void</div>
+<div class="summaryTableDescription"> zoom in or out by zoomDelta, keeping the requested point in the same place </div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#zoomIn()">zoomIn</a>(event:Event = null):void</div>
+<div class="summaryTableDescription">
+     Zoom in by one zoom level (to 200%) immediately,
+     rounding up to the nearest zoom level if we're currently between zooms.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#zoomInAbout()">zoomInAbout</a>(targetPoint:Point = null, duration:Number = -1):void</div>
+<div class="summaryTableDescription"> zoom in, keeping the requested point in the same place </div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#zoomOut()">zoomOut</a>(event:Event = null):void</div>
+<div class="summaryTableDescription">
+     Zoom out by one zoom level (to 50%) immediately, 
+     rounding down to the nearest zoom level if we're currently between zooms.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#zoomOutAbout()">zoomOutAbout</a>(targetPoint:Point = null, duration:Number = -1):void</div>
+<div class="summaryTableDescription"> zoom out, keeping the requested point in the same place </div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+</table>
+</div>
+<a name="protectedMethodSummary"></a>
+<div class="summarySection">
+<div class="summaryTableTitle">Protected Methods</div>
+<table id="summaryTableProtectedMethod" class="summaryTable " cellpadding="3" cellspacing="0">
+<tr>
+<th>&nbsp;</th><th colspan="2">Method</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#onExtentChanged()">onExtentChanged</a>(event:Event = null):void</div>
+<div class="summaryTableDescription">
+     Dispatches MapEvent.EXTENT_CHANGED when the map is recentered.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#onExtentChanging()">onExtentChanging</a>():void</div>
+<div class="summaryTableDescription">
+     Dispatches MapEvent.BEGIN_EXTENT_CHANGE when the map is about to be resized.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#zoomBy()">zoomBy</a>(dir:int):void</div>
+<div class="summaryTableDescription">
+   Adds dir to grid.zoomLevel, and rounds up or down to the nearest whole number.</div>
+</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+</table>
+</div>
+<a name="eventSummary"></a>
+<div class="summarySection">
+<div class="summaryTableTitle">Events</div>
+<table id="summaryTableEvent" class="summaryTable " cellpadding="3" cellspacing="0">
+<tr>
+<th>&nbsp;</th><th colspan="2">Event</th><th>Summary</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:allTilesLoaded">allTilesLoaded</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">&nbsp;</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:beginExtentChange">beginExtentChange</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">&nbsp;</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:beginTileLoading">beginTileLoading</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">&nbsp;</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:extentChanged">extentChanged</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">&nbsp;</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:mapProviderChanged">mapProviderChanged</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">&nbsp;</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:markerClick">markerClick</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">&nbsp;</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:markerRollOut">markerRollOut</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">&nbsp;</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:markerRollOver">markerRollOver</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">&nbsp;</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:panned">panned</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">&nbsp;</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:rendered">rendered</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">&nbsp;</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:resized">resized</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">&nbsp;</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:startPanning">startPanning</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">&nbsp;</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:startZooming">startZooming</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">&nbsp;</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:stopPanning">stopPanning</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">&nbsp;</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:stopZooming">stopZooming</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">&nbsp;</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:zoomedBy">zoomedBy</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">&nbsp;</td><td class="summaryTableOwnerCol">Map</td>
+</tr>
+</table>
+</div>
+<script type="text/javascript" language="javascript">
+<!--
+showHideInherited();
+--></script>
+<div class="MainContent">
+<a name="propertyDetail"></a>
+<div class="detailSectionHeader">Property detail</div>
+<a name="doubleClickEnabled"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">doubleClickEnabled</td><td class="detailHeaderType">property</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>doubleClickEnabled:Boolean</code>&nbsp;&nbsp;[write-only]<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set doubleClickEnabled(value:Boolean):void</code>
+<br>
+</div>
+<a name="__draggable"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">__draggable</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>protected var __draggable:Boolean = true</code>
+</div>
+<a name="grid"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">grid</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public var grid:<a href="core/TileGrid.html">TileGrid</a></code><p> das grid </p></div>
+<a name="mapHeight"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">mapHeight</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>protected var mapHeight:Number = 240</code>
+</div>
+<a name="mapProvider"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">mapProvider</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>protected var mapProvider:<a href="mapproviders/IMapProvider.html">IMapProvider</a></code><p> Who do we get our Map urls from? How far can we pan? </p></div>
+<a name="mapWidth"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">mapWidth</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>protected var mapWidth:Number = 320</code>
+</div>
+<a name="markerClip"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">markerClip</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public var markerClip:<a href="overlays/MarkerClip.html">MarkerClip</a></code><p> markers are attached here </p></div>
+<a name="panFraction"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">panFraction</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public var panFraction:Number = 0.333333333</code><p> fraction of width/height to pan panLeft, panRight, panUp, panDown
+   </p><p>The default value is <code>0.333333333</code>.</p>
+</div>
+<a name="size"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">size</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>size:Point</code>&nbsp;&nbsp;[read-write]<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get size():Point</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set size(value:Point):void</code>
+<br>
+</div>
+<a name="constructorDetail"></a>
+<div class="detailSectionHeader">Constructor detail</div>
+<a name="Map()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">Map</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">constructor</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function Map(width:Number = 320, height:Number = 240, draggable:Boolean = true, mapProvider:<a href="mapproviders/IMapProvider.html">IMapProvider</a> = null, ... rest)</code><p>
+     Initialize the map: set properties, add a tile grid, draw it.
+     Default extent covers the entire globe, (+/-85, +/-180).
+          </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">width</span>:Number</code> (default = <code>320</code>)<code></code> &mdash;   Width of map, in pixels.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">height</span>:Number</code> (default = <code>240</code>)<code></code> &mdash;   Height of map, in pixels.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">draggable</span>:Boolean</code> (default = <code>true</code>)<code></code> &mdash;   Whether the map can be dragged or not.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">mapProvider</span>:<a href="mapproviders/IMapProvider.html">IMapProvider</a></code> (default = <code>null</code>)<code></code> &mdash;   Desired map provider, e.g. Blue Marble.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code>... <span class="label">rest</span></code> &mdash;   Either a MapExtent or a Location and zoom (comma separated)
+          </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="core/TileGrid.html" target="">com.modestmaps.core.TileGrid</a>
+</div>
+</div>
+<a name="methodDetail"></a>
+<div class="detailSectionHeader">Method detail</div>
+<a name="extentCoordinate()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">extentCoordinate</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function extentCoordinate(extent:<a href="core/MapExtent.html">MapExtent</a>):<a href="core/Coordinate.html">Coordinate</a></code><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">extent</span>:<a href="core/MapExtent.html">MapExtent</a></code></td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="core/Coordinate.html">Coordinate</a></code></td>
+</tr>
+</table>
+</div>
+<a name="getCenter()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getCenter</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getCenter():<a href="geo/Location.html">Location</a></code>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="geo/Location.html">Location</a></code></td>
+</tr>
+</table>
+</div>
+<a name="getCenterZoom()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getCenterZoom</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getCenterZoom():Array</code>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Array</code></td>
+</tr>
+</table>
+</div>
+<a name="getExtent()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getExtent</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getExtent():<a href="core/MapExtent.html">MapExtent</a></code>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="core/MapExtent.html">MapExtent</a></code></td>
+</tr>
+</table>
+</div>
+<a name="getHeight()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getHeight</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getHeight():Number</code><p> Get map height. </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Number</code></td>
+</tr>
+</table>
+</div>
+<a name="getMapProvider()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getMapProvider</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getMapProvider():<a href="mapproviders/IMapProvider.html">IMapProvider</a></code><p>
+     Get a reference to the current map provider.
+          </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="mapproviders/IMapProvider.html">IMapProvider</a></code> &mdash; 
+                          Map provider.
+          
+                        
+                     </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="mapproviders/IMapProvider.html" target="">com.modestmaps.mapproviders.IMapProvider</a>
+</div>
+</div>
+<a name="getMarker()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getMarker</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getMarker(id:String):DisplayObject</code><p>
+   Get a marker with the given id if one was created.
+      </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">id</span>:String</code> &mdash;   ID of marker, opaque string.
+   </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>DisplayObject</code></td>
+</tr>
+</table>
+</div>
+<a name="getSize()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getSize</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getSize():Array</code><p>
+     Get map size.
+          </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Array</code> &mdash;   Array of [width, height].
+     </td>
+</tr>
+</table>
+</div>
+<a name="getWidth()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getWidth</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getWidth():Number</code><p> Get map width. </p><p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Number</code></td>
+</tr>
+</table>
+</div>
+<a name="getZoom()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">getZoom</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function getZoom():int</code>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>int</code></td>
+</tr>
+</table>
+</div>
+<a name="locationPoint()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">locationPoint</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function locationPoint(location:<a href="geo/Location.html">Location</a>, context:DisplayObject = null):Point</code><p>
+     Get a point (x, y) for a location (lat, lon) in the context of a given clip.
+          </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">location</span>:<a href="geo/Location.html">Location</a></code> &mdash;   Location to match.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">context</span>:DisplayObject</code> (default = <code>null</code>)<code></code> &mdash;   Movie clip context in which returned point should make sense.
+          </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Point</code> &mdash;   Matching point.
+     </td>
+</tr>
+</table>
+</div>
+<a name="locationsCoordinate()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">locationsCoordinate</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function locationsCoordinate(locations:Array, fitWidth:Number = 0, fitHeight:Number = 0):<a href="core/Coordinate.html">Coordinate</a></code><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">locations</span>:Array</code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">fitWidth</span>:Number</code> (default = <code>0</code>)<code></code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">fitHeight</span>:Number</code> (default = <code>0</code>)<code></code></td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="core/Coordinate.html">Coordinate</a></code></td>
+</tr>
+</table>
+</div>
+<a name="onDoubleClick()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">onDoubleClick</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function onDoubleClick(event:MouseEvent):void</code><p> pans and zooms in on double clicked location </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">event</span>:MouseEvent</code></td>
+</tr>
+</table>
+</div>
+<a name="onExtentChanged()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">onExtentChanged</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>protected function onExtentChanged(event:Event = null):void</code><p>
+     Dispatches MapEvent.EXTENT_CHANGED when the map is recentered.
+     The MapEvent includes the new extent.
+     
+     TODO: dispatch this on resize?
+     TODO: should we move Map to com.modestmaps.core so that this could be made internal instead of public?
+          </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">event</span>:Event</code> (default = <code>null</code>)<code></code></td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">com.modestmaps.events.MapEvent.EXTENT_CHANGED</div>
+</div>
+<a name="onExtentChanging()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">onExtentChanging</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>protected function onExtentChanging():void</code><p>
+     Dispatches MapEvent.BEGIN_EXTENT_CHANGE when the map is about to be resized.
+     The MapEvent includes the current.
+          </p><p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">com.modestmaps.events.MapEvent.BEGIN_EXTENT_CHANGE</div>
+</div>
+<a name="panAndZoomBy()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">panAndZoomBy</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function panAndZoomBy(sc:Number, location:<a href="geo/Location.html">Location</a>, targetPoint:Point = null, duration:Number = -1):void</code><p> zoom in or out by sc, moving the given location to the requested target </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">sc</span>:Number</code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">location</span>:<a href="geo/Location.html">Location</a></code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">targetPoint</span>:Point</code> (default = <code>null</code>)<code></code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">duration</span>:Number</code> (default = <code>-1</code>)<code></code></td>
+</tr>
+</table>
+</div>
+<a name="panAndZoomIn()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">panAndZoomIn</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function panAndZoomIn(location:<a href="geo/Location.html">Location</a>, targetPoint:Point = null):void</code><p> zoom in and put the given location in the center of the screen, or optionally at the given targetPoint </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">location</span>:<a href="geo/Location.html">Location</a></code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">targetPoint</span>:Point</code> (default = <code>null</code>)<code></code></td>
+</tr>
+</table>
+</div>
+<a name="panAndZoomOut()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">panAndZoomOut</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function panAndZoomOut(location:<a href="geo/Location.html">Location</a>, targetPoint:Point = null):void</code><p> zoom out and put the given location in the center of the screen, or optionally at the given targetPoint </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">location</span>:<a href="geo/Location.html">Location</a></code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">targetPoint</span>:Point</code> (default = <code>null</code>)<code></code></td>
+</tr>
+</table>
+</div>
+<a name="panBy()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">panBy</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function panBy(px:Number, py:Number):void</code><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">px</span>:Number</code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">py</span>:Number</code></td>
+</tr>
+</table>
+</div>
+<a name="panDown()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">panDown</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function panDown(event:Event = null):void</code><p> Pan down by 1/3 (or panFraction) of the map height. </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">event</span>:Event</code> (default = <code>null</code>)<code></code></td>
+</tr>
+</table>
+</div>
+<a name="panLeft()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">panLeft</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function panLeft(event:Event = null):void</code><p> Pan left by 1/3 (or panFraction) of the map width. </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">event</span>:Event</code> (default = <code>null</code>)<code></code></td>
+</tr>
+</table>
+</div>
+<a name="panRight()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">panRight</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function panRight(event:Event = null):void</code><p> Pan left by 1/3 (or panFraction) of the map width. </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">event</span>:Event</code> (default = <code>null</code>)<code></code></td>
+</tr>
+</table>
+</div>
+<a name="panUp()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">panUp</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function panUp(event:Event = null):void</code><p> Pan up by 1/3 (or panFraction) of the map height. </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">event</span>:Event</code> (default = <code>null</code>)<code></code></td>
+</tr>
+</table>
+</div>
+<a name="pointLocation()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">pointLocation</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function pointLocation(point:Point, context:DisplayObject = null):<a href="geo/Location.html">Location</a></code><p>
+     Get a location (lat, lon) for a point (x, y) in the context of a given clip.
+          </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">point</span>:Point</code> &mdash;   Point to match.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">context</span>:DisplayObject</code> (default = <code>null</code>)<code></code> &mdash;   Movie clip context in which passed point should make sense.
+          </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="geo/Location.html">Location</a></code> &mdash; 
+                          Matching location.
+     
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="putMarker()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">putMarker</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function putMarker(location:<a href="geo/Location.html">Location</a>, marker:DisplayObject = null):void</code><p>
+     Add a marker at the given location (lat, lon)
+          </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">location</span>:<a href="geo/Location.html">Location</a></code> &mdash;   Location of marker.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">marker</span>:DisplayObject</code> (default = <code>null</code>)<code></code> &mdash; a sprite (where sprite.name=id) that will always be in the right place
+     </td>
+</tr>
+</table>
+</div>
+<a name="removeAllMarkers()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">removeAllMarkers</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function removeAllMarkers():void</code>
+</div>
+<a name="removeMarker()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">removeMarker</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function removeMarker(id:String):void</code><p>
+     Remove a marker with the given id.
+          </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">id</span>:String</code> &mdash;   ID of marker, opaque string.
+     </td>
+</tr>
+</table>
+</div>
+<a name="setCenter()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">setCenter</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function setCenter(location:<a href="geo/Location.html">Location</a>):void</code><p> put the given location in the middle of the map </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">location</span>:<a href="geo/Location.html">Location</a></code></td>
+</tr>
+</table>
+</div>
+<a name="setCenterZoom()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">setCenterZoom</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function setCenterZoom(location:<a href="geo/Location.html">Location</a>, zoom:Number):void</code><p>
+     Based on a location and zoom level, determine appropriate initial
+     tile coordinate and point using calculateMapCenter(), and inform
+     the grid of tile coordinate and point by calling grid.resetTiles().
+          </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">location</span>:<a href="geo/Location.html">Location</a></code> &mdash;   Location of center.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">zoom</span>:Number</code> &mdash;   Desired zoom level.
+          </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="../modestmaps/Map.html#calculateMapExtent" target="">com.modestmaps.Map.calculateMapExtent</a>
+<br>
+<a href="core/TileGrid.html#resetTiles" target="">com.modestmaps.core.TileGrid.resetTiles</a>
+</div>
+</div>
+<a name="setExtent()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">setExtent</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function setExtent(extent:<a href="core/MapExtent.html">MapExtent</a>):void</code><p>
+     Based on an array of locations, determine appropriate map
+     bounds using calculateMapExtent(), and inform the grid of
+     tile coordinate and point by calling grid.resetTiles().
+     Resulting map extent will ensure that all passed locations
+     are visible.
+          </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">extent</span>:<a href="core/MapExtent.html">MapExtent</a></code> &mdash; the minimum area to fit inside the map view
+          </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="../modestmaps/Map.html#calculateMapExtent" target="">com.modestmaps.Map.calculateMapExtent</a>
+<br>
+<a href="core/TileGrid.html#resetTiles" target="">com.modestmaps.core.TileGrid.resetTiles</a>
+</div>
+</div>
+<a name="setMapProvider()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">setMapProvider</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function setMapProvider(newProvider:<a href="mapproviders/IMapProvider.html">IMapProvider</a>):void</code><p>
+     Set a new map provider, repainting tiles and changing bounding box if necessary.
+          </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">newProvider</span>:<a href="mapproviders/IMapProvider.html">IMapProvider</a></code> &mdash;  Map provider.
+          </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="mapproviders/IMapProvider.html" target="">com.modestmaps.mapproviders.IMapProvider</a>
+</div>
+</div>
+<a name="setSize()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">setSize</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function setSize(w:Number, h:Number):void</code><p>
+     Set new map size, dispatch MapEvent.RESIZED. 
+     The MapEvent includes the newSize.
+          </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">w</span>:Number</code> &mdash; New map width.
+     </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">h</span>:Number</code> &mdash; New map height.
+          </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">com.modestmaps.events.MapEvent.RESIZED</div>
+</div>
+<a name="setZoom()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">setZoom</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function setZoom(zoom:Number):void</code><p>
+         Based on a zoom level, determine appropriate initial
+         tile coordinate and point using calculateMapCenter(), and inform
+         the grid of tile coordinate and point by calling grid.resetTiles().
+                  </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">zoom</span>:Number</code> &mdash;   Desired zoom level.
+                  </td>
+</tr>
+</table>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="../modestmaps/Map.html#calculateMapExtent" target="">com.modestmaps.Map.calculateMapExtent</a>
+<br>
+<a href="core/TileGrid.html#resetTiles" target="">com.modestmaps.core.TileGrid.resetTiles</a>
+</div>
+</div>
+<a name="zoomBy()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">zoomBy</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>protected function zoomBy(dir:int):void</code><p>
+   Adds dir to grid.zoomLevel, and rounds up or down to the nearest whole number.
+   Used internally by zoomIn and zoomOut (keeping it DRY, as they say)
+   and overridden by TweenMap for animation.
+   
+   </p><p>grid.zoomLevel calls the grid.scale setter for us 
+      which will call grid.prepareForZooming if we didn't already 
+      and grid.doneZooming after modifying the zoom level.</p>
+      
+      <p>Animating/tweening grid.scale fires START_ZOOMING, and STOP_ZOOMING 
+      MapEvents unless you call grid.prepareForZooming first. Be sure
+      to also call grid.stopZooming at the end of your animation.
+            <span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">dir</span>:int</code> &mdash; the direction of zoom, generally 1 for zooming in, or -1 for zooming out
+      
+      </td>
+</tr>
+</table>
+</div>
+<a name="zoomByAbout()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">zoomByAbout</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function zoomByAbout(zoomDelta:Number, targetPoint:Point = null, duration:Number = -1):void</code><p> zoom in or out by zoomDelta, keeping the requested point in the same place </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">zoomDelta</span>:Number</code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">targetPoint</span>:Point</code> (default = <code>null</code>)<code></code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">duration</span>:Number</code> (default = <code>-1</code>)<code></code></td>
+</tr>
+</table>
+</div>
+<a name="zoomIn()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">zoomIn</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function zoomIn(event:Event = null):void</code><p>
+     Zoom in by one zoom level (to 200%) immediately,
+     rounding up to the nearest zoom level if we're currently between zooms.
+      
+     </p><p>Triggers MapEvent.START_ZOOMING and MapEvent.STOP_ZOOMING events.</p>
+     
+     <span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">event</span>:Event</code> (default = <code>null</code>)<code></code> &mdash; an optional event so that zoomIn can directly function as an event listener.
+     </td>
+</tr>
+</table>
+</div>
+<a name="zoomInAbout()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">zoomInAbout</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function zoomInAbout(targetPoint:Point = null, duration:Number = -1):void</code><p> zoom in, keeping the requested point in the same place </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">targetPoint</span>:Point</code> (default = <code>null</code>)<code></code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">duration</span>:Number</code> (default = <code>-1</code>)<code></code></td>
+</tr>
+</table>
+</div>
+<a name="zoomOut()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">zoomOut</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function zoomOut(event:Event = null):void</code><p>
+     Zoom out by one zoom level (to 50%) immediately, 
+     rounding down to the nearest zoom level if we're currently between zooms.
+      
+     </p><p>Triggers MapEvent.START_ZOOMING and MapEvent.STOP_ZOOMING events.</p>
+     
+     <span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">event</span>:Event</code> (default = <code>null</code>)<code></code> &mdash; an optional event so that zoomOut can directly function as an event listener.
+     </td>
+</tr>
+</table>
+</div>
+<a name="zoomOutAbout()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">zoomOutAbout</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function zoomOutAbout(targetPoint:Point = null, duration:Number = -1):void</code><p> zoom out, keeping the requested point in the same place </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">targetPoint</span>:Point</code> (default = <code>null</code>)<code></code></td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">duration</span>:Number</code> (default = <code>-1</code>)<code></code></td>
+</tr>
+</table>
+</div>
+<div class="detailSectionHeader">Event detail</div>
+<a name="event:allTilesLoaded"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">allTilesLoaded</td><td class="detailHeaderType">event&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href="events/MapEvent.html"><code>com.modestmaps.events.MapEvent</code></a>
+<br>
+<p></p>
+</div>
+<a name="event:beginExtentChange"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">beginExtentChange</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href="events/MapEvent.html"><code>com.modestmaps.events.MapEvent</code></a>
+<br>
+<p></p>
+</div>
+<a name="event:beginTileLoading"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">beginTileLoading</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href="events/MapEvent.html"><code>com.modestmaps.events.MapEvent</code></a>
+<br>
+<p></p>
+</div>
+<a name="event:extentChanged"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">extentChanged</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href="events/MapEvent.html"><code>com.modestmaps.events.MapEvent</code></a>
+<br>
+<p></p>
+</div>
+<a name="event:mapProviderChanged"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">mapProviderChanged</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href="events/MapEvent.html"><code>com.modestmaps.events.MapEvent</code></a>
+<br>
+<p></p>
+</div>
+<a name="event:markerClick"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">markerClick</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href="events/MarkerEvent.html"><code>com.modestmaps.events.MarkerEvent</code></a>
+<br>
+<p></p>
+</div>
+<a name="event:markerRollOut"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">markerRollOut</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href="events/MarkerEvent.html"><code>com.modestmaps.events.MarkerEvent</code></a>
+<br>
+<p></p>
+</div>
+<a name="event:markerRollOver"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">markerRollOver</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href="events/MarkerEvent.html"><code>com.modestmaps.events.MarkerEvent</code></a>
+<br>
+<p></p>
+</div>
+<a name="event:panned"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">panned</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href="events/MapEvent.html"><code>com.modestmaps.events.MapEvent</code></a>
+<br>
+<p></p>
+</div>
+<a name="event:rendered"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">rendered</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href="events/MapEvent.html"><code>com.modestmaps.events.MapEvent</code></a>
+<br>
+<p></p>
+</div>
+<a name="event:resized"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">resized</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href="events/MapEvent.html"><code>com.modestmaps.events.MapEvent</code></a>
+<br>
+<p></p>
+</div>
+<a name="event:startPanning"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">startPanning</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href="events/MapEvent.html"><code>com.modestmaps.events.MapEvent</code></a>
+<br>
+<p></p>
+</div>
+<a name="event:startZooming"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">startZooming</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href="events/MapEvent.html"><code>com.modestmaps.events.MapEvent</code></a>
+<br>
+<p></p>
+</div>
+<a name="event:stopPanning"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">stopPanning</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href="events/MapEvent.html"><code>com.modestmaps.events.MapEvent</code></a>
+<br>
+<p></p>
+</div>
+<a name="event:stopZooming"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">stopZooming</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href="events/MapEvent.html"><code>com.modestmaps.events.MapEvent</code></a>
+<br>
+<p></p>
+</div>
+<a name="event:zoomedBy"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">zoomedBy</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href="events/MapEvent.html"><code>com.modestmaps.events.MapEvent</code></a>
+<br>
+<p></p>
+</div>
+<br>
+<br>
+<hr>
+<br>
+<p></p>
+<center class="copyright"> 
+</center>
+</div>
+</body>
+</html>
+<!-- -->
