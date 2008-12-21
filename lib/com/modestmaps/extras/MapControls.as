@@ -233,7 +233,7 @@ package com.modestmaps.extras {
     	    		(actions[buttons.indexOf(buttonKeys[event.keyCode])] as Function).call();
     	    	}
         	}
-        	event.stopImmediatePropagation();
+        	//event.stopImmediatePropagation();
         }
         
         private function onMapResize(event:Event):void
