@@ -56,7 +56,8 @@ package com.modestmaps.extras
 		{
 			if (event.shiftKey) {
 				map.grid.mouseEnabled = false;
-				p = new Point(stage.mouseX, stage.mouseY);				
+				p = new Point(stage.mouseX, stage.mouseY);
+				p = map.globalToLocal(p);				
 				box.x = p.x;
 				box.y = p.y;
 				box.scaleX = box.scaleY = 0;
@@ -93,7 +94,8 @@ package com.modestmaps.extras
 		
 		protected function onMouseMove(event:MouseEvent):void
 		{
-			var movement:Point = p.subtract(new Point(stage.mouseX, stage.mouseY));
+			var mouseP:Point = map.globalToLocal(new Point(stage.mouseX, stage.mouseY));
+			var movement:Point = p.subtract(mouseP);
 			box.visible = true;
 			box.scaleX = -movement.x / 100;
 			box.scaleY = -movement.y / 100;
