@@ -801,7 +801,7 @@ package com.modestmaps.core
 					var tileLoader:Loader = new Loader();
 					tileLoader.name = tile.name;
 					try {
-						if (maxParentSearch) {
+						if (cacheLoaders || smoothContent) {
 							// check crossdomain permissions on tiles if we plan to access their bitmap content
 							tileLoader.load((url is URLRequest) ? url : new URLRequest(url), new LoaderContext(true));
 						}
