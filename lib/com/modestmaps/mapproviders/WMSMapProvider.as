@@ -26,8 +26,7 @@ package com.modestmaps.mapproviders
             REQUEST: 'GetMap',
             SRS: 'EPSG:4326',
             WIDTH: '256',
-            HEIGHT: '256',
-            PORT: '1200'
+            HEIGHT: '256'
         };
 
         private var serverUrl:String;
