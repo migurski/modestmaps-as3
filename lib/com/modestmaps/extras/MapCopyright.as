@@ -79,8 +79,6 @@ package com.modestmaps.extras
 					            } 
 					        },
 					    
-					    },
-					
 					    microsoft: {
 					        holders:
 					            {'microsoft':   '&copy; 2006 Microsoft Corporation',
