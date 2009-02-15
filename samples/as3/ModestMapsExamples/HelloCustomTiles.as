@@ -74,7 +74,7 @@ class CustomTile extends Tile
 		
 		graphics.clear();
 		graphics.beginFill(0xffffff);
-		graphics.drawRect(0,0,64,64);
+		graphics.drawRect(0,0,32,32);
 		graphics.endFill();
 		
  		var r:int = Math.random() * 255;
@@ -84,7 +84,7 @@ class CustomTile extends Tile
 		var c:int = 0xff000000 | r << 16 | g << 8 | b;
 		
 		graphics.beginFill(c);
-		graphics.drawCircle(32,32,16);
+		graphics.drawCircle(16,16,8);
 		graphics.endFill();
 	}
 }
@@ -103,11 +103,11 @@ class BlankProvider extends AbstractMapProvider implements IMapProvider
     
     override public function get tileWidth():Number
     {
-    	return 64;
+    	return 32;
     }
 
     override public function get tileHeight():Number
     {
-    	return 64;
+    	return 32;
     }
 }

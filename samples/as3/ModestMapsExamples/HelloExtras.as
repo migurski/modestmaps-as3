@@ -6,16 +6,16 @@ package {
 	import com.modestmaps.extras.NavigatorWindow;
 	import com.modestmaps.extras.ZoomBox;
 	import com.modestmaps.extras.ZoomSlider;
+	import com.modestmaps.mapproviders.OpenStreetMapProvider;
 	import com.pixelbreaker.ui.osx.MacMouseWheel;
 	
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
-	import flash.events.FullScreenEvent;
 	import flash.events.MouseEvent;
 
-	[SWF(backgroundColor="#ffffff")]
+	[SWF(backgroundColor="#ffffff", frameRate="30")]
 	public class HelloExtras extends Sprite
 	{
 		public function HelloExtras()
@@ -31,10 +31,21 @@ package {
 				trace("NO MAC MOUSEWHEEL SUPPORT!");
 			}			
 			
-			var map:TweenMap = new TweenMap(stage.stageWidth, stage.stageHeight, true);
+			var map:TweenMap = new TweenMap(stage.stageWidth, stage.stageHeight, true, new OpenStreetMapProvider());
 			map.addEventListener(MouseEvent.DOUBLE_CLICK, map.onDoubleClick);
 			map.addEventListener(MouseEvent.MOUSE_WHEEL, map.onMouseWheel); 
 			addChild(map);
+			
+/* 			map.grid.maxChildSearch = 1;
+			map.grid.maxParentSearch = 5;
+			map.grid.maxParentLoad = 0;
+			map.grid.maxOpenRequests = 4;
+			map.grid.tileBuffer = 0; */
+			//map.grid.roundPositionsEnabled = true;
+			//map.grid.roundScalesEnabled = true;
+			//map.grid.smoothContent = true;
+			
+			//map.addChild(map.grid.debugField);
 			
 			map.addChild(new MapCopyright(map, 143, 10));
 			map.addChild(new ZoomBox(map));
