@@ -10,11 +10,7 @@ package com.modestmaps.mapproviders
     
     import flash.net.URLVariables;
     
-    import mx.skins.Border;
-    
-    public class WMSMapProvider
-        extends AbstractMapProvider
-        implements IMapProvider
+    public class WMSMapProvider extends AbstractMapProvider implements IMapProvider
     {
         
         public static const EPSG_4326:String = "EPSG:4326";
