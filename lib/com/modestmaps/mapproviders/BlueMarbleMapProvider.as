@@ -23,6 +23,9 @@ package com.modestmaps.mapproviders
 	    public function getTileUrls(coord:Coordinate):Array
 	    {
 	        var sourceCoord:Coordinate = sourceCoordinate(coord);
+	        if (sourceCoord.row < 0 || sourceCoord.row >= Math.pow(2, coord.zoom)) {
+	        	return [];
+	    	}
 	        return [ 'http://s3.amazonaws.com/com.modestmaps.bluemarble/' + 
 	        		 (sourceCoord.zoom) + '-r' + (sourceCoord.row) + '-c' + (sourceCoord.column) +
 	        	    '.jpg' ];
