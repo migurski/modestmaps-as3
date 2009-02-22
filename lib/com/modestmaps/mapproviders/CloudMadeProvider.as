@@ -4,10 +4,20 @@ package com.modestmaps.mapproviders
 	
 	public class CloudMadeProvider extends OpenStreetMapProvider
 	{
+		public static const THE_ORIGINAL:String = '1';
+		public static const FINE_LINE:String = '2';
+		public static const TOURIST:String = '7';
+		
+		public static const FRESH:String = '997';
+		public static const PALE_DAWN:String = '998';
+		public static const MIDNIGHT_COMMANDER:String = '999';
+
+		/** see http://developers.cloudmade.com/projects to get hold of an API key */
 		public var key:String;
+		
+		/** use the constants above or see maps.cloudmade.com for more styles */
 		public var style:String;
 		
-		/** see http://developers.cloudmade.com/projects to get hold of an API key */
 		public function CloudMadeProvider(key:String, style:String='1')
 		{
 			super();
