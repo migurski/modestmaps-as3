@@ -201,7 +201,9 @@ package com.modestmaps.extras
 			copyrightField.defaultTextFormat = new TextFormat('Arial', 10, 0x000000, false, null, null, null, '_blank');
 			copyrightField.selectable = false;
 			copyrightField.mouseEnabled = true;
-			addChild(copyrightField);			
+			addChild(copyrightField);		
+			
+			onMapChange(null);	
 		}
 		
 	    protected var copyrightTimeout:uint;
