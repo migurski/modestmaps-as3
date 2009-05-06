@@ -103,7 +103,7 @@ package com.modestmaps.overlays
 	
 		public function redraw(event:Event=null):void
 		{	
-			if (drawZoom && Math.abs(map.grid.zoomLevel-drawZoom) < zoomTolerance) {
+			if (event && drawZoom && Math.abs(map.grid.zoomLevel-drawZoom) < zoomTolerance) {
 				scaleX = scaleY = Math.pow(2, map.grid.zoomLevel-drawZoom);
 			}
 			else {
