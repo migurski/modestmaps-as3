@@ -39,6 +39,7 @@ package com.modestmaps
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.utils.getTimer;
 	
     [Event(name="startZooming",      type="com.modestmaps.events.MapEvent")]
     [Event(name="stopZooming",       type="com.modestmaps.events.MapEvent")]
@@ -719,6 +720,22 @@ package com.modestmaps
             	}
             }
         }        
+
+		private var previousWheelEvent:Number = 0;
+		private var minMouseWheelInterval:Number = 100;
+		
+		public function onMouseWheel(event:MouseEvent):void
+		{
+			if (getTimer() - previousWheelEvent > minMouseWheelInterval) {
+				if (event.delta > 0) {
+					zoomInAbout(new Point(mouseX, mouseY), 0);
+				}
+				else if (event.delta < 0) {
+					zoomOutAbout(new Point(mouseX, mouseY), 0);
+				}
+				previousWheelEvent = getTimer(); 
+			}
+		}
 		
 	}
 }
