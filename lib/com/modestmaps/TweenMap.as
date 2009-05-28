@@ -240,7 +240,7 @@ package com.modestmaps
          *
          * @see http://blog.pixelbreaker.com/flash/swfmacmousewheel/ for Mac mouse wheel support  
          */
-        public function onMouseWheel(event:MouseEvent):void
+        override public function onMouseWheel(event:MouseEvent):void
         {       	
         	if (!__draggable || grid.panning) return;
 
