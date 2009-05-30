@@ -10,9 +10,12 @@ package com.modestmaps.mapproviders
 		extends AbstractMapProvider
 		implements IMapProvider
 	{
+	    public var baseURL:String;
+	    
 	    public function BlueMarbleMapProvider(minZoom:int=MIN_ZOOM, maxZoom:int=MAX_ZOOM)
         {
             super(minZoom, Math.min(9, maxZoom));
+            if (!baseURL) baseURL = 'http://s3.amazonaws.com/com.modestmaps.bluemarble/';
 	    }
 	
 	    public function toString():String
@@ -26,9 +29,7 @@ package com.modestmaps.mapproviders
 	        if (sourceCoord.row < 0 || sourceCoord.row >= Math.pow(2, coord.zoom)) {
 	        	return [];
 	    	}
-	        return [ 'http://s3.amazonaws.com/com.modestmaps.bluemarble/' + 
-	        		 (sourceCoord.zoom) + '-r' + (sourceCoord.row) + '-c' + (sourceCoord.column) +
-	        	    '.jpg' ];
+	        return [ baseURL + (sourceCoord.zoom) + '-r' + (sourceCoord.row) + '-c' + (sourceCoord.column) + '.jpg' ];
 	    }
 	    
 	}
