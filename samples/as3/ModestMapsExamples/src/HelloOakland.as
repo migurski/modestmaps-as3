@@ -4,9 +4,8 @@ package {
 	import com.modestmaps.events.MapEvent;
 	import com.modestmaps.extras.MapControls;
 	import com.modestmaps.geo.Location;
+	import com.modestmaps.mapproviders.CloudMadeProvider;
 	import com.modestmaps.mapproviders.IMapProvider;
-	import com.modestmaps.mapproviders.microsoft.MicrosoftAerialMapProvider;
-	import com.modestmaps.mapproviders.microsoft.MicrosoftRoadMapProvider;
 	import com.pixelbreaker.ui.osx.MacMouseWheel;
 	
 	import flash.display.Sprite;
@@ -31,15 +30,16 @@ package {
 			MacMouseWheel.setup(stage);
 
 			var providers:Array = [
-				new OaklandProvider('http://oakland-1877.s3.amazonaws.com/'),
-				new OaklandProvider('http://oakland-1912.s3.amazonaws.com/'),
-				new OaklandProvider('http://oakland-sf-1936.s3.amazonaws.com/'),
-				new OaklandProvider('http://oakland-1950s.s3.amazonaws.com/'),
-				new OaklandProvider('http://oakland-1967.s3.amazonaws.com/'),
 				new OaklandProvider('http://osm-bayarea.s3.amazonaws.com/', '.png'),
-				new OaklandProvider('http://hills-bayarea.s3.amazonaws.com/', '.png'),
-				new MicrosoftRoadMapProvider(),
-				new MicrosoftAerialMapProvider()
+				new OaklandProvider('http://oakland-1967.s3.amazonaws.com/'),
+				new OaklandProvider('http://oakland-1950s.s3.amazonaws.com/'),
+				new OaklandProvider('http://oakland-sf-1936.s3.amazonaws.com/'),
+				new OaklandProvider('http://oakland-1912.s3.amazonaws.com/'),
+				new OaklandProvider('http://oakland-1877.s3.amazonaws.com/'),
+				//new OaklandProvider('http://hills-bayarea.s3.amazonaws.com/', '.png'),
+				new CloudMadeProvider('1a914755a77758e49e19a26e799268b7', CloudMadeProvider.FRESH),
+				new CloudMadeProvider('1a914755a77758e49e19a26e799268b7', CloudMadeProvider.MIDNIGHT_COMMANDER),
+				new CloudMadeProvider('1a914755a77758e49e19a26e799268b7', CloudMadeProvider.PALE_DAWN)				
 			];
 
 			for each (var provider:IMapProvider in providers) {

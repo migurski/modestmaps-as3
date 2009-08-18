@@ -1,5 +1,5 @@
-
-package {
+package
+{
 	import com.modestmaps.TweenMap
 	import com.modestmaps.extras.MapCopyright
 	import com.modestmaps.geo.Location

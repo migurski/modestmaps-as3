@@ -1,10 +1,10 @@
-package {
-	import com.modestmaps.TweenMap;
+package
+{
+	import com.modestmaps.core.MapExtent;
 	import com.modestmaps.events.MarkerEvent;
 	import com.modestmaps.extras.MapCopyright;
 	import com.modestmaps.geo.Location;
 	import com.modestmaps.mapproviders.CloudMadeProvider;
-	import com.modestmaps.overlays.MarkerClip;
 	import com.pixelbreaker.ui.osx.MacMouseWheel;
 	
 	import flash.display.Bitmap;
@@ -12,16 +12,14 @@ package {
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
-	import flash.events.MouseEvent;
+	import flash.events.MouseEvent;	
 	[SWF(backgroundColor="#ffffff")]
 	public class HelloInfoBubbles extends Sprite
 	{
 		[Embed(source="images/001_09.png")]
 		protected var MarkerImage:Class
 		
-		public var map:TweenMap
-		public var infoClip:MarkerClip;
-		public var infoBubble:InfoBubble;
+		public var map:InfoMap
 
 		public function HelloInfoBubbles()
 		{
@@ -30,24 +28,24 @@ package {
 			
 			MacMouseWheel.setup(stage)
 			
-			map = new TweenMap(stage.stageWidth, stage.stageHeight, true, new CloudMadeProvider('1a914755a77758e49e19a26e799268b7', '997'))
+			// NB:- please use your own API key, see http://developers.cloudmade.com/projects for more details
+			map = new InfoMap(stage.stageWidth, stage.stageHeight, true, new CloudMadeProvider('1a914755a77758e49e19a26e799268b7', '1'))
 			map.addEventListener(MouseEvent.DOUBLE_CLICK, map.onDoubleClick)
 			map.addEventListener(MouseEvent.MOUSE_WHEEL, map.onMouseWheel)
 			addChild(map)
 
-			// map has one markerclip built-in, but let's make another one for info-bubbles:
-			infoClip = new MarkerClip(map)
-			map.addChild(infoClip)
-
 			map.addChild(new IconControls(map))
 			map.addChild(new MapCopyright(map))
 			
-			// my cities, from http://www.getlatlon.com/
-			var locations:Array = [ new Location(51.5001524, -0.1262362), new Location(37.775196, -122.419204) ]
-			var names:Array = [ 'London', 'San Francisco' ];
+			// cloudmade cities, from http://www.getlatlon.com/
+			var locations:Array = [ new Location(51.50757, -0.1078), new Location(50.4363, 30.5390), new Location(37.47794, -122.15110) ]
+			
+			map.setExtent(MapExtent.fromLocations(locations))
+			
+			var names:Array = [ 'London', 'Kiev', 'Menlo Park' ]
 			for each (var location:Location in locations) {
 				var marker:Sprite = new Sprite()
-				marker.name = names.shift();
+				marker.name = names.shift()
 				marker.buttonMode = marker.useHandCursor = true
 				var markerImage:Bitmap = new MarkerImage() as Bitmap
 				markerImage.x = -markerImage.width/2
@@ -56,23 +54,11 @@ package {
 				map.putMarker(location, marker)
 			}
 			
-			map.addEventListener(MarkerEvent.MARKER_CLICK, onMarkerClick);
 
 			// make sure the map fills the screen:
 			stage.addEventListener(Event.RESIZE, onStageResize)			
 		}
-		
-		public function onMarkerClick(event:MarkerEvent):void
-		{
-			if (infoBubble) {
-				infoClip.removeMarkerObject(infoBubble);
-				infoBubble = null;
-			}
-			infoBubble = new InfoBubble(event.marker.name);
-			infoClip.attachMarker(infoBubble, event.location);
-			map.panTo(event.location);
-		}		
-		
+				
 		public function onStageResize(event:Event):void
 		{
 			map.setSize(stage.stageWidth, stage.stageHeight)
@@ -80,20 +66,26 @@ package {
 	}
 }
 
-import flash.display.Sprite
 import com.modestmaps.Map
-import flash.display.Bitmap
-import flash.events.MouseEvent
+import com.modestmaps.mapproviders.IMapProvider
+import com.modestmaps.geo.Location
+import com.modestmaps.overlays.MarkerClip
 import com.modestmaps.core.MapExtent
-import flash.geom.Rectangle
-import mx.controls.Image
 import com.modestmaps.events.MapEvent
 import com.modestmaps.TweenMap	
-import flash.text.TextField;
-import flash.display.Shape;
-import flash.filters.BlurFilter;
-import flash.geom.Matrix;
-import flash.display.Graphics;
+import com.modestmaps.events.MarkerEvent
+
+import flash.display.Sprite
+import flash.display.Shape
+import flash.display.Bitmap
+import flash.display.Graphics
+import flash.filters.BlurFilter
+import flash.geom.Point
+import flash.geom.Matrix
+import flash.geom.Rectangle
+import flash.text.TextField
+import flash.events.Event
+import flash.events.MouseEvent
 
 class IconControls extends Sprite
 {
@@ -186,51 +178,108 @@ class IconControls extends Sprite
 
 class InfoBubble extends Sprite
 {
-	public var textField:TextField;
-	public var background:Shape;
-	public var shadow:Shape;
+	public var textField:TextField
+	public var background:Shape
+	public var shadow:Shape
 	
 	public function InfoBubble(text:String)
 	{
-		this.name = text;
+		this.name = text
 		
-		this.mouseEnabled = false;
+		this.mouseEnabled = true
+		this.mouseChildren = false
 		
-		shadow = new Shape();
-		shadow.filters = [ new BlurFilter(16, 16) ];
-		shadow.transform.matrix = new Matrix(1, 0, -0.5, 0.5, 0, 0);    
-		addChild(shadow);
+		shadow = new Shape()
+		shadow.filters = [ new BlurFilter(16, 16) ]
+		shadow.transform.matrix = new Matrix(1, 0, -0.5, 0.5, 0, 0)    
+		addChild(shadow)
 		
-		background = new Shape();
-		addChild(background);
+		background = new Shape()
+		addChild(background)
 		
-		textField = new TextField();
-		textField.selectable = false;
-		textField.text = text;
-		textField.width = textField.textWidth+6;
-		textField.height = textField.textHeight+4;
-		addChild(textField);
+		textField = new TextField()
+		textField.selectable = false
+		textField.text = text
+		textField.width = textField.textWidth+6
+		textField.height = textField.textHeight+4
+		addChild(textField)
 		
 		// remember that things in marker clips are positioned with (0,0) at the given location
-		textField.y = -textField.height - 15;
-		textField.x = -10;
+		textField.y = -textField.height - 15
+		textField.x = -10
 		
-		var rect:Rectangle = textField.getRect(this);
+		var rect:Rectangle = textField.getRect(this)
 		
 		// get your graph paper ready, here's a "speech bubble"
-		background.graphics.beginFill(0xffffff);
-		shadow.graphics.beginFill(0x000000);
+		background.graphics.beginFill(0xffffff)
+		shadow.graphics.beginFill(0x000000)
 		
 		for each (var g:Graphics in [ background.graphics, shadow.graphics ] ) {
-			g.moveTo(rect.left, rect.top);
-			g.lineTo(rect.right, rect.top);
-			g.lineTo(rect.right, rect.bottom);
-			g.lineTo(rect.left+15, rect.bottom);
-			g.lineTo(rect.left+10, rect.bottom+15);
-			g.lineTo(rect.left+5, rect.bottom);
-			g.lineTo(rect.left, rect.bottom);
-			g.lineTo(rect.left, rect.top);
-			g.endFill();
+			g.moveTo(rect.left, rect.top)
+			g.lineTo(rect.right, rect.top)
+			g.lineTo(rect.right, rect.bottom)
+			g.lineTo(rect.left+15, rect.bottom)
+			g.lineTo(rect.left+10, rect.bottom+15)
+			g.lineTo(rect.left+5, rect.bottom)
+			g.lineTo(rect.left, rect.bottom)
+			g.lineTo(rect.left, rect.top)
+			g.endFill()
 		}		
+	}
+}
+
+class InfoMap extends TweenMap
+{
+	public var infoClip:MarkerClip
+	public var infoBubble:InfoBubble		
+
+	public function InfoMap(width:Number=320, height:Number=240, draggable:Boolean=true, provider:IMapProvider=null)
+	{
+		super(width, height, draggable, provider)
+
+		// map has one markerclip built-in, but let's make another one for info-bubbles:
+		infoClip = new MarkerClip(this)
+		addChild(infoClip)
+		
+		addEventListener(MarkerEvent.MARKER_CLICK, onMarkerClick)
+	}
+
+	public function onMarkerClick(event:MarkerEvent):void
+	{
+		showInfoBubble(event.marker.name, event.location)
+	}
+	
+	override public function zoomIn(event:Event=null):void
+	{
+		if (infoBubble) {
+			var point:Point = new Point(infoBubble.x, infoBubble.y)
+			point = globalToLocal(infoClip.localToGlobal(point))
+			zoomInAbout(point)
+		}
+		else {
+			super.zoomIn(event)
+		}
+	}
+	
+	override public function zoomOut(event:Event=null):void
+	{
+		if (infoBubble) {
+			var point:Point = new Point(infoBubble.x, infoBubble.y)
+			point = globalToLocal(infoClip.localToGlobal(point))
+			zoomOutAbout(point)
+		}
+		else {
+			super.zoomOut(event)
+		}
+	}
+	
+	public function showInfoBubble(name:String, location:Location):void
+	{
+		if (infoBubble) {
+			infoClip.removeMarkerObject(infoBubble)
+			infoBubble = null
+		}
+		infoBubble = new InfoBubble(name)
+		infoClip.attachMarker(infoBubble, location)
 	}
 }
