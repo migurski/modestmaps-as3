@@ -1,5 +1,6 @@
 package
 {
+	import com.adobe.viewsource.ViewSource;
 	import com.modestmaps.core.MapExtent;
 	import com.modestmaps.events.MarkerEvent;
 	import com.modestmaps.extras.MapCopyright;
@@ -27,6 +28,8 @@ package
 			stage.scaleMode = StageScaleMode.NO_SCALE
 			
 			MacMouseWheel.setup(stage)
+
+			ViewSource.addMenuItem(this, 'srcview/index.html', true);
 			
 			// NB:- please use your own API key, see http://developers.cloudmade.com/projects for more details
 			map = new InfoMap(stage.stageWidth, stage.stageHeight, true, new CloudMadeProvider('1a914755a77758e49e19a26e799268b7', '1'))

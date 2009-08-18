@@ -1,4 +1,5 @@
 package {
+	import com.adobe.viewsource.ViewSource;
 	import com.modestmaps.TweenMap;
 	import com.modestmaps.extras.MapControls;
 	import com.modestmaps.extras.MapCopyright;
@@ -30,6 +31,8 @@ package {
 			catch (error:Error) {
 				trace("NO MAC MOUSEWHEEL SUPPORT!");
 			}			
+
+			ViewSource.addMenuItem(this, 'srcview/index.html', true);
 			
 			var map:TweenMap = new TweenMap(stage.stageWidth, stage.stageHeight, true, new OpenStreetMapProvider());
 			map.addEventListener(MouseEvent.DOUBLE_CLICK, map.onDoubleClick);

@@ -1,18 +1,18 @@
 package
 {
-	import com.modestmaps.TweenMap
-	import com.modestmaps.extras.MapCopyright
-	import com.modestmaps.geo.Location
-	import com.modestmaps.mapproviders.BlueMarbleMapProvider
-	import com.pixelbreaker.ui.osx.MacMouseWheel
+	import com.adobe.viewsource.ViewSource;
+	import com.modestmaps.TweenMap;
+	import com.modestmaps.extras.MapCopyright;
+	import com.modestmaps.geo.Location;
+	import com.modestmaps.mapproviders.BlueMarbleMapProvider;
+	import com.pixelbreaker.ui.osx.MacMouseWheel;
 	
-	import flash.display.Bitmap
-	import flash.display.Sprite
-	import flash.display.StageAlign
-	import flash.display.StageScaleMode
-	import flash.events.Event
-	import flash.events.MouseEvent
-
+	import flash.display.Bitmap;
+	import flash.display.Sprite;
+	import flash.display.StageAlign;
+	import flash.display.StageScaleMode;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
 	[SWF(backgroundColor="#ffffff")]
 	public class HelloIcons extends Sprite
 	{
@@ -27,6 +27,8 @@ package
 			stage.scaleMode = StageScaleMode.NO_SCALE
 			
 			MacMouseWheel.setup(stage)
+
+			ViewSource.addMenuItem(this, 'srcview/index.html', true);
 			
 			map = new TweenMap(stage.stageWidth, stage.stageHeight, true, new BlueMarbleMapProvider())
 			map.addEventListener(MouseEvent.DOUBLE_CLICK, map.onDoubleClick)

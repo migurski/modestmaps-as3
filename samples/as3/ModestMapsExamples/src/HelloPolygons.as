@@ -1,4 +1,5 @@
 package {
+	import com.adobe.viewsource.ViewSource;
 	import com.modestmaps.TweenMap;
 	import com.modestmaps.core.MapExtent;
 	import com.modestmaps.extras.MapControls;
@@ -27,6 +28,8 @@ package {
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			
 			MacMouseWheel.setup(stage);
+			
+			ViewSource.addMenuItem(this, 'srcview/index.html', true);
 			
 			map = new TweenMap(stage.stageWidth, stage.stageHeight, true, new BlueMarbleMapProvider());
 			map.addEventListener(MouseEvent.DOUBLE_CLICK, map.onDoubleClick);

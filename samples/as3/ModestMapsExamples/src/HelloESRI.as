@@ -1,5 +1,6 @@
 package
 {
+	import com.adobe.viewsource.ViewSource;
 	import com.modestmaps.Map;
 	import com.modestmaps.TweenMap;
 	import com.modestmaps.core.MapExtent;
@@ -23,6 +24,8 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;	
 			
+			ViewSource.addMenuItem(this, 'srcview/index.html', true);
+
 			map = new TweenMap(stage.stageWidth, stage.stageHeight, true, new EsriMapProvider(), new MapExtent(48.383, 43.300,5.367, -4.500));
 			map.addEventListener(MouseEvent.DOUBLE_CLICK, map.onDoubleClick);
 			addChild(map);

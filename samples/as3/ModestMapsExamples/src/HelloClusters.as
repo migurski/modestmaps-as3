@@ -6,7 +6,6 @@ package {
 	import com.modestmaps.events.MapEvent;
 	import com.modestmaps.extras.MapControls;
 	import com.modestmaps.extras.MapCopyright;
-	import com.modestmaps.extras.ZoomBox;
 	import com.modestmaps.geo.Location;
 	import com.modestmaps.mapproviders.microsoft.MicrosoftHybridMapProvider;
 	

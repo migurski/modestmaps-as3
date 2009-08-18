@@ -1,4 +1,5 @@
 package {
+	import com.adobe.viewsource.ViewSource;
 	import com.modestmaps.Map;
 	import com.modestmaps.TweenMap;
 	import com.modestmaps.events.MapEvent;
@@ -25,7 +26,7 @@ package {
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			
-			//ViewSource.addMenuItem(this, 'srcview/index.html', true);
+			ViewSource.addMenuItem(this, 'srcview/index.html', true);
 
 			MacMouseWheel.setup(stage);
 

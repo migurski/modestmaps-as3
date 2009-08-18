@@ -1,5 +1,6 @@
 package
 {
+	import com.adobe.viewsource.ViewSource;
 	import com.modestmaps.Map;
 	import com.modestmaps.TweenMap;
 	import com.modestmaps.core.MapExtent;
@@ -26,6 +27,8 @@ package
 		{
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;	
+
+			ViewSource.addMenuItem(this, 'srcview/index.html', true);
 			
 			var wmsProvider:WMSMapProvider = new WMSMapProvider("http://labs.metacarta.com/wms/vmap0",
 											{

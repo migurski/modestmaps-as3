@@ -3,7 +3,6 @@ package {
 	import com.modestmaps.Map;
 	import com.modestmaps.TweenMap;
 	import com.modestmaps.extras.MapControls;
-	import com.modestmaps.extras.ZoomSlider;
 	import com.modestmaps.geo.Location;
 	
 	import flash.display.Sprite;

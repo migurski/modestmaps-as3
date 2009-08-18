@@ -1,4 +1,5 @@
 package {
+	import com.adobe.viewsource.ViewSource;
 	import com.modestmaps.Map;
 	import com.modestmaps.TweenMap;
 	import com.modestmaps.extras.MapControls;
@@ -21,6 +22,8 @@ package {
 		{
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
+
+			ViewSource.addMenuItem(this, 'srcview/index.html', true);
 			
 			map = new TweenMap(stage.stageWidth, stage.stageHeight, true, new MicrosoftHybridMapProvider());
 			map.addEventListener(MouseEvent.DOUBLE_CLICK, map.onDoubleClick);

@@ -1,10 +1,9 @@
 package {
+	import com.adobe.viewsource.ViewSource;
 	import com.modestmaps.Map;
 	import com.modestmaps.TweenMap;
 	import com.modestmaps.events.MapEvent;
 	import com.modestmaps.extras.MapControls;
-	import com.modestmaps.extras.MapCopyright;
-	import com.modestmaps.extras.ZoomSlider;
 	import com.modestmaps.mapproviders.microsoft.MicrosoftAerialMapProvider;
 	import com.modestmaps.mapproviders.yahoo.YahooAerialMapProvider;
 	
@@ -25,6 +24,8 @@ package {
 		{
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
+
+			ViewSource.addMenuItem(this, 'srcview/index.html', true);
 			
 			map = new TweenMap(stage.stageWidth, stage.stageHeight, true, new MicrosoftAerialMapProvider());
 			map.addEventListener(MouseEvent.DOUBLE_CLICK, map.onDoubleClick);
