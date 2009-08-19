@@ -282,8 +282,9 @@ package com.modestmaps
 				m.scale(sc, sc);
 				m.translate(p.x, p.y);
 				grid.setMatrix(m);            	
-	            TweenLite.delayedCall(0.1, doneMouseWheeling);
             }
+            
+            TweenLite.delayedCall(0.1, doneMouseWheeling);
             
             event.updateAfterEvent();
             

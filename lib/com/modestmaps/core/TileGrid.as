@@ -1,8 +1,6 @@
 package com.modestmaps.core 
 {
-	import com.modestmaps.core.grid.TileCache;
 	import com.modestmaps.core.grid.TilePainter;
-	import com.modestmaps.core.grid.TilePool;
 	import com.modestmaps.events.MapEvent;
 	import com.modestmaps.mapproviders.IMapProvider;
 	
@@ -106,10 +104,6 @@ package com.modestmaps.core
 
 		// coordinate bounds derived from IMapProviders
 		protected var limits:Array;
-
-		protected var tileCache:TileCache;
-
-		protected var tilePool:TilePool;
 		
 		// keys we've recently seen
 		protected var recentlySeen:Array = [];
@@ -190,9 +184,6 @@ package com.modestmaps.core
 			// and calculate bounds from provider
 			calculateBounds();
 			
-			this.tilePool = new TilePool(Tile);
-			this.tileCache = new TileCache(tilePool);
-
 			this.mapWidth = w;
 			this.mapHeight = h;
 
@@ -272,7 +263,7 @@ package com.modestmaps.core
 			// first get rid of everything, which passes tiles back to the pool
 			clearEverything();
 			// then assign the new class, which creates a new pool array
-			tilePool.setTileClass(tileClass);
+			tilePainter.setTileClass(tileClass);
 		}
 		
 		/** processes the tileQueue and optionally outputs stats into debugField */
@@ -304,7 +295,7 @@ package com.modestmaps.core
 						+ "\nqueue length: " + tilePainter.getQueueCount()
 						+ "\nblank count: " + blankCount
 						+ "\nrequests: " + tilePainter.getRequestCount()
-						+ "\nfinished (cached) tiles: " + tileCache.size
+						+ "\nfinished (cached) tiles: " + tilePainter.getCacheSize()
 						+ "\nrecently used tiles: " + recentlySeen.length
 						+ "\ncachedLoaders: " + tilePainter.getLoaderCacheCount()
 						+ "\ntiles created: " + Tile.count
@@ -313,10 +304,6 @@ package com.modestmaps.core
 				debugField.height = debugField.textHeight+4;
 				debugField.x = mapWidth - debugField.width - 15; 
 				debugField.y = mapHeight - debugField.height - 15;
-				
-				if (well.numChildren < tileChildren) {
-					throw new Error("really, seriously, OK, that's bad");
-				}
 			}
 		}
 		
@@ -451,11 +438,7 @@ package com.modestmaps.core
 				if (visibleTiles.indexOf(wellTile) < 0) {
 					well.removeChild(wellTile);
 					wellTile.hide();
-					if (!tileCache.containsKey(wellTile.name)) {
-						//trace("destroying tile that was in the well but never cached");
-						tilePainter.cancelPainting(wellTile);
-						tilePool.returnTile(wellTile);
-					}
+					tilePainter.cancelPainting(wellTile);
 				}
 			}
 
@@ -483,7 +466,7 @@ package com.modestmaps.core
 				
 				// loop over our internal tile cache 
 				// and throw out tiles not in recentlySeen
-				tileCache.retainKeys(recentlySeen); 
+				tilePainter.retainKeysInCache(recentlySeen);
 			}
 			
 			// update centerRow and centerCol for sorting the tileQueue in processQueue()
@@ -525,14 +508,12 @@ package com.modestmaps.core
 										
 					// create it if not, and add it to the load queue
 					if (!tile) {
-						tile = tileCache.getTile(key);
+						tile = tilePainter.getTileFromCache(key);
 						if (!tile) {
-							tile = tilePool.getTile(col, row, currentTileZoom);
-							tile.name = key;
- 							coord.row = tile.row;
-							coord.column = tile.column;
-							coord.zoom = tile.zoom; 
-							tilePainter.paintTile(tile, coord);
+ 							coord.row = row;
+							coord.column = col;
+							coord.zoom = currentTileZoom;
+							tile = tilePainter.createAndPopulateTile(coord, key); 
 						}
 						else {
 							tile.show();
@@ -647,7 +628,7 @@ package com.modestmaps.core
 		} // repopulateVisibleTiles
 		
 		// TODO: do this with events instead?
-		public function tilePainted(tile:Tile, cacheIt:Boolean):void
+		public function tilePainted(tile:Tile):void
 		{			
 			if (currentTileZoom-tile.zoom <= maxParentLoad) {
 				tile.show();
@@ -655,9 +636,6 @@ package com.modestmaps.core
 			else {
 				tile.showNow();
 			}
-			if (cacheIt) {
-				tileCache.putTile(tile);
-			}			
 		}
 		
 		/** 
@@ -763,21 +741,16 @@ package com.modestmaps.core
 			return t1.zoom == t2.zoom ? 0 : t1.zoom > t2.zoom ? 1 : -1; 
 		}
 
-		// makes sure that if a tile with the given key exists in the cache that it is added to the well and added to visibleTiles
+		// makes sure that if a tile with the given key exists in the cache
+		// that it is added to the well and added to visibleTiles
 		// returns null if tile does not exist in cache
 		private function ensureVisible(key:String):Tile
 		{
-			if (tileCache.containsKey(key)) {
-				var tile:Tile = well.getChildByName(key) as Tile;
-				if (!tile) {
-					tile = tileCache.getTile(key);
+			var tile:Tile = tilePainter.getTileFromCache(key);
+			if (tile) {
+				if (!well.contains(tile)) {
 					well.addChildAt(tile,0);
-					if (currentTileZoom-tile.zoom <= maxParentLoad) {
-						tile.show();
-					}
-					else {
-						tile.showNow();						
-					}
+					tilePainted(tile);
 				}
 				if (visibleTiles.indexOf(tile) < 0) {
 					visibleTiles.push(tile); // don't get rid of it yet!
@@ -793,16 +766,13 @@ package com.modestmaps.core
 		/** create a tile and add it to the queue - WARNING: this is buggy for the current zoom level, it's only used for parent zooms when maxParentLoad is > 0 */ 
 		private function requestLoad(col:int, row:int, zoom:int):Tile
 		{
-			var key:String = tileKey(col, row, zoom);
-			if (tileCache.containsKey(key)) throw new Error("requested load for an already cached tile");			
+			var key:String = tileKey(col, row, zoom);			
 			var tile:Tile = well.getChildByName(key) as Tile; 
 			if (!tile) {
-				tile = tilePool.getTile(col, row, zoom);
-				tile.name = key;
 				tempCoord.row = row;
 				tempCoord.column = col;
 				tempCoord.zoom = zoom;
-				tilePainter.paintTile(tile, tempCoord);
+				tile = tilePainter.createAndPopulateTile(tempCoord, key);
 				well.addChild(tile);
 			}
 			return tile;
@@ -1161,18 +1131,13 @@ package com.modestmaps.core
 		{
 			while (well.numChildren > 0) {			
 				var tile:Tile = well.removeChildAt(0) as Tile;
-				if (!tileCache.containsKey(tile.name)) {
-					tilePainter.cancelPainting(tile);
-					tilePool.returnTile(tile);
-				}
+				tilePainter.cancelPainting(tile);
 			}
 
 			tilePainter.reset();
 						
 			recentlySeen = [];
-			
-			tileCache.clear();
-			
+						
 			dirty = true;
 		}
 

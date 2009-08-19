@@ -39,9 +39,6 @@ package com.modestmaps.core.grid
 	    	}						
 			var tile:Tile = pool.pop() as Tile;
 			tile.init(column, row, zoom);
-			if (tile.numChildren > 0) {
-				throw new Error("no, really, seriously, WTF?");
-			}
 			return tile;
 		}
 	

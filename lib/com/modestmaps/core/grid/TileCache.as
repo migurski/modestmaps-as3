@@ -28,12 +28,6 @@ package com.modestmaps.core.grid
 		
 		public function putTile(tile:Tile):void
 		{
-			if (alreadySeen[tile.name]) {
-				throw new Error("caching a tile that's already cached");
-			}
-	 		if (tile.numChildren == 0) {
-				throw new Error("tile added to cache has no children!");
-			}
 			alreadySeen[tile.name] = tile;
 		}
 		

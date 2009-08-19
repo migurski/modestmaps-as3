@@ -26,6 +26,10 @@ package com.modestmaps.core.grid
 		protected var tileGrid:TileGrid;
 	
 		protected var tileQueue:TileQueue;
+
+		protected var tileCache:TileCache;
+		
+		protected var tilePool:TilePool;		
 	
 		protected var queueFunction:Function;
 	
@@ -73,12 +77,26 @@ package com.modestmaps.core.grid
 			this.queueFunction = queueFunction;
 	
 			this.tileQueue = new TileQueue();
+			this.tilePool = new TilePool(Tile);
+			this.tileCache = new TileCache(tilePool);
 	
 			queueTimer = new Timer(200);
 			queueTimer.addEventListener(TimerEvent.TIMER, processQueue);		
 			
 			// TODO: this used to be called onAddedToStage, is this bad?
 			queueTimer.start();
+		}
+
+		/** The classes themselves serve as factories!
+		 * 
+		 * @param tileClass e.g. Tile, TweenTile, etc.
+		 * 
+		 * @see http://norvig.com/design-patterns/img013.gif  
+		 */ 
+		public function setTileClass(tileClass:Class):void
+		{
+			// assign the new class, which creates a new pool array
+			tilePool.setTileClass(tileClass);
 		}
 		
 		public function setMapProvider(provider:IMapProvider):void
@@ -87,21 +105,31 @@ package com.modestmaps.core.grid
 			// TODO: clear various things, no doubt?		
 		}
 		
-		public function paintTile(tile:Tile, coord:Coordinate):void
+		public function getTileFromCache(key:String):Tile
 		{
+			return tileCache.getTile(key);
+		}
+		
+		public function retainKeysInCache(recentlySeen:Array):void
+		{
+			tileCache.retainKeys(recentlySeen); 			
+		}
+		
+		public function createAndPopulateTile(coord:Coordinate, key:String):Tile
+		{
+			var tile:Tile = tilePool.getTile(coord.column, coord.row, coord.zoom);
+			tile.name = key;
 			var urls:Array = provider.getTileUrls(coord);
 			if (urls && urls.length > 0) {
 				// keep a local copy of the URLs so we don't have to call this twice:
 				layersNeeded[tile.name] = urls;
-				if (tile.numChildren > 0) {
-					throw new Error("really, WTF?");
-				}
 				tileQueue.push(tile);
 			}
 			else {
 				// trace("no urls needed for that tile", tempCoord);
 				tile.show();
 			}
+			return tile;			
 		}
 	
 		public function isPainted(tile:Tile):Boolean
@@ -111,7 +139,6 @@ package com.modestmaps.core.grid
 		
 		public function cancelPainting(tile:Tile):void
 		{
-			delete layersNeeded[tile.name];
 			if (tileQueue.contains(tile)) {
 				tileQueue.remove(tile);
 			}
@@ -121,7 +148,11 @@ package com.modestmaps.core.grid
 					loaderTiles[loader] = null;
 					delete loaderTiles[loader];
 				}
-			}		
+			}
+			if (!tileCache.containsKey(tile.name)) {
+				tilePool.returnTile(tile);
+			}
+			delete layersNeeded[tile.name];
 		}
 		
 		public function isPainting(tile:Tile):Boolean
@@ -149,7 +180,9 @@ package com.modestmaps.core.grid
 			}
 			layersNeeded = {};
 			
-			tileQueue.clear();		
+			tileQueue.clear();
+					
+			tileCache.clear();					
 		}
 	
 		private function loadNextURLForTile(tile:Tile):void
@@ -157,9 +190,6 @@ package com.modestmaps.core.grid
 			// TODO: add urls to Tile?
 			var urls:Array = layersNeeded[tile.name] as Array;
 			if (urls && urls.length > 0) {
-				if (tile.numChildren > 0) {
-					throw new Error("that's not right");
-				}							
 				var url:* = urls.shift();
 				if (cacheLoaders && (url is String) && loaderCache[url]) {
 					var original:Bitmap = loaderCache[url] as Bitmap;
@@ -190,15 +220,11 @@ package com.modestmaps.core.grid
 				}
 			}
 			else if (urls && urls.length == 0) {
-				tileGrid.tilePainted(tile, true);
+				tileGrid.tilePainted(tile);
+				tileCache.putTile(tile);
 				delete layersNeeded[tile.name];
 			}			
 		}	
-		
-		public function getRequestCount():int
-		{
-			return openRequests.length;
-		}
 	
 		/** called by the onEnterFrame handler to manage the tileQueue
 		 *  usual operation is extremely quick, ~1ms or so */
@@ -288,9 +314,6 @@ package com.modestmaps.core.grid
 			
 			var tile:Tile = loaderTiles[loader] as Tile;
 			if (tile) { 
-				if (tile.numChildren > 0) {
-					throw new Error("holy broken algorithm batman");
-				}
 				tile.addChild(loader);
 				loadNextURLForTile(tile);
 			}
@@ -313,7 +336,7 @@ package com.modestmaps.core.grid
 					delete layersNeeded[loader.name];
 					var tile:Tile = loaderTiles[loader] as Tile;
 					tile.paintError(provider.tileWidth, provider.tileHeight);
-					tileGrid.tilePainted(tile, false);
+					tileGrid.tilePainted(tile);
 					loaderTiles[loader] = null;
 					delete loaderTiles[loader];				
 				}
@@ -329,5 +352,15 @@ package com.modestmaps.core.grid
 		{
 			return tileQueue.length;
 		}
+		
+		public function getRequestCount():int
+		{
+			return openRequests.length;
+		}
+		
+		public function getCacheSize():int
+		{
+			return tileCache.size;
+		}		
 	}
 }

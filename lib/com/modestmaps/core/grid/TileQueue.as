@@ -32,9 +32,6 @@ package com.modestmaps.core.grid
 		
 		public function push(tile:Tile):void
 		{
-	 		if (contains(tile)) {
-				throw new Error("that tile is already on the queue!");
-			}
 			queue.push(tile);
 		}
 		
