@@ -59,8 +59,8 @@ package com.modestmaps
     [Event(name="markerClick",       type="com.modestmaps.events.MarkerEvent")]
     public class Map extends Sprite
 	{
-	    protected var mapWidth:Number = 320;
-	    protected var mapHeight:Number = 240;
+	    protected var mapWidth:Number;
+	    protected var mapHeight:Number;
 	    protected var __draggable:Boolean = true;
 	
 	    /** das grid */
@@ -101,7 +101,7 @@ package com.modestmaps
 	        this.mapProvider = mapProvider;
 
 			// initialize the grid (so point/location/coordinate functions should be valid after this)
-			grid = new TileGrid(mapWidth, mapHeight, draggable, mapProvider);
+			grid = new TileGrid(width, height, draggable, mapProvider);
 			grid.addEventListener(Event.CHANGE, onExtentChanged);
 	        addChild(grid);
 
@@ -167,6 +167,7 @@ package com.modestmaps
 	    */
 	    public function setExtent(extent:MapExtent):void
 	    {
+	    	//trace('applying extent', extent);
 	        onExtentChanging();
 	        // tell grid what the rock is cooking
 	        grid.resetTiles(locationsCoordinate( [ extent.northWest, extent.southEast ] ));
@@ -226,21 +227,21 @@ package com.modestmaps
 			if (!fitWidth) fitWidth = mapWidth;
 			if (!fitHeight) fitHeight = mapHeight;
 			
-	        var TL:Coordinate = mapProvider.locationCoordinate(locations[0]);
+	        var TL:Coordinate = mapProvider.locationCoordinate(locations[0].normalize());
 	        var BR:Coordinate = TL.copy();
 	        
 	        // get outermost top left and bottom right coordinates to cover all locations
 	        for (var i:int = 1; i < locations.length; i++)
 			{
-				var coordinate:Coordinate = mapProvider.locationCoordinate(locations[i]);
+				var coordinate:Coordinate = mapProvider.locationCoordinate(locations[i].normalize());
 	            TL.row = Math.min(TL.row, coordinate.row);
-				TL.column = Math.min(TL.column, coordinate.column),
+				TL.column = Math.min(TL.column, coordinate.column);
 				TL.zoom = Math.min(TL.zoom, coordinate.zoom);
-	            BR.row = Math.max(BR.row, coordinate.row),
-				BR.column = Math.max(BR.column, coordinate.column),
+	            BR.row = Math.max(BR.row, coordinate.row);
+				BR.column = Math.max(BR.column, coordinate.column);
 				BR.zoom = Math.max(BR.zoom, coordinate.zoom);
 	        }
-	
+	        
 	        // multiplication factor between horizontal span and map width
 	        var hFactor:Number = (BR.column - TL.column) / (fitWidth / mapProvider.tileWidth);
 	        

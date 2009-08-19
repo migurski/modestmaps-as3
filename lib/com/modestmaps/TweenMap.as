@@ -72,6 +72,30 @@ package com.modestmaps
 			return -c * (t /= d) * (t - 2) + b;
 		}
 		
+		protected var enforceToRestore:Boolean = false;
+		
+		public function tweenToMatrix(m:Matrix, duration:Number):void
+		{
+			grid.prepareForZooming();
+			grid.prepareForPanning();
+			enforceToRestore = grid.enforceBoundsEnabled;
+			grid.enforceBoundsEnabled = false;
+
+			grid.enforceBoundsOnMatrix(m);
+			
+			TweenLite.to(grid, duration, { a: m.a, b: m.b, c: m.c, d: m.d, tx: m.tx, ty: m.ty, onComplete: panAndZoomComplete });			
+		}
+
+		/** call grid.donePanning() and grid.doneZooming(), used by tweenExtent, 
+		 *  panAndZoomBy and zoomByAbout as a TweenLite onComplete function */
+		protected function panAndZoomComplete():void
+		{
+			grid.enforceBoundsEnabled = enforceToRestore;
+			
+			grid.donePanning();
+			grid.doneZooming();
+		}		
+		
 		/** zoom in or out by sc, moving the given location to the requested target (or map center, if omitted) */        
         override public function panAndZoomBy(sc:Number, location:Location, targetPoint:Point=null, duration:Number=-1):void
         {
@@ -80,9 +104,6 @@ package com.modestmaps
         	
 			var p:Point = locationPoint(location);
 			
-			grid.prepareForZooming();
-			grid.prepareForPanning();
-
 			var constrainedDelta:Number = Math.log(sc) / Math.LN2;
 
          	if (grid.zoomLevel + constrainedDelta < grid.minZoom) {
@@ -103,7 +124,7 @@ package com.modestmaps
 			m.scale(sc, sc);
 			m.translate(targetPoint.x, targetPoint.y);
 			
-			TweenLite.to(grid, duration, { a: m.a, b: m.b, c: m.c, d: m.d, tx: m.tx, ty: m.ty, onComplete: panAndZoomComplete });
+			tweenToMatrix(m, duration);
         }
 
 		/** zoom in or out by zoomDelta, keeping the requested point in the same place */        
@@ -126,16 +147,13 @@ package com.modestmaps
 
         	var sc:Number = Math.pow(2, preciseZoomDelta);
 			
-			grid.prepareForZooming();
-			grid.prepareForPanning();
-			
 			var m:Matrix = grid.getMatrix();
 			
 			m.translate(-targetPoint.x, -targetPoint.y);
 			m.scale(sc, sc);
 			m.translate(targetPoint.x, targetPoint.y);
 			
-			TweenLite.to(grid, duration, { a: m.a, b: m.b, c: m.c, d: m.d, tx: m.tx, ty: m.ty, onComplete: panAndZoomComplete }); 
+			tweenToMatrix(m, duration); 
         }
         
         /** EXPERIMENTAL! */
@@ -149,25 +167,14 @@ package com.modestmaps
 			
 			var p:Point = grid.coordinatePoint(coord, grid);
 			
-			grid.prepareForZooming();
-			grid.prepareForPanning();
-			
 			var m:Matrix = grid.getMatrix();
 			
 			m.translate(-p.x, -p.y);
 			m.scale(sc, sc);
 			m.translate(mapWidth/2, mapHeight/2);
 			
-			TweenLite.to(grid, duration, { a: m.a, b: m.b, c: m.c, d: m.d, tx: m.tx, ty: m.ty, onComplete: panAndZoomComplete, ease: panEase });
+			tweenToMatrix(m, duration); 
         }
-
-		/** call grid.donePanning() and grid.doneZooming(), used by tweenExtent, 
-		 *  panAndZoomBy and zoomByAbout as a TweenLite onComplete function */
-		protected function panAndZoomComplete():void
-		{
-			grid.donePanning();
-			grid.doneZooming();
-		}
 
 	   /**
 		 * Put the given location in the middle of the map, animated in panDuration using panEase.
