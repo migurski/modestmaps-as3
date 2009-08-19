@@ -1,4 +1,4 @@
-package com.modestmaps.core.grid
+package com.modestmaps.core.painter
 {
 	import com.modestmaps.core.Coordinate;
 	import com.modestmaps.core.Tile;
@@ -163,6 +163,12 @@ package com.modestmaps.core.grid
 		public function reset():void
 		{
 			for each (var loader:Loader in openRequests) {
+				var tile:Tile = loaderTiles[loader] as Tile;
+				loaderTiles[loader] = null;
+				delete loaderTiles[loader];
+				if (!tileCache.containsKey(tile.name)) {
+					tilePool.returnTile(tile);
+				}
 				try {
 					// la la I can't hear you
 					loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onLoadEnd);

@@ -1,4 +1,4 @@
-package com.modestmaps.core.grid
+package com.modestmaps.core.painter
 {
 	import com.modestmaps.core.Tile;
 	

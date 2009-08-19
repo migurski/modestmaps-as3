@@ -1,6 +1,6 @@
 package com.modestmaps.core 
 {
-	import com.modestmaps.core.grid.TilePainter;
+	import com.modestmaps.core.painter.TilePainter;
 	import com.modestmaps.events.MapEvent;
 	import com.modestmaps.mapproviders.IMapProvider;
 	
@@ -948,6 +948,7 @@ package com.modestmaps.core
 
 			return screenPoint; 
 		}
+		
 		public function pointCoordinate(point:Point, context:DisplayObject=null):Coordinate
 		{			
 			if (context && context != this)
@@ -1130,8 +1131,7 @@ package com.modestmaps.core
 		protected function clearEverything():void
 		{
 			while (well.numChildren > 0) {			
-				var tile:Tile = well.removeChildAt(0) as Tile;
-				tilePainter.cancelPainting(tile);
+				well.removeChildAt(0);
 			}
 
 			tilePainter.reset();
