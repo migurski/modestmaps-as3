@@ -44,7 +44,7 @@ package com.modestmaps.core.grid
 		protected var queueTimer:Timer;
 	
 		protected static const DEFAULT_CACHE_LOADERS:Boolean = false;  // !!! only enable this if you have crossdomain permissions to access Loader content
-		protected static const DEFAULT_SMOOTH_CONTENT:Boolean = true; // !!! only enable this if you have crossdomain permissions to access Loader content
+		protected static const DEFAULT_SMOOTH_CONTENT:Boolean = false; // !!! only enable this if you have crossdomain permissions to access Loader content
 		protected static const DEFAULT_MAX_LOADER_CACHE_SIZE:int = 0; // !!! suggest 256 or so
 	
 		/** set this to true to enable bitmap smoothing on tiles - requires crossdomain.xml permissions so won't work online with most providers */
