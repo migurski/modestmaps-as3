@@ -1,25 +1,22 @@
 package com.modestmaps.core 
 {
 	import com.modestmaps.core.grid.TileCache;
+	import com.modestmaps.core.grid.TilePainter;
 	import com.modestmaps.core.grid.TilePool;
-	import com.modestmaps.core.grid.TileQueue;
 	import com.modestmaps.events.MapEvent;
 	import com.modestmaps.mapproviders.IMapProvider;
 	
 	import flash.display.DisplayObject;
-	import flash.display.Loader;
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.events.IOErrorEvent;
 	import flash.events.MouseEvent;
-	import flash.events.TimerEvent;
+	import flash.events.ProgressEvent;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.system.System;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
-	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
 
 	public class TileGrid extends Sprite
@@ -180,6 +177,9 @@ package com.modestmaps.core
 			// don't call set map provider here, because it triggers a redraw and we're not ready for that
 			//this.provider = provider;
 			this.tilePainter = new TilePainter(this, provider, queueFunction);
+			tilePainter.addEventListener(ProgressEvent.PROGRESS, onProgress);
+			tilePainter.addEventListener(MapEvent.ALL_TILES_LOADED, onAllTilesLoaded);
+			tilePainter.addEventListener(MapEvent.BEGIN_TILE_LOADING, onBeginTileLoading);
 			
 			this.limits = provider.outerLimits();
 			
@@ -347,23 +347,20 @@ package com.modestmaps.core
 			dispatchEvent(new Event(Event.CHANGE, false, false));			
 		}
 		
-		protected function onBeginTileLoading():void
+		protected function onBeginTileLoading(event:MapEvent):void
 		{
-			// FIXME: relay events from tilePainter
-			dispatchEvent(new MapEvent(MapEvent.BEGIN_TILE_LOADING));			
+			dispatchEvent(event);			
 		}
 		
-		protected function onProgress():void
+		protected function onProgress(event:ProgressEvent):void
 		{
 		    // dispatch tile load progress
-		    // FIXME: relay events from tilePainter
-		    //dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS, false, false, previousOpenRequests - openRequests.length, previousOpenRequests));			
+			dispatchEvent(event);			
 		}
 		
-		protected function onAllTilesLoaded():void
+		protected function onAllTilesLoaded(event:MapEvent):void
 		{
-			// FIXME: relay events from tilePainter
-			dispatchEvent(new MapEvent(MapEvent.ALL_TILES_LOADED));
+			dispatchEvent(event);
 			// request redraw to take parent and child tiles off the stage if we haven't already
 			dirty = true;			
 		}
@@ -1398,337 +1395,4 @@ package com.modestmaps.core
 								
 	}
 	
-}
-
-import com.modestmaps.core.Tile;
-import flash.utils.Dictionary;
-import com.modestmaps.Map;
-import com.modestmaps.mapproviders.IMapProvider;
-import com.modestmaps.core.Coordinate;
-import flash.events.TimerEvent;
-import flash.utils.Timer;
-import flash.events.IOErrorEvent;
-import flash.display.LoaderInfo;
-import flash.display.Loader;
-import flash.events.Event;
-import flash.display.Bitmap;
-import flash.net.URLRequest;
-import flash.system.LoaderContext;
-import com.modestmaps.core.TileGrid;
-import com.modestmaps.core.grid.TilePool;
-import com.modestmaps.core.grid.TileQueue;
-import com.modestmaps.events.MapEvent;
-import flash.events.EventDispatcher;
-import flash.events.ProgressEvent;	
-
-class TilePainter extends EventDispatcher
-{
-	protected var provider:IMapProvider;
-
-	protected var tileGrid:TileGrid;
-
-	protected var tileQueue:TileQueue;
-
-	protected var queueFunction:Function;
-
-	// per-tile, the array of images we're going to load, which can be empty
-	// TODO: document this in IMapProvider, so that provider implementers know
-	// they are free to check the bounds of their overlays and don't have to serve
-	// millions of 404s
-	protected var layersNeeded:Object = {};
-
-	// open requests
-	protected var openRequests:Array = [];
-
-	// keeping track for dispatching MapEvent.ALL_TILES_LOADED and MapEvent.BEGIN_TILE_LOADING
-	protected var previousOpenRequests:int = 0;
-
-	protected var queueTimer:Timer;
-
-	protected static const DEFAULT_CACHE_LOADERS:Boolean = false;  // !!! only enable this if you have crossdomain permissions to access Loader content
-	protected static const DEFAULT_SMOOTH_CONTENT:Boolean = false; // !!! only enable this if you have crossdomain permissions to access Loader content
-	protected static const DEFAULT_MAX_LOADER_CACHE_SIZE:int = 0; // !!! suggest 256 or so
-
-	/** set this to true to enable bitmap smoothing on tiles - requires crossdomain.xml permissions so won't work online with most providers */
-	public var smoothContent:Boolean = DEFAULT_SMOOTH_CONTENT;
-	
-	/** with tile providers that you have crossdomain.xml support for, 
-	 *  it's possible to avoid extra requests by reusing bitmapdata. enable cacheLoaders to try and do that */
-	public static var cacheLoaders:Boolean = DEFAULT_CACHE_LOADERS;
-	public static var maxLoaderCacheSize:int = DEFAULT_MAX_LOADER_CACHE_SIZE;
-	protected static var loaderCache:Object = {};
-	protected static var cachedUrls:Array = [];
-
-	protected static const DEFAULT_MAX_OPEN_REQUESTS:int = 4; // TODO: should this be split into max-new-requests-per-frame, too?
-
-	protected var loaderTiles:Dictionary = new Dictionary(true);
-
-	// how many Loaders are allowed to be open at once?
-	public var maxOpenRequests:int = DEFAULT_MAX_OPEN_REQUESTS;
-	
-	public function TilePainter(tileGrid:TileGrid, provider:IMapProvider, queueFunction:Function)
-	{
-		super(null);
-		
-		this.tileGrid = tileGrid;
-		this.provider = provider;
-		this.queueFunction = queueFunction;
-
-		this.tileQueue = new TileQueue();
-
-		queueTimer = new Timer(200);
-		queueTimer.addEventListener(TimerEvent.TIMER, processQueue);		
-		
-		// TODO: this used to be called onAddedToStage, is this bad?
-		queueTimer.start();
-	}
-	
-	public function setMapProvider(provider:IMapProvider):void
-	{
-		this.provider = provider;
-		// TODO: clear various things, no doubt?		
-	}
-	
-	public function paintTile(tile:Tile, coord:Coordinate):void
-	{
-		var urls:Array = provider.getTileUrls(coord);
-		if (urls && urls.length > 0) {
-			// keep a local copy of the URLs so we don't have to call this twice:
-			layersNeeded[tile.name] = urls;
-			if (tile.numChildren > 0) {
-				throw new Error("really, WTF?");
-			}
-			tileQueue.push(tile);
-		}
-		else {
-			// trace("no urls needed for that tile", tempCoord);
-			tile.show();
-		}
-	}
-
-	public function isPainted(tile:Tile):Boolean
-	{
-		return !layersNeeded[tile.name];		
-	}
-	
-	public function cancelPainting(tile:Tile):void
-	{
-		delete layersNeeded[tile.name];
-		if (tileQueue.contains(tile)) {
-			tileQueue.remove(tile);
-		}
-		for (var i:int = openRequests.length - 1; i >= 0; i--) {
-			var loader:Loader = openRequests[i] as Loader;
-			if (loader.name == tile.name) {
-				loaderTiles[loader] = null;
-				delete loaderTiles[loader];
-			}
-		}		
-	}
-	
-	public function isPainting(tile:Tile):Boolean
-	{
-		return layersNeeded[tile.name] == null;		
-	}
-
-	public function reset():void
-	{
-		for each (var loader:Loader in openRequests) {
-			try {
-				// la la I can't hear you
-				loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onLoadEnd);
-				loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onLoadError);
-				loader.close();
-			}
-			catch (error:Error) {
-				// close often doesn't work, no biggie
-			}
-		}
-		openRequests = [];
-		
-		for (var key:String in layersNeeded) {
-			delete layersNeeded[key];
-		}
-		layersNeeded = {};
-		
-		tileQueue.clear();		
-	}
-
-	private function loadNextURLForTile(tile:Tile):void
-	{
-		// TODO: add urls to Tile?
-		var urls:Array = layersNeeded[tile.name] as Array;
-		if (urls && urls.length > 0) {
-			if (tile.numChildren > 0) {
-				throw new Error("that's not right");
-			}							
-			var url:* = urls.shift();
-			if (cacheLoaders && (url is String) && loaderCache[url]) {
-				var original:Bitmap = loaderCache[url] as Bitmap;
-				var bitmap:Bitmap = new Bitmap(original.bitmapData); 
-				tile.addChild(bitmap);
-				loadNextURLForTile(tile);
-			}
-			else {
-				//trace("requesting", url);
-				var tileLoader:Loader = new Loader();
-				loaderTiles[tileLoader] = tile;
-				tileLoader.name = tile.name;
-				try {
-					if (cacheLoaders || smoothContent) {
-						// check crossdomain permissions on tiles if we plan to access their bitmap content
-						tileLoader.load((url is URLRequest) ? url : new URLRequest(url), new LoaderContext(true));
-					}
-					else {
-						tileLoader.load((url is URLRequest) ? url : new URLRequest(url));
-					}
-					tileLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoadEnd, false, 0, true);
-					tileLoader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onLoadError, false, 0, true);
-					openRequests.push(tileLoader);
-				}
-				catch(error:Error) {
-					tile.paintError();
-				}
-			}
-		}
-		else if (urls && urls.length == 0) {
-			tileGrid.tilePainted(tile, true);
-			delete layersNeeded[tile.name];
-		}			
-	}	
-	
-	public function getRequestCount():int
-	{
-		return openRequests.length;
-	}
-
-	/** called by the onEnterFrame handler to manage the tileQueue
-	 *  usual operation is extremely quick, ~1ms or so */
-	private function processQueue(event:TimerEvent=null):void
-	{
-		if (openRequests.length < maxOpenRequests && tileQueue.length > 0) {
-
-			// prune queue for tiles that aren't visible
-			var removedTiles:Array = tileQueue.retainAll(tileGrid.getVisibleTiles());
-			
-			// keep layersNeeded tidy:
-			for each (var removedTile:Tile in removedTiles) {
-				this.cancelPainting(removedTile);
-			}
-			
-			// note that queue is not the same as visible tiles, because things 
-			// that have already been loaded are also in visible tiles. if we
-			// reuse visible tiles for the queue we'll be loading the same things over and over
-
-			// sort queue by distance from 'center'
-			tileQueue.sortTiles(queueFunction);
-
-			// process the queue
-			while (openRequests.length < maxOpenRequests && tileQueue.length > 0) {
-				var tile:Tile = tileQueue.shift();
-				// if it's still on the stage:
-				if (tile.parent) {
-					loadNextURLForTile(tile);
-				}
-			}
-		}
-
-		// you might want to wait for tiles to load before displaying other data, interface elements, etc.
-		// these events take care of that for you...
-		if (previousOpenRequests == 0 && openRequests.length > 0) {
-			dispatchEvent(new MapEvent(MapEvent.BEGIN_TILE_LOADING));
-		}
-		else if (previousOpenRequests > 0)
-		{
-			// TODO: a custom event for load progress rather than overloading bytesloaded?
-			dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS, false, false, previousOpenRequests - openRequests.length, previousOpenRequests))
-
-		    // if we're finished...
-		    if (openRequests.length == 0)
-		    {
-		    	dispatchEvent(new MapEvent(MapEvent.ALL_TILES_LOADED));
-			}
-		}
-		
-		previousOpenRequests = openRequests.length;
-	}
-
-	private function onLoadEnd(event:Event):void
-	{
-		var loader:Loader = (event.target as LoaderInfo).loader;
-		
-		if (cacheLoaders && !loaderCache[loader.contentLoaderInfo.url]) {
-			//trace('caching content for', loader.contentLoaderInfo.url);
-			try {
-				var content:Bitmap = loader.content as Bitmap;
-				loaderCache[loader.contentLoaderInfo.url] = content;
-				cachedUrls.push(loader.contentLoaderInfo.url);
-				if (cachedUrls.length > maxLoaderCacheSize) {
-					delete loaderCache[cachedUrls.shift()];
-				}
-			}
-			catch (error:Error) {
-				// ???
-			}
-		}
-		
-		if (smoothContent) {
-			try {
-				var smoothContent:Bitmap = loader.content as Bitmap;
-				smoothContent.smoothing = true;
-			}
-			catch (error:Error) {
-				// ???
-			}
-		}			
-
-		// tidy up the request monitor
-		var index:int = openRequests.indexOf(loader);
-		if (index >= 0) {
-			openRequests.splice(index,1);
-		}
-		
-		var tile:Tile = loaderTiles[loader] as Tile;
-		if (tile) { 
-			if (tile.numChildren > 0) {
-				throw new Error("holy broken algorithm batman");
-			}
-			tile.addChild(loader);
-			loadNextURLForTile(tile);
-		}
-		else {
-			// we've loaded an image, but its parent tile has been removed
-			// so we'll have to throw it away
-		}
-		
-		loaderTiles[loader] = null;
-		delete loaderTiles[loader];
-	}
-
-	private function onLoadError(event:IOErrorEvent):void
-	{
-		var loaderInfo:LoaderInfo = event.target as LoaderInfo;
-		for (var i:int = openRequests.length-1; i >= 0; i--) {
-			var loader:Loader = openRequests[i] as Loader;
-			if (loader.contentLoaderInfo == loaderInfo) {
-				openRequests.splice(i,1);
-				delete layersNeeded[loader.name];
-				var tile:Tile = loaderTiles[loader] as Tile;
-				tile.paintError(provider.tileWidth, provider.tileHeight);
-				tileGrid.tilePainted(tile, false);
-				loaderTiles[loader] = null;
-				delete loaderTiles[loader];				
-			}
-		}
-	}
-	
-	public function getLoaderCacheCount():int
-	{
-		return cachedUrls.length;		
-	}			
-	
-	public function getQueueCount():int
-	{
-		return tileQueue.length;
-	}
 }
