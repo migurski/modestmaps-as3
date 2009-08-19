@@ -58,6 +58,7 @@ package com.modestmaps.mapproviders
         public function getTileUrls(coord:Coordinate):Array
         {
         	var worldSize:int = Math.pow(2, coord.zoom);
+        	// FIXME: check this for lat-lon projection, it's probably wrong
             if (coord.row < 0 || coord.row >= worldSize) {
             	return [];
             }
@@ -69,7 +70,7 @@ package com.modestmaps.mapproviders
             var boundingBox:String;
 
             if (wmsParams['SRS'] == EPSG_4326) {
-            	// lat-lon is easy
+            	// lat-lon is easy?
 	            var bottomLeftLocation:Location = coordinateLocation(bottomLeftCoord);
     	        var topRightLocation:Location = coordinateLocation(topRightCoord);
         	    boundingBox = '&BBOX=' + [ bottomLeftLocation.lon.toFixed(5), 
