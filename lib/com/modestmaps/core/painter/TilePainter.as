@@ -19,55 +19,53 @@ package com.modestmaps.core.painter
 	import flash.utils.Dictionary;
 	import flash.utils.Timer;
 	
-	public class TilePainter extends EventDispatcher
+	public class TilePainter extends EventDispatcher implements ITilePainter
 	{
-		protected var provider:IMapProvider;
-	
-		protected var tileGrid:TileGrid;
-	
-		protected var tileQueue:TileQueue;
+		protected static const DEFAULT_CACHE_LOADERS:Boolean = false;  // !!! only enable this if you have crossdomain permissions to access Loader content
+		protected static const DEFAULT_SMOOTH_CONTENT:Boolean = false; // !!! only enable this if you have crossdomain permissions to access Loader content
+		protected static const DEFAULT_MAX_LOADER_CACHE_SIZE:int = 0;  // !!! suggest 256 or so
+		protected static const DEFAULT_MAX_OPEN_REQUESTS:int = 4;      // TODO: should this be split into max-new-requests-per-frame, too?
 
-		protected var tileCache:TileCache;
+		///////////// BEGIN OPTIONS
+
+		/** set this to true to enable bitmap smoothing on tiles - requires crossdomain.xml permissions so won't work online with most providers */
+		public static var smoothContent:Boolean = DEFAULT_SMOOTH_CONTENT;
 		
+		/** how many Loaders are allowed to be open at once? */
+		public static var maxOpenRequests:int = DEFAULT_MAX_OPEN_REQUESTS;
+		
+		/** with tile providers that you have crossdomain.xml support for, 
+		 *  it's possible to avoid extra requests by reusing bitmapdata. enable cacheLoaders to try and do that */
+		public static var cacheLoaders:Boolean = DEFAULT_CACHE_LOADERS;
+		public static var maxLoaderCacheSize:int = DEFAULT_MAX_LOADER_CACHE_SIZE;
+		
+		///////////// END OPTIONS
+	
+		protected var provider:IMapProvider;	
+		protected var tileGrid:TileGrid;
+		protected var tileQueue:TileQueue;
+		protected var tileCache:TileCache;
 		protected var tilePool:TilePool;		
-	
 		protected var queueFunction:Function;
-	
+		protected var queueTimer:Timer;
+
 		// per-tile, the array of images we're going to load, which can be empty
 		// TODO: document this in IMapProvider, so that provider implementers know
 		// they are free to check the bounds of their overlays and don't have to serve
 		// millions of 404s
 		protected var layersNeeded:Object = {};
+		protected var loaderTiles:Dictionary = new Dictionary(true);
 	
 		// open requests
 		protected var openRequests:Array = [];
 	
 		// keeping track for dispatching MapEvent.ALL_TILES_LOADED and MapEvent.BEGIN_TILE_LOADING
 		protected var previousOpenRequests:int = 0;
-	
-		protected var queueTimer:Timer;
-	
-		protected static const DEFAULT_CACHE_LOADERS:Boolean = false;  // !!! only enable this if you have crossdomain permissions to access Loader content
-		protected static const DEFAULT_SMOOTH_CONTENT:Boolean = false; // !!! only enable this if you have crossdomain permissions to access Loader content
-		protected static const DEFAULT_MAX_LOADER_CACHE_SIZE:int = 0; // !!! suggest 256 or so
-	
-		/** set this to true to enable bitmap smoothing on tiles - requires crossdomain.xml permissions so won't work online with most providers */
-		public var smoothContent:Boolean = DEFAULT_SMOOTH_CONTENT;
-		
-		/** with tile providers that you have crossdomain.xml support for, 
-		 *  it's possible to avoid extra requests by reusing bitmapdata. enable cacheLoaders to try and do that */
-		public static var cacheLoaders:Boolean = DEFAULT_CACHE_LOADERS;
-		public static var maxLoaderCacheSize:int = DEFAULT_MAX_LOADER_CACHE_SIZE;
+
+		// loader cache is shared across map instances, hence this is static for the time being	
 		protected static var loaderCache:Object = {};
 		protected static var cachedUrls:Array = [];
-	
-		protected static const DEFAULT_MAX_OPEN_REQUESTS:int = 4; // TODO: should this be split into max-new-requests-per-frame, too?
-	
-		protected var loaderTiles:Dictionary = new Dictionary(true);
-	
-		// how many Loaders are allowed to be open at once?
-		public var maxOpenRequests:int = DEFAULT_MAX_OPEN_REQUESTS;
-		
+
 		public function TilePainter(tileGrid:TileGrid, provider:IMapProvider, queueFunction:Function)
 		{
 			super(null);
@@ -76,11 +74,12 @@ package com.modestmaps.core.painter
 			this.provider = provider;
 			this.queueFunction = queueFunction;
 	
+			// TODO: pass all these into the constructor so they can be shared, swapped out or overridden
 			this.tileQueue = new TileQueue();
 			this.tilePool = new TilePool(Tile);
 			this.tileCache = new TileCache(tilePool);
-	
 			queueTimer = new Timer(200);
+	
 			queueTimer.addEventListener(TimerEvent.TIMER, processQueue);		
 			
 			// TODO: this used to be called onAddedToStage, is this bad?

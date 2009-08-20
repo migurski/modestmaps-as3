@@ -1,8 +1,10 @@
 package com.modestmaps.core 
 {
+	import com.modestmaps.core.painter.ITilePainter;
 	import com.modestmaps.core.painter.TilePainter;
 	import com.modestmaps.events.MapEvent;
 	import com.modestmaps.mapproviders.IMapProvider;
+	import com.modestmaps.mapproviders.google.GoogleMapProvider;
 	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
@@ -12,9 +14,7 @@ package com.modestmaps.core
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import flash.system.System;
 	import flash.text.TextField;
-	import flash.text.TextFormat;
 	import flash.utils.getTimer;
 
 	public class TileGrid extends Sprite
@@ -100,7 +100,7 @@ package com.modestmaps.core
 		protected var well:Sprite;
 
 		//protected var provider:IMapProvider;
-		protected var tilePainter:TilePainter;
+		protected var tilePainter:ITilePainter;
 
 		// coordinate bounds derived from IMapProviders
 		protected var limits:Array;
@@ -115,12 +115,8 @@ package com.modestmaps.core
 		protected var blankCount:int = 0;
 
 		// a textfield with lots of stats
-		public var debugField:TextField;
+		public var debugField:DebugField;
 		
-		// for stats:
-		protected var lastFrameTime:Number;
-		protected var fps:Number = 30;
-
 		// what zoom level of tiles is 'correct'?
 		protected var _currentTileZoom:int; 
 		// so we know if we're going in or out
@@ -159,21 +155,19 @@ package com.modestmaps.core
 			//this.map = map;
 			this.draggable = draggable;
 
-			// FIXME: this should probably be better specified
-			var queueFunction:Function;
-			if (maxParentLoad == 0) {
-				queueFunction = centerDistanceCompare;
-			}
-			else {
-				queueFunction = zoomThenCenterCompare;					
-			}
-
 			// don't call set map provider here, because it triggers a redraw and we're not ready for that
 			//this.provider = provider;
-			this.tilePainter = new TilePainter(this, provider, queueFunction);
-			tilePainter.addEventListener(ProgressEvent.PROGRESS, onProgress);
-			tilePainter.addEventListener(MapEvent.ALL_TILES_LOADED, onAllTilesLoaded);
-			tilePainter.addEventListener(MapEvent.BEGIN_TILE_LOADING, onBeginTileLoading);
+			
+			if (provider is GoogleMapProvider) {
+				this.tilePainter = GoogleMapProvider(provider).getTilePainter();
+				GoogleMapProvider(provider).addEventListener(Event.CHANGE, clearEverything);
+			}
+			else {
+				this.tilePainter = new TilePainter(this, provider, maxParentLoad == 0 ? centerDistanceCompare : zoomThenCenterCompare);
+			}
+			tilePainter.addEventListener(ProgressEvent.PROGRESS, onProgress, false, 0, true);
+			tilePainter.addEventListener(MapEvent.ALL_TILES_LOADED, onAllTilesLoaded, false, 0, true);
+			tilePainter.addEventListener(MapEvent.BEGIN_TILE_LOADING, onBeginTileLoading, false, 0, true);
 			
 			this.limits = provider.outerLimits();
 			
@@ -187,20 +181,9 @@ package com.modestmaps.core
 			this.mapWidth = w;
 			this.mapHeight = h;
 
-			debugField = new TextField();
-			debugField.defaultTextFormat = new TextFormat(null, 12, 0x000000, false);
-			debugField.backgroundColor = 0xffffff;
-			debugField.background = true;
-			debugField.text = "messages";
+			debugField = new DebugField();
 			debugField.x = mapWidth - debugField.width - 15; 
 			debugField.y = mapHeight - debugField.height - 15;
- 			debugField.name = 'text';
- 			debugField.mouseEnabled = false;
- 			debugField.selectable = false;
- 			debugField.multiline = true;
- 			debugField.wordWrap = false;
-			
-			lastFrameTime = getTimer();
 			
 			well = new Sprite();
 			well.name = 'well';
@@ -211,8 +194,7 @@ package com.modestmaps.core
 
 			worldMatrix = new Matrix();
 			
-			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-			
+			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);			
 		}
 		
 		/**
@@ -270,38 +252,7 @@ package com.modestmaps.core
 		protected function onEnterFrame(event:Event=null):void
 		{
 			if (debugField.parent) {
-				// for stats...
-				var frameDuration:Number = getTimer() - lastFrameTime;
-				
-				lastFrameTime = getTimer();
-				
-				fps = (0.9 * fps) + (0.1 * (1000.0/frameDuration));
-	
-	 			// report stats:
- 				var tileChildren:int = 0;
-				for (var i:int = 0; i < well.numChildren; i++) {
-					tileChildren += Tile(well.getChildAt(i)).numChildren;
-				}  
-/* 				debugField.text = "fps: " + fps.toFixed(0)
-						+ "\nmemory: " + (System.totalMemory/1048576).toFixed(1) + "MB"; */
- 
-				debugField.text = "tx: " + tx.toFixed(3)
-						+ "\nty: " + tx.toFixed(3)
-						+ "\nsc: " + scale.toFixed(4)
-						+ "\nfps: " + fps.toFixed(0)
-						+ "\ncurrent child count: " + well.numChildren
-						+ "\ncurrent child of tile count: " + tileChildren
-						+ "\nvisible tile count: " + visibleTiles.length
-						+ "\nqueue length: " + tilePainter.getQueueCount()
-						+ "\nblank count: " + blankCount
-						+ "\nrequests: " + tilePainter.getRequestCount()
-						+ "\nfinished (cached) tiles: " + tilePainter.getCacheSize()
-						+ "\nrecently used tiles: " + recentlySeen.length
-						+ "\ncachedLoaders: " + tilePainter.getLoaderCacheCount()
-						+ "\ntiles created: " + Tile.count
-						+ "\nmemory: " + (System.totalMemory/1048576).toFixed(1) + "MB"; 
-				debugField.width = debugField.textWidth+8;
-				debugField.height = debugField.textHeight+4;
+				debugField.update(this, blankCount, recentlySeen.length, tilePainter);
 				debugField.x = mapWidth - debugField.width - 15; 
 				debugField.y = mapHeight - debugField.height - 15;
 			}
@@ -1115,7 +1066,17 @@ package com.modestmaps.core
 		
 		public function setMapProvider(provider:IMapProvider):void
 		{
-			tilePainter.setMapProvider(provider);
+			if (provider is GoogleMapProvider) {
+				this.tilePainter = GoogleMapProvider(provider).getTilePainter();
+				GoogleMapProvider(provider).addEventListener(Event.CHANGE, clearEverything);
+			}
+			else {
+				this.tilePainter = new TilePainter(this, provider, maxParentLoad == 0 ? centerDistanceCompare : zoomThenCenterCompare);
+			}
+			
+			tilePainter.addEventListener(ProgressEvent.PROGRESS, onProgress, false, 0, true);
+			tilePainter.addEventListener(MapEvent.ALL_TILES_LOADED, onAllTilesLoaded, false, 0, true);
+			tilePainter.addEventListener(MapEvent.BEGIN_TILE_LOADING, onBeginTileLoading, false, 0, true);
 
 			// TODO: set limits independently of provider
 			this.limits = provider.outerLimits();
@@ -1128,7 +1089,7 @@ package com.modestmaps.core
 			clearEverything();
 		}
 		
-		protected function clearEverything():void
+		protected function clearEverything(event:Event=null):void
 		{
 			while (well.numChildren > 0) {			
 				well.removeChildAt(0);
@@ -1360,4 +1321,72 @@ package com.modestmaps.core
 								
 	}
 	
+}
+
+import flash.text.TextField;
+import com.modestmaps.core.TileGrid;
+import com.modestmaps.core.Tile;
+import flash.text.TextFormat;
+import flash.utils.getTimer;
+import flash.display.Sprite;
+import flash.system.System;
+import com.modestmaps.core.painter.TilePainter;
+import com.modestmaps.core.painter.ITilePainter;	
+
+class DebugField extends TextField
+{
+	// for stats:
+	protected var lastFrameTime:Number;
+	protected var fps:Number = 30;	
+
+	public function DebugField():void
+	{
+		defaultTextFormat = new TextFormat(null, 12, 0x000000, false);
+		backgroundColor = 0xffffff;
+		background = true;
+		text = "messages";
+ 		name = 'debugField';
+ 		mouseEnabled = false;
+ 		selectable = false;
+ 		multiline = true;
+ 		wordWrap = false;
+		
+		lastFrameTime = getTimer();		
+	}
+	
+	public function update(grid:TileGrid, blankCount:int, recentCount:int, tilePainter:ITilePainter):void
+	{
+		// for stats...
+		var frameDuration:Number = getTimer() - lastFrameTime;
+		
+		lastFrameTime = getTimer();
+		
+		fps = (0.9 * fps) + (0.1 * (1000.0/frameDuration));
+
+		var well:Sprite = grid.getChildByName('well') as Sprite;
+
+ 		// report stats:
+ 		var tileChildren:int = 0;
+		for (var i:int = 0; i < well.numChildren; i++) {
+			tileChildren += Tile(well.getChildAt(i)).numChildren;
+		}
+		  
+		this.text = "tx: " + grid.tx.toFixed(3)
+				+ "\nty: " + grid.ty.toFixed(3)
+				+ "\nsc: " + grid.scale.toFixed(4)
+				+ "\nfps: " + fps.toFixed(0)
+				+ "\ncurrent child count: " + well.numChildren
+				+ "\ncurrent child of tile count: " + tileChildren
+				+ "\nvisible tile count: " + grid.getVisibleTiles().length
+				+ "\nblank count: " + blankCount
+				+ "\nrecently used tiles: " + recentCount
+				+ "\ntiles created: " + Tile.count
+				+ "\nqueue length: " + tilePainter.getQueueCount()
+				+ "\nrequests: " + tilePainter.getRequestCount()
+				+ "\nfinished (cached) tiles: " + tilePainter.getCacheSize()
+				+ "\ncachedLoaders: " + tilePainter.getLoaderCacheCount()
+				+ "\nmemory: " + (System.totalMemory/1048576).toFixed(1) + "MB"; 
+		width = textWidth+8;
+		height = textHeight+4;
+	}	
 }
