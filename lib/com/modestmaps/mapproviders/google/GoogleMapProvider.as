@@ -15,7 +15,7 @@ package com.modestmaps.mapproviders.google
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 
-	public class GoogleMapProvider extends AbstractMapProvider implements IEventDispatcher, IMapProvider
+	public class GoogleMapProvider extends AbstractMapProvider implements IEventDispatcher, IMapProvider, ITilePainterOverride
 	{
 		public static const ROAD:String = 'road';
 		public static const AERIAL:String = 'aerial';

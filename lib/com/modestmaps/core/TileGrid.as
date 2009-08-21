@@ -1,10 +1,10 @@
 package com.modestmaps.core 
 {
 	import com.modestmaps.core.painter.ITilePainter;
+	import com.modestmaps.core.painter.ITilePainterOverride;
 	import com.modestmaps.core.painter.TilePainter;
 	import com.modestmaps.events.MapEvent;
 	import com.modestmaps.mapproviders.IMapProvider;
-	import com.modestmaps.mapproviders.google.GoogleMapProvider;
 	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
@@ -158,9 +158,9 @@ package com.modestmaps.core
 			// don't call set map provider here, because it triggers a redraw and we're not ready for that
 			//this.provider = provider;
 			
-			if (provider is GoogleMapProvider) {
-				this.tilePainter = GoogleMapProvider(provider).getTilePainter();
-				GoogleMapProvider(provider).addEventListener(Event.CHANGE, clearEverything);
+			if (provider is ITilePainterOverride) {
+				this.tilePainter = ITilePainterOverride(provider).getTilePainter();
+				ITilePainterOverride(provider).addEventListener(Event.CHANGE, clearEverything);
 			}
 			else {
 				this.tilePainter = new TilePainter(this, provider, maxParentLoad == 0 ? centerDistanceCompare : zoomThenCenterCompare);
@@ -1066,9 +1066,9 @@ package com.modestmaps.core
 		
 		public function setMapProvider(provider:IMapProvider):void
 		{
-			if (provider is GoogleMapProvider) {
-				this.tilePainter = GoogleMapProvider(provider).getTilePainter();
-				GoogleMapProvider(provider).addEventListener(Event.CHANGE, clearEverything);
+			if (provider is ITilePainterOverride) {
+				this.tilePainter = ITilePainterOverride(provider).getTilePainter();
+				ITilePainterOverride(provider).addEventListener(Event.CHANGE, clearEverything);
 			}
 			else {
 				this.tilePainter = new TilePainter(this, provider, maxParentLoad == 0 ? centerDistanceCompare : zoomThenCenterCompare);

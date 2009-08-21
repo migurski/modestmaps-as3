@@ -1,7 +1,5 @@
 package com.modestmaps.core.painter
 {
-	import com.google.maps.Map;
-	import com.google.maps.interfaces.ITileLayer;
 	import com.modestmaps.core.Coordinate;
 	import com.modestmaps.core.Tile;
 	import com.modestmaps.core.TweenTile;
@@ -18,12 +16,12 @@ package com.modestmaps.core.painter
 
 	public class GoogleTilePainter extends EventDispatcher implements ITilePainter
 	{
-		private var googleMap:Map;
+		private var googleMap:*;
 		private var tileClass:Class;
 		private var timer:Timer;
 		private var cache:Dictionary = new Dictionary();
 		
-		public function GoogleTilePainter(googleMap:Map)
+		public function GoogleTilePainter(googleMap:*)
 		{
 			super(null);
 			this.googleMap = googleMap;
@@ -81,7 +79,7 @@ package com.modestmaps.core.painter
 				}
 				coord.column %= Math.pow(2,coord.zoom);
 				var layers:Array = googleMap.getCurrentMapType().getTileLayers();
-				var tileLayer:ITileLayer = layers[0];
+				var tileLayer:* = layers[0];
 				var tileImage:DisplayObject = tileLayer.loadTile(new Point(coord.column, coord.row), coord.zoom);
 				tile.addChild(tileImage);
 				tile.hide();
