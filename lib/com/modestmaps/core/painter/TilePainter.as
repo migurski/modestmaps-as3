@@ -340,10 +340,12 @@ package com.modestmaps.core.painter
 					openRequests.splice(i,1);
 					delete layersNeeded[loader.name];
 					var tile:Tile = loaderTiles[loader] as Tile;
-					tile.paintError(provider.tileWidth, provider.tileHeight);
-					tileGrid.tilePainted(tile);
-					loaderTiles[loader] = null;
-					delete loaderTiles[loader];				
+					if (tile) {
+						tile.paintError(provider.tileWidth, provider.tileHeight);
+						tileGrid.tilePainted(tile);
+						loaderTiles[loader] = null;
+						delete loaderTiles[loader];
+					}				
 				}
 			}
 		}
