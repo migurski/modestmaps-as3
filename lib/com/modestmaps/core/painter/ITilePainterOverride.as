@@ -1,8 +1,6 @@
 package com.modestmaps.core.painter
 {
-	import flash.events.IEventDispatcher;
-	
-	public interface ITilePainterOverride extends IEventDispatcher
+	public interface ITilePainterOverride
 	{
 		function getTilePainter():ITilePainter;
 	}

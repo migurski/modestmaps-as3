@@ -160,7 +160,6 @@ package com.modestmaps.core
 			
 			if (provider is ITilePainterOverride) {
 				this.tilePainter = ITilePainterOverride(provider).getTilePainter();
-				ITilePainterOverride(provider).addEventListener(Event.CHANGE, clearEverything);
 			}
 			else {
 				this.tilePainter = new TilePainter(this, provider, maxParentLoad == 0 ? centerDistanceCompare : zoomThenCenterCompare);
@@ -180,6 +179,7 @@ package com.modestmaps.core
 			
 			this.mapWidth = w;
 			this.mapHeight = h;
+			scrollRect = new Rectangle(0, 0, mapWidth, mapHeight);
 
 			debugField = new DebugField();
 			debugField.x = mapWidth - debugField.width - 15; 
@@ -1068,7 +1068,6 @@ package com.modestmaps.core
 		{
 			if (provider is ITilePainterOverride) {
 				this.tilePainter = ITilePainterOverride(provider).getTilePainter();
-				ITilePainterOverride(provider).addEventListener(Event.CHANGE, clearEverything);
 			}
 			else {
 				this.tilePainter = new TilePainter(this, provider, maxParentLoad == 0 ? centerDistanceCompare : zoomThenCenterCompare);

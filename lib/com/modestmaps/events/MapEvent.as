@@ -100,7 +100,7 @@ package com.modestmaps.events
 		
 		override public function clone():Event
 		{
-			return this;
+			return new MapEvent(this.type);
 		}
 	}
 }

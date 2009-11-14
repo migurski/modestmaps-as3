@@ -1,5 +1,8 @@
 package com.modestmaps.core.painter
 {
+	import com.google.maps.Map;
+	import com.google.maps.interfaces.IMapType;
+	import com.google.maps.interfaces.ITileLayer;
 	import com.modestmaps.core.Coordinate;
 	import com.modestmaps.core.Tile;
 	import com.modestmaps.core.TweenTile;
@@ -16,14 +19,16 @@ package com.modestmaps.core.painter
 
 	public class GoogleTilePainter extends EventDispatcher implements ITilePainter
 	{
-		private var googleMap:*;
+		private var type:IMapType;		
+		private var googleMap:Map;
 		private var tileClass:Class;
 		private var timer:Timer;
 		private var cache:Dictionary = new Dictionary();
 		
-		public function GoogleTilePainter(googleMap:*)
+		public function GoogleTilePainter(googleMap:Map, type:IMapType)
 		{
 			super(null);
+			this.type = type;
 			this.googleMap = googleMap;
 			this.tileClass = TweenTile;
 			this.timer = new Timer(250);
@@ -67,7 +72,9 @@ package com.modestmaps.core.painter
  				return cache[key] as Tile; 
 			}
 			
-			//trace('createAndPopulateTile', coord, key);
+			if (googleMap.getCurrentMapType().getName() != type.getName()) {
+				googleMap.setMapType(type);
+			} 
 			
 			var tile:Tile = new tileClass(coord.column, coord.row, coord.zoom);
 			tile.name = key;
@@ -79,7 +86,7 @@ package com.modestmaps.core.painter
 				}
 				coord.column %= Math.pow(2,coord.zoom);
 				var layers:Array = googleMap.getCurrentMapType().getTileLayers();
-				var tileLayer:* = layers[0];
+				var tileLayer:ITileLayer = layers[0] as ITileLayer;
 				var tileImage:DisplayObject = tileLayer.loadTile(new Point(coord.column, coord.row), coord.zoom);
 				tile.addChild(tileImage);
 				tile.hide();
