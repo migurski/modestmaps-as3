@@ -86,9 +86,10 @@ package com.modestmaps.core.painter
 				}
 				coord.column %= Math.pow(2,coord.zoom);
 				var layers:Array = googleMap.getCurrentMapType().getTileLayers();
-				var tileLayer:ITileLayer = layers[0] as ITileLayer;
-				var tileImage:DisplayObject = tileLayer.loadTile(new Point(coord.column, coord.row), coord.zoom);
-				tile.addChild(tileImage);
+				for each (var tileLayer:ITileLayer in layers) {
+					var tileImage:DisplayObject = tileLayer.loadTile(new Point(coord.column, coord.row), coord.zoom);
+					tile.addChild(tileImage);
+				}
 				tile.hide();
 			}
 			
@@ -125,7 +126,7 @@ package com.modestmaps.core.painter
 		
 		public function cancelPainting(tile:Tile):void
 		{
-			if (tile.numChildren) {
+			while (tile.numChildren) {
 				tile.removeChildAt(0);
 			}
 			delete cache[tile.name];
