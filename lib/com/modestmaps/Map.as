@@ -529,6 +529,40 @@ package com.modestmaps
 			grid.doneZooming();
 			grid.donePanning();
         }
+        
+        public function getRotation():Number
+        {
+        	var m:Matrix = grid.getMatrix();
+    		var px:Point = m.deltaTransformPoint(new Point(0, 1));
+			return Math.atan2(px.y, px.x);
+        }
+        
+		/** rotate to angle (radians), keeping the requested point in the same place */
+        public function setRotation(angle:Number, targetPoint:Point=null):void
+        {
+        	var rotation:Number = getRotation();
+			rotateByAbout(angle - rotation, targetPoint);        	
+        }
+        
+		/** rotate by angle (radians), keeping the requested point in the same place */
+        public function rotateByAbout(angle:Number, targetPoint:Point=null):void
+        {
+            if (!targetPoint) targetPoint = new Point(mapWidth/2, mapHeight/2);        	
+        	
+			grid.prepareForZooming();
+			grid.prepareForPanning();
+			
+			var m:Matrix = grid.getMatrix();
+			
+			m.translate(-targetPoint.x, -targetPoint.y);
+			m.rotate(angle);
+			m.translate(targetPoint.x, targetPoint.y);       	
+        	
+        	grid.setMatrix(m);
+
+			grid.doneZooming();
+			grid.donePanning();
+        }        
 	    
 		/** zoom in and put the given location in the center of the screen, or optionally at the given targetPoint */
 		public function panAndZoomIn(location:Location, targetPoint:Point=null):void

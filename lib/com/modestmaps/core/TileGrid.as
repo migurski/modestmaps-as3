@@ -28,7 +28,7 @@ package com.modestmaps.core
 		protected static const DEFAULT_MAX_PARENT_LOAD:int = 0; // enable this to load lower zoom tiles first
 		protected static const DEFAULT_MAX_CHILD_SEARCH:int = 1;
 		protected static const DEFAULT_MAX_TILES_TO_KEEP:int = 256; // 256*256*4bytes = 0.25MB ... so 256 tiles is 64MB of memory, minimum!
-		protected static const DEFAULT_TILE_BUFFER:int = 0;
+		protected static const DEFAULT_TILE_BUFFER:int = 1;
 		protected static const DEFAULT_ENFORCE_BOUNDS:Boolean = true;
 		protected static const DEFAULT_ROUND_POSITIONS:Boolean = true;
 		protected static const DEFAULT_ROUND_SCALES:Boolean = true;
@@ -94,6 +94,8 @@ package com.modestmaps.core
 		// (these also have lazy getters)
 		protected var _topLeftCoordinate:Coordinate;
 		protected var _bottomRightCoordinate:Coordinate;
+		protected var _topRightCoordinate:Coordinate;
+		protected var _bottomLeftCoordinate:Coordinate;
 		protected var _centerCoordinate:Coordinate;
 
 		// where the tiles live:
@@ -352,18 +354,20 @@ package com.modestmaps.core
 			_currentTileZoom = newZoom;
 		
 			// find start and end columns for the visible tiles, at current tile zoom
-			// TODO: take account of potential rotation in worldMatrix (ask Tom about this if you need it)
+			// we project all four corners to take account of potential rotation in worldMatrix
 			var tlC:Coordinate = topLeftCoordinate.zoomTo(currentTileZoom);
 			var brC:Coordinate = bottomRightCoordinate.zoomTo(currentTileZoom);
+			var trC:Coordinate = topRightCoordinate.zoomTo(currentTileZoom);
+			var blC:Coordinate = bottomLeftCoordinate.zoomTo(currentTileZoom);
 			
 			// optionally pad it out a little bit more with a tile buffer
 			// TODO: investigate giving a directional bias to TILE_BUFFER when panning quickly
 			// NB:- I'm pretty sure these calculations are accurate enough that using 
 			//      Math.ceil for the maxCols will load one column too many -- Tom
-			var minCol:int = Math.floor(tlC.column) - tileBuffer;
-			var maxCol:int = Math.floor(brC.column) + tileBuffer;
-			var minRow:int = Math.floor(tlC.row) - tileBuffer;
-			var maxRow:int = Math.floor(brC.row) + tileBuffer;
+			var minCol:int = Math.floor(Math.min(tlC.column,brC.column,trC.column,blC.column)) - tileBuffer;
+			var maxCol:int = Math.floor(Math.max(tlC.column,brC.column,trC.column,blC.column)) + tileBuffer;
+			var minRow:int = Math.floor(Math.min(tlC.row,brC.row,trC.row,blC.row)) - tileBuffer;
+			var maxRow:int = Math.floor(Math.max(tlC.row,brC.row,trC.row,blC.row)) + tileBuffer;
 
 			// loop over all tiles and find parent or child tiles from cache to compensate for unloaded tiles:
 			
@@ -605,22 +609,12 @@ package com.modestmaps.core
  			// this means current is on top, +1 and -1 are next, then +2 and -2, etc.
 			visibleTiles.sort(distanceFromCurrentZoomCompare, Array.DESCENDING);
 			
-/* 			var zooms:Array = visibleTiles.map(function(tile:Tile, ...rest):int {
-				return tile.zoom;
-			});
-			trace("currentTileZoom", currentTileZoom);
-			trace("tile zooms:", zooms); */
-
-			// for fixing positions when we're between zoom levels:
- 			var positionScaleCompensation:Number = Math.pow(2, zoomLevel-currentTileZoom);
-			
  			// for positioning tile according to current transform, based on current tile zoom
  			var scaleFactors:Array = new Array(maxZoom+1);
 			// scales to compensate for zoom differences between current grid zoom level				
  			var tileScales:Array = new Array(maxZoom+1);
 			for (var z:int = 0; z <= maxZoom; z++) {
 				scaleFactors[z] = Math.pow(2.0, currentTileZoom-z)
-				
 				// round up to the nearest pixel to avoid seams between zoom levels
 				if (roundScalesEnabled) {
 					tileScales[z] = Math.ceil(Math.pow(2, zoomLevel-z) * tileWidth) / tileWidth; 
@@ -630,8 +624,9 @@ package com.modestmaps.core
 				}
 			}
 			
-			//trace();
-			//trace("tile.zoom, tile.alpha, tile.numChildren ? tile.getChildAt(0).alpha : '', tile.isShowing() && (layersNeeded[tile.name] == null), tileCache.containsKey(tile.name)");
+			// hugs http://www.senocular.com/flash/tutorials/transformmatrix/
+			var px:Point = worldMatrix.deltaTransformPoint(new Point(0, 1));
+			var tileAngleDegrees:Number = ((180/Math.PI) * Math.atan2(px.y, px.x) - 90);
 			
  			// apply the sorted depths, position all the tiles and also keep recentlySeen updated:
 			for each (var tile:Tile in visibleTiles) {
@@ -639,23 +634,13 @@ package com.modestmaps.core
 				// if we set them all to numChildren-1, descending, they should end up correctly sorted
 				well.setChildIndex(tile, well.numChildren-1);
 
- 				var positionCol:Number = (scaleFactors[tile.zoom]*tile.column) - realMinCol;
- 				var positionRow:Number = (scaleFactors[tile.zoom]*tile.row) - realMinRow;
-
 				tile.scaleX = tile.scaleY = tileScales[tile.zoom];
 
-  				if (!zooming && roundPositionsEnabled) {
-	 				// this also helps the rare seams not fixed by rounding the tile scale, 
- 					// but makes slow zooming uglier: 
- 					// round, not floor, because the latter causes artifacts at lower zoom levels :(
-					tile.x = Math.round(positionCol*tileWidth*positionScaleCompensation);
-					tile.y = Math.round(positionRow*tileHeight*positionScaleCompensation);
-				}
-				else {
-					tile.x = positionCol*tileWidth*positionScaleCompensation;
-					tile.y = positionRow*tileHeight*positionScaleCompensation;
-				}
+				var pt:Point = coordinatePoint(new Coordinate(tile.row, tile.column, tile.zoom));
+				tile.x = pt.x;
+				tile.y = pt.y;
 				
+				tile.rotation = tileAngleDegrees;				
 			}
 		}
 		
@@ -863,6 +848,24 @@ package com.modestmaps.core
 			}
 			return _bottomRightCoordinate;
 		}
+
+		public function get topRightCoordinate():Coordinate
+		{
+			if (!_topRightCoordinate) {
+				var tr:Point = invertedMatrix.transformPoint(new Point(mapWidth,0));
+				_topRightCoordinate = new Coordinate(tr.y, tr.x, zoomLevel);			
+			}
+			return _topRightCoordinate;
+		}
+
+		public function get bottomLeftCoordinate():Coordinate
+		{
+			if (!_bottomLeftCoordinate) {
+				var bl:Point = invertedMatrix.transformPoint(new Point(0, mapHeight));
+				_bottomLeftCoordinate = new Coordinate(bl.y, bl.x, zoomLevel);			
+			}
+			return _bottomLeftCoordinate;
+		}
 						
 		public function get centerCoordinate():Coordinate
 		{
@@ -875,21 +878,12 @@ package com.modestmaps.core
 		
 		public function coordinatePoint(coord:Coordinate, context:DisplayObject=null):Point
 		{
-			// this is the same as coord.zoomTo, but doesn't make a new Coordinate:
-			var zoomFactor:Number = Math.pow(2, zoomLevel - coord.zoom);
-			//zoomFactor *= tileWidth/scale;
+			// this is basically the same as coord.zoomTo, but doesn't make a new Coordinate:
+			var zoomFactor:Number = Math.pow(2, zoomLevel - coord.zoom) * tileWidth/scale;
 			var zoomedColumn:Number = coord.column * zoomFactor;
 			var zoomedRow:Number = coord.row * zoomFactor;
-			
- 			var tl:Coordinate = topLeftCoordinate;
-			var br:Coordinate = bottomRightCoordinate;
-			
-			var cols:Number = br.column - tl.column;
-			var rows:Number = br.row - tl.row;
-			
-			var screenPoint:Point = new Point(mapWidth * (zoomedColumn-tl.column) / cols, mapHeight * (zoomedRow-tl.row) / rows); 
-			
-			//var screenPoint:Point = worldMatrix.transformPoint(new Point(zoomedColumn, zoomedRow));
+						
+			var screenPoint:Point = worldMatrix.transformPoint(new Point(zoomedColumn, zoomedRow));
 
 			if (context && context != this)
             {
@@ -1226,6 +1220,8 @@ package com.modestmaps.core
 				_invertedMatrix = null;
 				_topLeftCoordinate = null;
 				_bottomRightCoordinate = null;
+				_topRightCoordinate = null;
+				_bottomLeftCoordinate = null;
 				_centerCoordinate = null;				
 			}
 
@@ -1240,8 +1236,10 @@ package com.modestmaps.core
 				
 				_invertedMatrix = null;
 				_topLeftCoordinate = null;
-				_bottomRightCoordinate = null;			
-				_centerCoordinate = null;				
+				_bottomRightCoordinate = null;
+				_topRightCoordinate = null;
+				_bottomLeftCoordinate = null;
+				_centerCoordinate = null;					
 			}
 		}
 		
